@@ -12,9 +12,9 @@
 </p>
 
 <p>
-  <% if current_user&.subscriptions&.any? %>
+  <% if current_user&.subscriptions_subscribed&.any? %>
     <%= link_to 'Continue exploring!', explore_path, class: 'btn btn-primary' %>
-    <% if current_user.subscriptions.stripe_status_active.joins(:tile).any? %>
+    <% if current_user.subscriptions_subscribed.stripe_status_active.joins(:tile).any? %>
       or
       <%= link_to 'View my tile', my_tile_path, class: 'btn btn-primary' %>
     <% end %>

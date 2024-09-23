@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Subscription < ApplicationRecord
-  belongs_to :user, optional: true
+  belongs_to :subscriber, class_name: 'User', inverse_of: :subscriptions_subscribed, optional: true
   belongs_to :tile, optional: true
 
   validates :stripe_id,
