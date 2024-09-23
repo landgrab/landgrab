@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_06_10_202839) do
+ActiveRecord::Schema[7.1].define(version: 2024_09_23_201545) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
   enable_extension "postgis"
@@ -103,7 +103,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_06_10_202839) do
   end
 
   create_table "subscriptions", force: :cascade do |t|
-    t.bigint "user_id"
+    t.bigint "subscriber_id"
     t.bigint "tile_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -114,8 +114,8 @@ ActiveRecord::Schema[7.1].define(version: 2024_06_10_202839) do
     t.string "claim_email"
     t.string "claim_hash"
     t.index ["stripe_id"], name: "index_subscriptions_on_stripe_id", unique: true
+    t.index ["subscriber_id"], name: "index_subscriptions_on_subscriber_id"
     t.index ["tile_id"], name: "index_subscriptions_on_tile_id"
-    t.index ["user_id"], name: "index_subscriptions_on_user_id"
   end
 
   create_table "teams", force: :cascade do |t|
@@ -169,7 +169,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_06_10_202839) do
   add_foreign_key "posts", "users", column: "author_id"
   add_foreign_key "prices", "projects"
   add_foreign_key "subscriptions", "tiles"
-  add_foreign_key "subscriptions", "users"
+  add_foreign_key "subscriptions", "users", column: "subscriber_id"
   add_foreign_key "tiles", "plots"
   add_foreign_key "tiles", "subscriptions", column: "latest_subscription_id"
   add_foreign_key "users", "teams"
