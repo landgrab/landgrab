@@ -11,8 +11,8 @@ in small parcels just a few metres across.
 - Create 'plots' of land by defining an outline on a map.
 - Identify individual 3x3m square 'tiles' of land within the plot (using [What3Words](https://what3words.com/)).
 - Publish rich 'posts' with updates related to specific projects, plots or tiles.
-- Offer 'sponsorships' for tiles of the land (using [Stripe payments](https://stripe.com/)).
-- Card payments collected automatically into your account.
+- Offer 'sponsorships' for tiles of the land with custom pricing, promo codes and payments via [Stripe](https://stripe.com/).
+- Publish posts viewable by subscribers of specific tiles, plots, projects or even 'teams'.
 
 ### Use Cases
 
