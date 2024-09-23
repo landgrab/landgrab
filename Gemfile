@@ -49,6 +49,15 @@ gem 'factory_bot_rails', group: %i[development test]
 # Dependency of RGeo operation with 'geos' library
 gem 'ffi-geos', groups: %i[development test]
 
+# Identify inconsistencies between model config and database constraints
+gem 'guard-consistency_fail', group: :development
+
+# Automatic test running
+gem 'guard-rspec', require: false, group: :development
+
+# Run RuboCop via Guard
+gem 'guard-rubocop', group: :development
+
 # Apply scopes (filters) based on params
 gem 'has_scope'
 
