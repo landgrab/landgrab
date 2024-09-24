@@ -15,6 +15,7 @@ class SubscriptionsController < ApplicationController
     log_event_mixpanel('Subscriptions: Show')
   end
 
+  # User connecting to their subscription (after registration)
   def claim
     log_event_mixpanel('Subscriptions: Claim', { authed: user_signed_in? })
     if user_signed_in?
@@ -41,6 +42,7 @@ class SubscriptionsController < ApplicationController
     end
   end
 
+  # User linking their (existing, unredeemed) subscription to a tile
   def redeem
     log_event_mixpanel('Subscriptions: Redeem')
     @tile = Tile.find_by_hashid!(params[:tile])
