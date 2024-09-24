@@ -5,9 +5,9 @@
     <tr>
       <th>User</th>
       <td>
-        <% if @subscription.user.present? %>
-          <%= link_to @subscription.user.full_name, admin_user_path(@subscription.user) %>
-          <%= " (that's you!)" if @subscription.user == current_user %>
+        <% if @subscription.subscriber.present? %>
+          <%= link_to @subscription.subscriber.full_name, admin_user_path(@subscription.subscriber) %>
+          <%= " (that's you!)" if @subscription.subscriber == current_user %>
         <% else %>
           No user; purchase not yet claimed.
           <% if @subscription.claim_hash.nil? %>

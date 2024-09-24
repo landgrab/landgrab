@@ -17,10 +17,10 @@
       <tr>
         <td><%= link_to subscription.hashid, admin_subscription_path(subscription) %></td>
         <td>
-          <% if subscription.user.present? %>
-            <%= link_to subscription.user.full_name, admin_user_path(subscription.user) %>
+          <% if subscription.subscriber.present? %>
+            <%= link_to subscription.subscriber.full_name, admin_user_path(subscription.subscriber) %>
             <br>
-            <%= subscription.user.email %>
+            <%= subscription.subscriber.email %>
           <% else %>
             Unregistered; email from stripe is
             <%= content_tag(:code, subscription.claim_email || 'NOT SET') %>

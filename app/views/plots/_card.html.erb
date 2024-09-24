@@ -11,10 +11,15 @@
     <h5 class="card-title"><%= plot.title %></h5>
 
     <p class="card-text">
-      <%= plot.non_subscribed_tiles.size %>
-      of
-      <%= plot.tiles.size %>
-      tiles available
+      <% non_subscribed_tiles_count = plot.non_subscribed_tiles.size %>
+      <% if non_subscribed_tiles_count.zero? %>
+        There are no tiles available
+      <% else %>
+        <%= plot.non_subscribed_tiles.size %>
+        of
+        <%= plot.tiles.size %>
+        tiles available
+      <% end %>
     </p>
     <%= link_to 'View Plot',
                 plot_path(plot),

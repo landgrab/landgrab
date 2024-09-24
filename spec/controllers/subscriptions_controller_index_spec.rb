@@ -4,6 +4,10 @@ RSpec.describe SubscriptionsController do
   render_views
 
   describe 'GET subscriptions#index' do
+    subject(:do_get) do
+      get :index
+    end
+
     let(:user) { create(:user) }
     let(:subscription) { create(:subscription, subscriber: user) }
     let(:project) { create(:project) }
@@ -19,7 +23,7 @@ RSpec.describe SubscriptionsController do
       end
 
       it 'redirects to login' do
-        get :index
+        do_get
 
         expect(response).to redirect_to(new_user_session_path)
       end
@@ -32,7 +36,7 @@ RSpec.describe SubscriptionsController do
       end
 
       it 'displays an option to choose a project tile' do
-        get :index
+        do_get
 
         expect(response).to have_http_status(:ok)
         expect(response.body).to include('Find a tile')
@@ -46,7 +50,7 @@ RSpec.describe SubscriptionsController do
       end
 
       it 'displays a link to the tile' do
-        get :index
+        do_get
 
         expect(response).to have_http_status(:ok)
         expect(response.body).to include("///#{tile.w3w}")

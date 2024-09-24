@@ -15,7 +15,7 @@ RSpec.describe Project do
     let(:user) { create(:user) }
     let(:plot) { create(:plot, project:) }
     let(:tile) { create(:tile, plot:) }
-    let(:subscription) { create(:subscription, user:, tile:) }
+    let(:subscription) { create(:subscription, subscriber: user, tile:) }
 
     before { subscription }
 
@@ -31,7 +31,7 @@ RSpec.describe Project do
     end
 
     it 'returns false if tile subscribed by another user' do
-      subscription.update!(user: create(:user))
+      subscription.update!(subscriber: create(:user))
       tile.reload
 
       expect(viewable).to be false

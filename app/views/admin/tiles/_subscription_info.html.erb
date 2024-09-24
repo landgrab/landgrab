@@ -4,10 +4,10 @@
     <%= link_to 'subscribed',
                 admin_subscription_path(@tile.latest_subscription) %>
 
-    <% if @tile.latest_subscription.user.present? %>
+    <% if @tile.latest_subscription.subscriber.present? %>
       by
-      <%= link_to @tile.latest_subscription.user.display_name,
-                  admin_user_path(@tile.latest_subscription.user) %>
+      <%= link_to @tile.latest_subscription.subscriber.display_name,
+                  admin_user_path(@tile.latest_subscription.subscriber) %>
     <% else %>
       (but not claimed yet)
     <% end %>
