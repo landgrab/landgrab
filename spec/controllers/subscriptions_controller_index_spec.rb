@@ -3,7 +3,7 @@
 RSpec.describe SubscriptionsController do
   render_views
 
-  describe 'GET /subscriptions' do
+  describe 'GET subscriptions#index' do
     let(:user) { create(:user) }
     let(:subscription) { create(:subscription, subscriber: user) }
     let(:project) { create(:project) }
@@ -21,7 +21,7 @@ RSpec.describe SubscriptionsController do
       it 'redirects to login' do
         get :index
 
-        expect(response).to redirect_to('/users/sign_in')
+        expect(response).to redirect_to(new_user_session_path)
       end
     end
 

@@ -3,7 +3,7 @@
 RSpec.describe StaticPagesController do
   render_views
 
-  describe 'GET /' do
+  describe 'GET static_pages#homepage' do
     context 'when logged out' do
       it 'renders a login link' do
         get :homepage
