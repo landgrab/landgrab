@@ -33,7 +33,7 @@ Rails.application.routes.draw do
     get :find_tile, on: :member
     get :welcome, on: :member
   end
-  resources :subscriptions, only: %i[create index show] do
+  resources :subscriptions, only: %i[index show] do
     get :claim, on: :member
     post :redeem, on: :member
   end

@@ -3,7 +3,6 @@
 # rubocop:disable Metrics/PerceivedComplexity
 class SubscriptionsController < ApplicationController
   before_action :set_subscription, only: %i[redeem show]
-  before_action :ensure_stripe_enrollment, only: %i[create]
 
   skip_before_action :authenticate_user!, only: %i[claim]
 
@@ -14,16 +13,6 @@ class SubscriptionsController < ApplicationController
 
   def show
     log_event_mixpanel('Subscriptions: Show')
-  end
-
-  def create
-    log_event_mixpanel('Subscriptions: Create')
-    @subscription = current_user.subscriptions.new(subscription_params)
-    if @subscription.save
-      redirect_to tile_url(@subscription.tile), notice: 'You successfully subscribed to this tile!'
-    else
-      render :new, status: :unprocessable_entity
-    end
   end
 
   def claim
