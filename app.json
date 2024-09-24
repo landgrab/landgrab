@@ -10,7 +10,8 @@
   "env": {
     "DEVISE_SECRET_KEY": "devise-secret-key",
     "HASHIDS_SALT": "some-hashids-salt",
-    "RAILS_ENV": "test"
+    "RAILS_ENV": "test",
+    "WHAT3WORDS_API_KEY": "some-what3words-api-key"
   },
   "environments": {
     "test": {
