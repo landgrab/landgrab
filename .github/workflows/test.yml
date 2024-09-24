@@ -17,6 +17,7 @@ jobs:
       DATABASE_URL: postgres://postgres:postgres@localhost:5432
       DEVISE_SECRET_KEY: devise-ci-secret-key
       STRIPE_SECRET_KEY: sk_test_abc123
+      WHAT3WORDS_API_KEY: some-what3words-api-key
 
     services:
       postgres:
