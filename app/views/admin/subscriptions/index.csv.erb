@@ -1,7 +1,7 @@
 <%- headers = [
   'Subscription ID',
-  'User ID',
-  'User Email',
+  'Subscriber User ID',
+  'Subscriber Email',
   'Tile ID',
   'Created At',
   'Stripe ID',
@@ -15,8 +15,8 @@
 <%- @subscriptions.each do |subscription| -%>
 <%= CSV.generate_line([
     subscription.hashid,
-    subscription.user&.hashid,
-    subscription.user&.email,
+    subscription.subscriber&.hashid,
+    subscription.subscriber&.email,
     subscription.tile&.hashid,
     subscription.created_at,
     subscription.stripe_id,

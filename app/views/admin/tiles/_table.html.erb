@@ -27,7 +27,7 @@
             <% end %>
           </td>
         <% end %>
-        <td><%= tile.latest_subscription&.user&.email || '-' %></td>
+        <td><%= tile.latest_subscription&.subscriber&.email || '-' %></td>
         <td><%= link_to 'W3W', tile.w3w_url %></td>
         <td><%= link_to 'Details', admin_tile_path(tile) %></td>
       </tr>

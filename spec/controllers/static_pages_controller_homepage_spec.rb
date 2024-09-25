@@ -3,9 +3,9 @@
 RSpec.describe StaticPagesController do
   render_views
 
-  describe 'GET /' do
+  describe 'GET static_pages#homepage' do
     context 'when logged out' do
-      it 'returns a 200 status code and login link' do
+      it 'renders a login link' do
         get :homepage
 
         expect(response).to have_http_status(:ok)
@@ -20,7 +20,7 @@ RSpec.describe StaticPagesController do
         sign_in(user)
       end
 
-      it 'returns a 200 status code and logout link' do
+      it 'renders a logout link' do
         get :homepage
 
         expect(response).to have_http_status(:ok)

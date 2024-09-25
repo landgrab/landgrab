@@ -19,7 +19,7 @@ RSpec.describe Plot do
 
     let(:user) { create(:user) }
     let(:tile) { create(:tile, plot:) }
-    let(:subscription) { create(:subscription, user:, tile:) }
+    let(:subscription) { create(:subscription, subscriber: user, tile:) }
 
     before { subscription }
 
@@ -34,7 +34,7 @@ RSpec.describe Plot do
     end
 
     it 'excludes tiles subscribed by another user' do
-      subscription.update!(user: create(:user))
+      subscription.update!(subscriber: create(:user))
 
       expect(tiles_subscribed.ids).to be_empty
     end

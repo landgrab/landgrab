@@ -9,7 +9,7 @@ class SubscriptionsController < ApplicationController
 
   def index
     log_event_mixpanel('Subscriptions: Index')
-    @subscriptions = current_user.subscriptions.includes(tile: { plot: :project })
+    @subscriptions = current_user.subscriptions_subscribed.includes(tile: { plot: :project })
   end
 
   def show
@@ -37,14 +37,14 @@ class SubscriptionsController < ApplicationController
         redirect_to support_path, flash: { danger: 'That link is missing something; please contact us.' }
       elsif !ActiveSupport::SecurityUtils.secure_compare(@subscription.claim_hash, params[:hash])
         redirect_to support_path, flash: { danger: "That link doesn't look quite right; please contact us." }
-      elsif @subscription.user.present?
-        if @subscription.user == current_user
+      elsif @subscription.subscriber.present?
+        if @subscription.subscriber == current_user
           redirect_to welcome_project_path(@subscription.project_fallback), flash: { notice: 'This subscription is already linked to your account' }
         else
           redirect_to support_path, flash: { danger: 'Oh! This subscription is already connected to a different account. Have you got two accounts? Please reach out to us and we can help.' }
         end
       else
-        @subscription.update!(user: current_user)
+        @subscription.update!(subscriber: current_user)
         redirect_to welcome_project_path(@subscription.project_fallback), flash: { notice: "Great; you've subscribed! Next step is to pick a tile!" }
       end
     else

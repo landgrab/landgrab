@@ -37,7 +37,7 @@ module Webhook
 
       # TODO: Check tile still available?
 
-      subscr = Subscription.create!(user:, tile:, stripe_id: sub_id, stripe_status: :incomplete)
+      subscr = Subscription.create!(subscriber: user, tile:, stripe_id: sub_id, stripe_status: :incomplete)
 
       handle_external_checkout(subscr) if user.nil?
 

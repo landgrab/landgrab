@@ -44,10 +44,10 @@ namespace :subscription do
       stripe_sub = Stripe::Subscription.retrieve(subscr.stripe_id).to_hash
       customer_id = stripe_sub.fetch(:customer)
 
-      next if customer_id == subscr.user.stripe_customer_id
+      next if customer_id == subscr.subscriber.stripe_customer_id
 
       puts "Subscription #{subscr.hashid} (stripe:#{subscr.stripe_id}) has mismatched customer_id: #{customer_id}"
-      puts "User.find_by_hashid!('#{subscr.user.hashid}').update!(stripe_customer_id: '#{customer_id}')"
+      puts "User.find_by_hashid!('#{subscr.subscriber.hashid}').update!(stripe_customer_id: '#{customer_id}')"
     end; nil
   end
 end

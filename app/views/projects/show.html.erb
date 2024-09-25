@@ -1,4 +1,4 @@
-<% ready_to_claim = user_signed_in? && current_user.subscriptions.where.missing(:tile).any? %>
+<% ready_to_claim = user_signed_in? && current_user.subscriptions_subscribed.where.missing(:tile).any? %>
 
 <h1><%= title "Project: #{@project.title}" %></h1>
 

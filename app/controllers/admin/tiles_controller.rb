@@ -23,7 +23,7 @@ module Admin
       when 'false'
         @tiles = @tiles.where.missing(:latest_subscription)
       end
-      @tiles = @tiles.order(id: :desc).includes(latest_subscription: :user).page(params[:page])
+      @tiles = @tiles.order(id: :desc).includes(latest_subscription: :subscriber).page(params[:page])
     end
 
     def show; end

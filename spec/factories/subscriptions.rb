@@ -3,7 +3,7 @@
 FactoryBot.define do
   factory :subscription do
     tile { nil }
-    user { nil }
+    subscriber { nil }
 
     sequence(:stripe_id) { |n| "sub_#{n}" }
     stripe_status { 'active' }

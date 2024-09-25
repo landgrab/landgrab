@@ -120,6 +120,6 @@ class Tile < ApplicationRecord
   end
 
   def viewable_by?(user)
-    latest_subscription&.user == user
+    latest_subscription&.subscriber == user
   end
 end

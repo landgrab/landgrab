@@ -44,9 +44,9 @@
 
 <p>
   <strong>Subscriptions:</strong>
-  <%= user.subscriptions.size %>
+  <%= user.subscriptions_subscribed.size %>
   -
-  <%= link_to 'view', admin_subscriptions_path(user_id: user.hashid) %>
+  <%= link_to 'view', admin_subscriptions_path(subscriber_id: user.hashid) %>
 </p>
 
 <p>
