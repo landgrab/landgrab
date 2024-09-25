@@ -14,7 +14,7 @@
   <%= link_to ENV.fetch('HEROKU_SLUG_COMMIT').first(10),
               "#{LandgrabService::SOURCE_CODE_REPO_URL}/commit/#{ENV.fetch('HEROKU_SLUG_COMMIT')}" %>
   <% if ENV.fetch('HEROKU_RELEASE_CREATED_AT', nil).present? %>
-    (created <%= time_ago_in_words(DateTime.strptime(ENV.fetch('HEROKU_RELEASE_CREATED_AT'))) %> ago)
+    (deployed <%= time_ago_in_words(DateTime.strptime(ENV.fetch('HEROKU_RELEASE_CREATED_AT'))) %> ago)
   <% end %>
 </p>
 <% end %>
