@@ -73,6 +73,9 @@ Metrics/ClassLength:
   Exclude:
     - 'test/**/*' # permit long test files!
 
+Metrics/MethodLength:
+  Max: 20
+
 # Allow short (2-letter) param names
 Naming/MethodParameterName:
   Enabled: false
