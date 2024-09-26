@@ -63,7 +63,7 @@ class SubscriptionsController < ApplicationController
   def redeem_tile
     if @tile.available?
       if @subscription.tile.nil?
-        @subscription.update!(tile: @tile, redeemer: current_user)
+        @subscription.update!(tile: @tile)
         { notice: "Congratulations! You're now subscribed to this tile!" }
       else
         { danger: "This subscription was already redeemed against another tile: ///#{@subscription.tile.w3w}" }
