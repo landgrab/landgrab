@@ -39,6 +39,20 @@ RSpec.describe SubscriptionsController do
       end
     end
 
+    context 'when subscription was redeemed against another tile' do
+      let(:alt_tile) { create(:tile) }
+
+      before do
+        subscription.update!(tile: alt_tile)
+      end
+
+      it 'notifies that subscription already used' do
+        do_post
+
+        expect(flash[:danger]).to include("already redeemed against another tile: ///#{alt_tile.w3w}")
+      end
+    end
+
     context 'when tile already redeemed by current user' do
       before do
         subscription.update!(tile:, subscriber: user)
