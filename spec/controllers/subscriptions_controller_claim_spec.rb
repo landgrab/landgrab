@@ -61,7 +61,7 @@ RSpec.describe SubscriptionsController do
       it 'returns error and redirects to support' do
         get :claim, params: { id: subscription.hashid }
 
-        expect(flash[:danger]).to include('link is missing something')
+        expect(flash[:danger]).to include("link doesn't look quite right")
         expect(response).to redirect_to(support_path)
       end
     end

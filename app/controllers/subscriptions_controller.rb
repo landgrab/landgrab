@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-# rubocop:disable Metrics/PerceivedComplexity
 class SubscriptionsController < ApplicationController
   before_action :set_subscription, only: %i[redeem show]
 
@@ -18,27 +17,27 @@ class SubscriptionsController < ApplicationController
   # User connecting to their subscription (after registration)
   def claim
     log_event_mixpanel('Subscriptions: Claim', { authed: user_signed_in? })
-    if user_signed_in?
-      @subscription = Subscription.find_by_hashid(params[:id])
+
+    unless user_signed_in?
+      return redirect_to new_registration_path(:user, email: params[:email]),
+                         flash: { notice: 'Please register an account (or login) to claim your tile' }
+    end
+
+    @subscription = Subscription.find_by_hashid!(params[:id])
+    unless @subscription.verify_claims_hash(params[:hash])
       # TODO: Set 'project' on a subscription and redirect to that!
-      if @subscription.nil?
-        redirect_to support_path, flash: { danger: 'We could not find a subscription; please contact us.' }
-      elsif params[:hash].blank?
-        redirect_to support_path, flash: { danger: 'That link is missing something; please contact us.' }
-      elsif !ActiveSupport::SecurityUtils.secure_compare(@subscription.claim_hash, params[:hash])
-        redirect_to support_path, flash: { danger: "That link doesn't look quite right; please contact us." }
-      elsif @subscription.subscriber.present?
-        if @subscription.subscriber == current_user
-          redirect_to welcome_project_path(@subscription.project_fallback), flash: { notice: 'This subscription is already linked to your account' }
-        else
-          redirect_to support_path, flash: { danger: 'Oh! This subscription is already connected to a different account. Have you got two accounts? Please reach out to us and we can help.' }
-        end
+      return redirect_to support_path, flash: { danger: "That link doesn't look quite right; please contact us." }
+    end
+
+    if @subscription.subscriber.present?
+      if @subscription.subscriber == current_user
+        redirect_to welcome_project_path(@subscription.project_fallback), flash: { notice: 'This subscription is already linked to your account' }
       else
-        @subscription.update!(subscriber: current_user)
-        redirect_to welcome_project_path(@subscription.project_fallback), flash: { notice: "Great; you've subscribed! Next step is to pick a tile!" }
+        redirect_to support_path, flash: { danger: 'Oh! This subscription is already connected to a different account. Have you got two accounts? Please reach out to us and we can help.' }
       end
     else
-      redirect_to new_registration_path(:user, email: params[:email]), flash: { notice: 'Please register an account (or login) to claim your tile' }
+      @subscription.update!(subscriber: current_user)
+      redirect_to welcome_project_path(@subscription.project_fallback), flash: { notice: "Great; you've subscribed! Next step is to pick a tile!" }
     end
   end
 
@@ -71,4 +70,3 @@ class SubscriptionsController < ApplicationController
     params.require(:subscription).permit(:tile_id)
   end
 end
-# rubocop:enable Metrics/PerceivedComplexity
