@@ -47,26 +47,24 @@ class SubscriptionsController < ApplicationController
     log_event_mixpanel('Subscriptions: Redeem')
     @tile = Tile.find_by_hashid!(params[:tile])
 
-    return redirect_to support_path, flash: { danger: 'Sorry; this tile is not available! Please pick another.' } if @tile.unavailable?
-
-    if @subscription.tile.present?
-      flash = if @subscription.tile == @tile
-                { notice: 'All good; the subscription was already redeemed against this tile!' }
-              else
-                { danger: "Sorry; this subscription has already been associated to tile ///#{@subscription.tile.w3w}" }
-              end
-    else
+    if @tile.available?
       @subscription.update!(tile: @tile)
       flash = { notice: "Congratulations! You're now subscribed to this tile!" }
+    else
+      flash = if @tile.subscribed_by?(current_user)
+                { notice: "All good; you're already subscribed to this tile!" }
+              else
+                { danger: 'Sorry, this tile has already been claimed by someone else' }
+              end
     end
 
-    redirect_to tile_path(@subscription.tile), flash:
+    redirect_to tile_path(@tile), flash:
   end
 
   private
 
   def set_subscription
-    @subscription = current_user.subscriptions.find_by_hashid!(params[:id])
+    @subscription = current_user.subscriptions_subscribed.find_by_hashid!(params[:id])
   end
 
   def subscription_params
