@@ -49,10 +49,6 @@ RSpec/MultipleExpectations:
 RSpec/NamedSubject:
   Enabled: false
 
-RSpec/ExampleLength:
-  # TODO: Reduce towards default of 5 lines!
-  Max: 13
-
 # Avoid checking for top-level documentation
 Style/Documentation:
   Enabled: false
