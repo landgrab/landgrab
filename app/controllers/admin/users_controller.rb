@@ -14,7 +14,6 @@ module Admin
                        .where(plots: { id: subscribed_to_plot_ids })
                        .distinct
       end
-      @users = @users.where(team_id: Team.find_by_hashid!(params[:team]).id) if params[:team].present?
 
       respond_to do |format|
         format.html do
@@ -47,14 +46,17 @@ module Admin
       params.require(:user).permit(:first_name, :last_name, :team_id)
     end
 
+    # rubocop:disable Metrics/AbcSize
     def filtered_users
       users = User.all
       users = users.where('users.first_name ILIKE ?', "%#{params[:first_name]}%") if params[:first_name].present?
       users = users.where('users.last_name ILIKE ?', "%#{params[:last_name]}%") if params[:last_name].present?
       users = users.where('users.email ILIKE ?', "%#{params[:email]}%") if params[:email].present?
       users = users.where(users: { stripe_customer_id: params[:stripe_customer_id] }) if params[:stripe_customer_id].present?
+      users = users.where(team_id: Team.find_by_hashid!(params[:team]).id) if params[:team].present?
 
       users
     end
+    # rubocop:enable Metrics/AbcSize
   end
 end

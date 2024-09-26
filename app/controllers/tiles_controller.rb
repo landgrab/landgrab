@@ -21,14 +21,7 @@ class TilesController < ApplicationController
       @center = [@plot.centroid_coords.y, @plot.centroid_coords.x]
     else
       @tiles = Tile.order(id: :desc).includes(:plot, :latest_subscription).page(params[:page])
-      if @tiles.none?
-        @center = Plot::DEFAULT_COORDS
-      else
-        mean_x = @tiles.sum { |b| b.midpoint.x } / @tiles.size
-        mean_y = @tiles.sum { |b| b.midpoint.y } / @tiles.size
-
-        @center = [mean_y, mean_x]
-      end
+      @center = derive_tiles_center(@tiles)
     end
   end
 
@@ -40,5 +33,14 @@ class TilesController < ApplicationController
 
   def set_tile
     @tile = Tile.find_by_hashid!(params[:id])
+  end
+
+  def derive_tiles_center(tiles)
+    return Plot::DEFAULT_COORDS if tiles.none?
+
+    mean_x = tiles.sum { |b| b.midpoint.x } / tiles.size
+    mean_y = tiles.sum { |b| b.midpoint.y } / tiles.size
+
+    [mean_y, mean_x]
   end
 end

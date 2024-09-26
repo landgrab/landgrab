@@ -6,10 +6,7 @@ module Admin
     before_action :set_subscription, only: %i[show edit refresh update]
 
     def index
-      @subscriptions = Subscription.all
-      @subscriptions = @subscriptions.where(stripe_status: params[:stripe_status].compact_blank.map { |x| x == 'BLANK' ? nil : Subscription.stripe_statuses.fetch(x) }) if params[:stripe_status]
-      @subscriptions = @subscriptions.where('stripe_id LIKE ?', "%#{params[:stripe_id]}%") if params[:stripe_id].present?
-      @subscriptions = @subscriptions.joins(:subscriber).where(users: { id: User.decode_id(params[:subscriber_id]) }) if params[:subscriber_id].present?
+      @subscriptions = filtered_subscriptions
 
       respond_to do |format|
         format.html do
@@ -55,6 +52,14 @@ module Admin
 
     def subscription_params
       params.require(:subscription).permit(:user_id, :tile_id)
+    end
+
+    def filtered_subscriptions
+      subs = Subscription.all
+      subs = subs.where(stripe_status: params[:stripe_status].compact_blank.map { |x| x == 'BLANK' ? nil : Subscription.stripe_statuses.fetch(x) }) if params[:stripe_status]
+      subs = subs.where('stripe_id LIKE ?', "%#{params[:stripe_id]}%") if params[:stripe_id].present?
+      subs = subs.joins(:subscriber).where(users: { id: User.decode_id(params[:subscriber_id]) }) if params[:subscriber_id].present?
+      subs
     end
   end
 end
