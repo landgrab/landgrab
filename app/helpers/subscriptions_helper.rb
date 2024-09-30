@@ -31,4 +31,21 @@ module SubscriptionsHelper
       raise "Unexpected stripe status: #{subscription.stripe_status}"
     end
   end
+
+  def subscription_redemption_text(subscription, current_user)
+    if subscription.subscriber == current_user
+      msg = "Sponsored by you since #{subscription.created_at.to_date.strftime('%d %B %Y')}"
+      if subscription.redeemer.nil?
+        "#{msg} (but not yet redeemed)"
+      elsif subscription.redeemer != current_user
+        "#{msg} (on behalf of #{subscription.redeemer.first_name})"
+      else
+        msg
+      end
+    elsif subscription.redeemer == current_user
+      "Sponsored on your behalf by #{subscription.subscriber.first_name}"
+    else
+      raise "Unhandled subscriber/redeemer state for Subscription##{subscription.id}"
+    end
+  end
 end

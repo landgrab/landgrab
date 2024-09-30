@@ -1,15 +1,5 @@
 <%= form_with(model: tile, local: true) do |form| %>
-  <% if tile.errors.any? %>
-    <div id="error_explanation">
-      <h2><%= pluralize(tile.errors.count, "error") %> prohibited this tile from being saved:</h2>
-
-      <ul>
-        <% tile.errors.full_messages.each do |message| %>
-          <li><%= message %></li>
-        <% end %>
-      </ul>
-    </div>
-  <% end %>
+  <%= render 'layouts/form_errors', errors: tile.errors %>
 
   <div class="mb-3">
     <%= form.label :w3w, class: 'form-label' %>

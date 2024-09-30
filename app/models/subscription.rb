@@ -2,6 +2,7 @@
 
 class Subscription < ApplicationRecord
   belongs_to :subscriber, class_name: 'User', inverse_of: :subscriptions_subscribed, optional: true
+  belongs_to :redeemer, class_name: 'User', inverse_of: :subscriptions_redeemed, optional: true
   belongs_to :tile, optional: true
 
   validates :stripe_id,
@@ -42,5 +43,9 @@ class Subscription < ApplicationRecord
 
   def verify_claims_hash(provided_hash)
     provided_hash.present? && ActiveSupport::SecurityUtils.secure_compare(claim_hash, provided_hash)
+  end
+
+  def redeemed?
+    redeemer_id.nil?
   end
 end

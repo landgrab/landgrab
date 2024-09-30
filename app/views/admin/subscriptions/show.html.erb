@@ -3,7 +3,7 @@
 <table class="table">
   <tbody>
     <tr>
-      <th>User</th>
+      <th>Subscriber</th>
       <td>
         <% if @subscription.subscriber.present? %>
           <%= link_to @subscription.subscriber.full_name, admin_user_path(@subscription.subscriber) %>
@@ -17,6 +17,17 @@
             <br>
             <%= content_tag(:code, claim_subscription_url(@subscription, hash: @subscription.claim_hash)) %>
           <% end %>
+        <% end %>
+      </td>
+    </tr>
+    <tr>
+      <th>Redeemer</th>
+      <td>
+        <% if @subscription.redeemer.present? %>
+          <%= link_to @subscription.redeemer.full_name, admin_user_path(@subscription.redeemer) %>
+          <%= " (that's you!)" if @subscription.redeemer == current_user %>
+        <% else %>
+          Subscription not yet redeemed.
         <% end %>
       </td>
     </tr>

@@ -10,7 +10,7 @@ module Admin
 
       respond_to do |format|
         format.html do
-          @subscriptions = @subscriptions.includes(:subscriber, :tile).order(id: :desc).page(params[:page])
+          @subscriptions = @subscriptions.includes(:subscriber, :redeemer, :tile).order(id: :desc).page(params[:page])
           render :index
         end
         format.csv { render_csv('subscriptions') }
@@ -51,15 +51,21 @@ module Admin
     end
 
     def subscription_params
-      params.require(:subscription).permit(:user_id, :tile_id)
+      temp = params.dup
+      temp[:subscription][:subscriber_id] = User.decode_id(temp[:subscription][:subscriber_id]) if temp[:subscription][:subscriber_id].present?
+      temp[:subscription][:redeemer_id] = User.decode_id(temp[:subscription][:redeemer_id]) if temp[:subscription][:redeemer_id].present?
+      temp.require(:subscription).permit(:subscriber_id, :redeemer_id)
     end
 
+    # rubocop:disable Metrics/AbcSize
     def filtered_subscriptions
       subs = Subscription.all
       subs = subs.where(stripe_status: params[:stripe_status].compact_blank.map { |x| x == 'BLANK' ? nil : Subscription.stripe_statuses.fetch(x) }) if params[:stripe_status]
       subs = subs.where('stripe_id LIKE ?', "%#{params[:stripe_id]}%") if params[:stripe_id].present?
       subs = subs.joins(:subscriber).where(users: { id: User.decode_id(params[:subscriber_id]) }) if params[:subscriber_id].present?
+      subs = subs.joins(:redeemer).where(users: { id: User.decode_id(params[:redeemer_id]) }) if params[:redeemer_id].present?
       subs
     end
+    # rubocop:enable Metrics/AbcSize
   end
 end

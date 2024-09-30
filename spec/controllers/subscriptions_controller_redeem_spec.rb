@@ -34,8 +34,14 @@ RSpec.describe SubscriptionsController do
         do_post
 
         expect(response).to redirect_to(tile_path(tile))
-        expect(flash[:notice]).to include('now subscribed to this tile')
+        expect(flash[:notice]).to include("You've connected to this tile")
         expect(subscription.reload.tile).to eq(tile)
+      end
+
+      it 'assigns current user as the redeemer' do
+        do_post
+
+        expect(subscription.reload.redeemer).to eq(user)
       end
     end
 
@@ -55,13 +61,13 @@ RSpec.describe SubscriptionsController do
 
     context 'when tile already redeemed by current user' do
       before do
-        subscription.update!(tile:, subscriber: user)
+        subscription.update!(tile:, redeemer: user)
       end
 
       it 'notifies that already redeemed' do
         do_post
 
-        expect(flash[:notice]).to include("you're already subscribed to this tile")
+        expect(flash[:notice]).to include("you're already connected to this tile")
         expect(response).to redirect_to(tile_path(tile))
       end
     end
@@ -69,15 +75,29 @@ RSpec.describe SubscriptionsController do
     context 'when tile already redeemed by another user' do
       before do
         subscription
-        create(:subscription, tile:, subscriber: create(:user))
+        create(:subscription, tile:, redeemer: create(:user))
       end
 
       it 'prevents redeeming' do
         do_post
 
-        expect(flash[:danger]).to include('already been claimed by someone else')
+        expect(flash[:danger]).to include('already been redeemed by someone else')
         expect(response).to redirect_to(tile_path(tile))
         expect(subscription.reload.tile).to be_nil
+        expect(subscription.reload.redeemer).to be_nil
+      end
+    end
+
+    context 'when subscription was subscribed by a different user' do
+      before do
+        subscription.update!(subscriber: create(:user))
+      end
+
+      it 'returns warning message' do
+        do_post
+
+        expect(flash[:danger]).to include('you can only redeem your own subscriptions')
+        expect(response).to redirect_to(tile_path(tile))
       end
     end
   end

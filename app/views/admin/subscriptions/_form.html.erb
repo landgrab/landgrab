@@ -1,27 +1,39 @@
-<%= form_with(model: [:admin, subscription]) do |form| %>
-  <% if subscription.errors.any? %>
-    <div style="color: red">
-      <h2><%= pluralize(subscription.errors.count, "error") %> prohibited this subscription from being saved:</h2>
+<%= form_with(model: [:admin, subscription], local: true) do |form| %>
+  <%= render 'layouts/form_errors', errors: subscription.errors %>
 
-      <ul>
-        <% subscription.errors.each do |error| %>
-          <li><%= error.full_message %></li>
-        <% end %>
-      </ul>
+  <div class="row mb-3 g-3 align-items-center">
+    <div class="col-sm-2">
+      <%= form.label :subscriber_id, class: 'col-form-label' %>
     </div>
+    <div class="col-sm-3">
+      <%= form.text_field :subscriber_id, value: form.object.subscriber&.hashid, class: 'form-control', aria: { describedby: 'subscriberHelp' } %>
+    </div>
+    <div class="col-sm-7">
+      <span id="subscriberHelp" class="form-text">
+        The User ID of the subscriber (who pays for the subscription).
+      </span>
+    </div>
+  </div>
+
+  <div class="row mb-3 g-3 align-items-center">
+    <div class="col-sm-2">
+      <%= form.label :redeemer_id, class: 'col-form-label' %>
+    </div>
+    <div class="col-sm-3">
+      <%= form.text_field :redeemer_id, value: form.object.redeemer&.hashid, class: 'form-control', aria: { describedby: 'redeemerHelp' } %>
+    </div>
+    <div class="col-sm-7">
+      <span id="redeemerHelp" class="form-text">
+        The User ID of the redeemer (i.e. the same as subscriber for personal subscriptions, or the recipient if subscription was gifted).
+      </span>
+    </div>
+  </div>
+
+  <% if subscription.persisted? %>
+    <%= form.submit 'Update Subscription', class: 'btn btn-primary' %>
+    or
+    <%= link_to 'return to subscription details', admin_subscription_path(subscription), class: 'btn btn-secondary' %>
+  <% else %>
+    <%= form.submit 'Create Subscription', class: 'btn btn-primary' %>
   <% end %>
-
-  <div>
-    <%= form.label :user_id, style: "display: block" %>
-    <%= form.text_field :user_id %>
-  </div>
-
-  <div>
-    <%= form.label :tile_id, style: "display: block" %>
-    <%= form.text_field :tile_id %>
-  </div>
-
-  <div>
-    <%= form.submit %>
-  </div>
 <% end %>

@@ -2,7 +2,8 @@
   <thead>
     <tr>
       <th>Subscription ID</th>
-      <th>User</th>
+      <th>Subscriber</th>
+      <th>Redeemer</th>
       <th>Tile</th>
       <th>Stripe ID</th>
       <th>Price</th>
@@ -24,6 +25,15 @@
           <% else %>
             Unregistered; email from stripe is
             <%= content_tag(:code, subscription.claim_email || 'NOT SET') %>
+          <% end %>
+        </td>
+        <td>
+          <% if subscription.redeemer.present? %>
+            <%= link_to subscription.redeemer.full_name, admin_user_path(subscription.redeemer) %>
+            <br>
+            <%= subscription.redeemer.email %>
+          <% else %>
+            Not redeemed yet
           <% end %>
         </td>
         <td>
