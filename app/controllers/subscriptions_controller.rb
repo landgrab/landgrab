@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 class SubscriptionsController < ApplicationController
-  before_action :set_subscription, only: %i[redeem show]
-
   skip_before_action :authenticate_user!, only: %i[claim]
 
   def index
@@ -11,10 +9,11 @@ class SubscriptionsController < ApplicationController
   end
 
   def show
+    @subscription = current_user.associated_subscriptions.find_by_hashid!(params[:id])
     log_event_mixpanel('Subscriptions: Show')
   end
 
-  # User connecting to their subscription (after registration)
+  # User connecting to their subscription as 'subscriber' (after registration)
   def claim
     log_event_mixpanel('Subscriptions: Claim', { authed: user_signed_in? })
 
@@ -41,8 +40,10 @@ class SubscriptionsController < ApplicationController
     end
   end
 
-  # User linking their (existing, unredeemed) subscription to a tile
+  # User linking an existing, unredeemed subscription to a tile, and becoming the 'redeemer'
   def redeem
+    @subscription = Subscription.find_by_hashid!(params[:id])
+
     log_event_mixpanel('Subscriptions: Redeem')
     @tile = Tile.find_by_hashid!(params[:tile])
 
@@ -52,26 +53,24 @@ class SubscriptionsController < ApplicationController
 
   private
 
-  def set_subscription
-    @subscription = current_user.subscriptions_subscribed.find_by_hashid!(params[:id])
-  end
-
   def subscription_params
     params.require(:subscription).permit(:tile_id)
   end
 
   def redeem_tile
     if @tile.available?
-      if @subscription.tile.nil?
-        @subscription.update!(tile: @tile)
-        { notice: "Congratulations! You're now subscribed to this tile!" }
+      if @subscription.subscriber != current_user
+        { danger: 'Sorry, you can only redeem your own subscriptions' }
+      elsif @subscription.tile.nil?
+        @subscription.update!(tile: @tile, redeemer: current_user)
+        { notice: "Congratulations! You've connected to this tile!" }
       else
         { danger: "This subscription was already redeemed against another tile: ///#{@subscription.tile.w3w}" }
       end
-    elsif @tile.subscribed_by?(current_user)
-      { notice: "All good; you're already subscribed to this tile!" }
+    elsif @tile.redeemed_by?(current_user)
+      { notice: "All good; you're already connected to this tile!" }
     else
-      { danger: 'Sorry, this tile has already been claimed by someone else' }
+      { danger: 'Sorry, this tile has already been redeemed by someone else' }
     end
   end
 end
