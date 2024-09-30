@@ -3,28 +3,28 @@
 
   <div class="row mb-3 g-3 align-items-center">
     <div class="col-sm-2">
-      <%= form.label :subscriber, class: 'col-form-label' %>
+      <%= form.label :subscriber_id, class: 'col-form-label' %>
     </div>
     <div class="col-sm-3">
-      <%= form.text_field :subscriber, value: form.object.subscriber&.hashid, required: true, class: 'form-control', aria: { describedby: 'subscriberHelp' } %>
+      <%= form.text_field :subscriber_id, value: form.object.subscriber&.hashid, class: 'form-control', aria: { describedby: 'subscriberHelp' } %>
     </div>
     <div class="col-sm-7">
       <span id="subscriberHelp" class="form-text">
-        The User ID of the subscriber.
+        The User ID of the subscriber (who pays for the subscription).
       </span>
     </div>
   </div>
 
   <div class="row mb-3 g-3 align-items-center">
     <div class="col-sm-2">
-      <%= form.label :redeemer, class: 'col-form-label' %>
+      <%= form.label :redeemer_id, class: 'col-form-label' %>
     </div>
     <div class="col-sm-3">
-      <%= form.text_field :redeemer, value: form.object.redeemer&.hashid, required: true, class: 'form-control', aria: { describedby: 'redeemerHelp' } %>
+      <%= form.text_field :redeemer_id, value: form.object.redeemer&.hashid, class: 'form-control', aria: { describedby: 'redeemerHelp' } %>
     </div>
     <div class="col-sm-7">
       <span id="redeemerHelp" class="form-text">
-        The User ID of the redeemer.
+        The User ID of the redeemer (i.e. the same as subscriber for personal subscriptions, or the recipient if subscription was gifted).
       </span>
     </div>
   </div>

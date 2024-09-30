@@ -52,8 +52,8 @@ module Admin
 
     def subscription_params
       temp = params.dup
-      temp[:subscription][:subscriber_id] = User.decode_id(temp[:subscription][:subscriber]) if temp[:subscription][:subscriber].present?
-      temp[:subscription][:redeemer_id] = User.decode_id(temp[:subscription][:redeemer]) if temp[:subscription][:redeemer].present?
+      temp[:subscription][:subscriber_id] = User.decode_id(temp[:subscription][:subscriber_id]) if temp[:subscription][:subscriber_id].present?
+      temp[:subscription][:redeemer_id] = User.decode_id(temp[:subscription][:redeemer_id]) if temp[:subscription][:redeemer_id].present?
       temp.require(:subscription).permit(:subscriber_id, :redeemer_id)
     end
 
