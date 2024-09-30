@@ -1,5 +1,6 @@
 <%= form_tag(admin_subscriptions_path, method: :get, class: 'row g-3 mb-3') do %>
   <%= render_filter_text(:subscriber_id, 'Subscriber User ID', col: 2) %>
+  <%= render_filter_text(:redeemer_id, 'Redeemer User ID', col: 2) %>
 
   <%= render_filter_text(:stripe_id, 'Stripe ID', col: 2) %>
 

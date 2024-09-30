@@ -1,10 +1,3 @@
-<h1><%= admin_title 'Edit subscription' %></h1>
+<h1><%= admin_title 'Editing Subscription' %></h1>
 
-<%= render "form", subscription: @subscription %>
-
-<br>
-
-<div>
-  <%= link_to "Show this subscription", admin_subscription_path(@subscription) %> |
-  <%= link_to "Back to subscriptions", admin_subscriptions_path %>
-</div>
+<%= render 'form', subscription: @subscription %>
