@@ -11,12 +11,11 @@
     </p>
     <p class="card-text">
       <small class="text-muted">
-        Subscribed for
-        <%= distance_of_time_in_words(subscription.created_at, Time.current) %>
-        so far
+        <%= subscription_redemption_text(subscription, current_user) %>
       </small>
     </p>
-    <%= link_to 'Find a Tile', welcome_project_path(subscription.project_fallback), class: 'btn btn-primary stretched-link' %>
+
+    <%= link_to 'Find a Tile', welcome_project_path(subscription.project_fallback), class: 'btn btn-success stretched-link' %>
   </div>
   <div class="card-footer">
     <%= render_subscription_price(subscription) %>

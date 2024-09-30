@@ -37,6 +37,10 @@ class User < ApplicationRecord
       .first # assume latest is most likely to be active
   end
 
+  def associated_subscriptions
+    Subscription.where(subscriber_id: id).or(Subscription.where(redeemer_id: id))
+  end
+
   private
 
   def titleize_lowercased_names

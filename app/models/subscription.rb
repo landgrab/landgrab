@@ -44,4 +44,8 @@ class Subscription < ApplicationRecord
   def verify_claims_hash(provided_hash)
     provided_hash.present? && ActiveSupport::SecurityUtils.secure_compare(claim_hash, provided_hash)
   end
+
+  def redeemed?
+    redeemer_id.nil?
+  end
 end

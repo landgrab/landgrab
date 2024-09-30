@@ -16,11 +16,10 @@
     <% end %>
     <p class="card-text">
       <small class="text-muted">
-        Subscribed for
-        <%= distance_of_time_in_words(subscription.created_at, Time.current) %>
-        so far
+        <%= subscription_redemption_text(subscription, current_user) %>
       </small>
     </p>
+
     <%= link_to 'View Tile', tile_path(subscription.tile), class: 'btn btn-primary stretched-link' %>
   </div>
   <div class="card-footer">
