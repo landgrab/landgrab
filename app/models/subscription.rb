@@ -2,6 +2,7 @@
 
 class Subscription < ApplicationRecord
   belongs_to :subscriber, class_name: 'User', inverse_of: :subscriptions_subscribed, optional: true
+  belongs_to :redeemer, class_name: 'User', inverse_of: :subscriptions_redeemed, optional: true
   belongs_to :tile, optional: true
 
   validates :stripe_id,

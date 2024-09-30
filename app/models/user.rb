@@ -9,6 +9,7 @@ class User < ApplicationRecord
   belongs_to :team, optional: true
 
   has_many :subscriptions_subscribed, class_name: 'Subscription', foreign_key: 'subscriber_id', inverse_of: :subscriber, dependent: :restrict_with_exception
+  has_many :subscriptions_redeemed, class_name: 'Subscription', foreign_key: 'redeemer_id', inverse_of: :redeemer, dependent: :restrict_with_exception
   has_many :posts_authored, class_name: 'Post', foreign_key: 'author_id', inverse_of: :author, dependent: :restrict_with_exception
   has_many :post_views, class_name: 'PostView', inverse_of: :user, dependent: :destroy
   has_many :comments_authored, class_name: 'Comment', inverse_of: :author, dependent: :restrict_with_exception
