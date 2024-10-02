@@ -8,7 +8,7 @@ RSpec.describe PostsHelper do
       markdown = '![my_alt_text](/my_img.png "my_title")'
       html = helper.markdown(markdown)
 
-      expect(html).to eq %(<p><image src="/my_img.png" title="my_title" alt="my_alt_text" class="rounded img-fluid" /></p>\n)
+      expect(html).to eq %(<p><img src="/my_img.png" title="my_title" alt="my_alt_text" class="rounded img-fluid" /></p>\n)
     end
 
     %w[
