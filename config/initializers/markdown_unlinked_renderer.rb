@@ -6,7 +6,8 @@ class MarkdownUnlinkedRenderer
     # rubocop:disable Style/ClassVars
     @@markdown ||= Redcarpet::Markdown.new(
       renderer_unlinked,
-      autolink: false,
+      # NOTE: Autolink still required for handling YouTube embeds
+      autolink: true,
       fenced_code_blocks: true,
       no_intra_emphasis: true,
       space_after_headers: true,
