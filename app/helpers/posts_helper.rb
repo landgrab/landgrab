@@ -9,6 +9,14 @@ module PostsHelper
     # rubocop:enable Rails/OutputSafety
   end
 
+  def markdown_unlinked(text)
+    return nil if text.blank?
+
+    # rubocop:disable Rails/OutputSafety
+    MarkdownUnlinkedRenderer.render_unlinked(text).html_safe
+    # rubocop:enable Rails/OutputSafety
+  end
+
   def linkify_tiles(string)
     mentioned_tiles = Post.new(body: string).mentioned_tiles
 

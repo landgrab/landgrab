@@ -23,7 +23,7 @@
         </div>
         <% if show_preview && post.preview.present? %>
           <p class="mb-1">
-            <%= markdown(post.preview) %>
+            <%= markdown_unlinked(post.preview) %>
           </p>
         <% end %>
       </a>

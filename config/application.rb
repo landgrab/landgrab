@@ -33,5 +33,7 @@ module Landgrab
 
     # Don't generate system test files.
     config.generators.system_tests = nil
+
+    config.autoload_lib(ignore: %w(assets tasks))
   end
 end
