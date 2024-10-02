@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class MarkdownCustomRenderer < Redcarpet::Render::HTML
   YOUTUBE_REGEX = %r{^(?:https?:)?(?://)?(?:youtu\.be/|(?:www\.|m\.)?youtube\.com/(?:watch|v|embed|shorts)(?:\.php)?(?:\?.*v=|/))([a-zA-Z0-9_-]{7,15})(?:[?&][a-zA-Z0-9_-]+=[a-zA-Z0-9_-]+)*$}
 

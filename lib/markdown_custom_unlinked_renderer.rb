@@ -1,5 +1,7 @@
+# frozen_string_literal: true
+
 class MarkdownCustomUnlinkedRenderer < MarkdownCustomRenderer
-  def link(link, title, content)
+  def link(_link, _title, content)
     content
   end
 
