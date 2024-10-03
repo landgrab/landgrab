@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class TeamsController < ApplicationController
-  before_action :set_team, only: %i[show]
+  before_action :set_team, only: %i[show posts]
 
   skip_before_action :authenticate_user!, only: %i[show]
 

@@ -17,4 +17,12 @@ class Team < ApplicationRecord
   def logo_url_fallback
     logo_url.presence || "https://placehold.co/800x400?text=#{title}"
   end
+
+  def relevant_posts
+    posts.published.order(published_at: :desc)
+  end
+
+  def to_param
+    slug
+  end
 end

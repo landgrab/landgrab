@@ -1,10 +1,12 @@
-<% published_posts = team.posts.published %>
-<% if published_posts.any? %>
+<h1><%= title "Updates for #{@team.title}" %></h1>
+
+<% if @team.relevant_posts.any? %>
   <p>
-    Your team has
-    <%= pluralize(published_posts.size, 'related update') %>.
+    <%= link_to @team.title, team_path(@team) %> has
+    <%= pluralize(@team.relevant_posts.size, 'related update') %>;
   </p>
-  <%= render 'posts/list_group', posts: published_posts, show_preview: true %>
+  <%= render 'posts/list_group', posts: @team.relevant_posts %>
 <% else %>
-  <p>There aren't any posts associated with your team yet.
+  <p>There aren't any updates posted for this team yet.</p>
+  <p><%= link_to "Return to #{@team.title} page", team_path(@team) %></p>
 <% end %>
