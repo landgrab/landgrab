@@ -15,14 +15,18 @@ Rails.application.routes.draw do
 
   resources :comments, only: %i[create update destroy]
 
-  resources :teams, only: %i[show]
+  resources :teams, only: %i[show] do
+    get :posts, on: :member
+  end
 
   resources :tiles, only: %i[index show] do
     get :embed, on: :member
+    get :posts, on: :member
   end
 
   resources :plots, only: %i[show] do
     get :embed, on: :member
+    get :posts, on: :member
   end
 
   resources :posts, only: %i[show] do
@@ -31,6 +35,7 @@ Rails.application.routes.draw do
 
   resources :projects, only: %i[index show] do
     get :find_tile, on: :member
+    get :posts, on: :member
     get :welcome, on: :member
   end
   resources :subscriptions, only: %i[index show] do

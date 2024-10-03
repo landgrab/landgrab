@@ -1,0 +1,12 @@
+<h1><%= title "Updates for #{@plot.title}" %></h1>
+
+<% if @plot.relevant_posts.any? %>
+  <p>
+    <%= link_to @plot.title, plot_path(@plot) %> has
+    <%= pluralize(@plot.relevant_posts.size, 'related update') %>;
+  </p>
+  <%= render 'posts/list_group', posts: @plot.relevant_posts %>
+<% else %>
+  <p>There aren't any updates posted for this plot yet.</p>
+  <p><%= link_to "Return to #{@plot.title} page", plot_path(@plot) %></p>
+<% end %>

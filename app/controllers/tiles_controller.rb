@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class TilesController < ApplicationController
-  before_action :set_tile, only: %i[show embed]
+  before_action :set_tile, only: %i[show embed posts]
   skip_before_action :authenticate_user!, only: %i[index embed show]
   skip_before_action :store_location, only: %i[embed]
 
@@ -28,6 +28,8 @@ class TilesController < ApplicationController
   def show
     log_event_mixpanel('Tiles: Show', { authed: user_signed_in?, tile: @tile.hashid, plot: @tile.plot&.hashid, project: @tile.plot&.project&.hashid })
   end
+
+  def posts; end
 
   private
 

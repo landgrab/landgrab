@@ -1,0 +1,12 @@
+<h1><%= title "Updates for #{@tile.w3w}" %></h1>
+
+<% if @tile.relevant_posts.any? %>
+  <p>
+    <%= link_to @tile.w3w, tile_path(@tile) %> has
+    <%= pluralize(@tile.relevant_posts.size, 'related update') %>;
+  </p>
+  <%= render 'posts/list_group', posts: @tile.relevant_posts %>
+<% else %>
+  <p>There aren't any updates posted for this tile yet.</p>
+  <p><%= link_to "Return to #{@tile.w3w} page", tile_path(@tile) %></p>
+<% end %>

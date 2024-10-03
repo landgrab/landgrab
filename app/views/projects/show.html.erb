@@ -46,6 +46,10 @@
       </div>
     <% end %>
     <h2>Project Updates</h2>
-    <%= render 'posts', project: @project %>
+    <%= render 'posts/list_group',
+               posts: @project.relevant_posts,
+               show_preview: true,
+               view_all_link: posts_project_path(@project),
+               limit: 10 %>
   </div>
 </div>

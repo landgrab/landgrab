@@ -34,7 +34,11 @@
 
       <% if current_user&.team == @team %>
         <h2>Team Updates</h2>
-        <%= render 'posts', team: @team %>
+        <%= render 'posts/list_group',
+                    posts: @team.posts,
+                    show_preview: true,
+                    view_all_link: posts_team_path(@team),
+                    limit: 10 %>
       <% end %>
     </div>
   </div>

@@ -1,14 +1,18 @@
-<% show_preview ||= false %>
+<% limit ||= nil %>
 <% viewed_post_ids = current_user&.post_views&.distinct(:post_id)&.pluck(:post_id) || [] %>
+<% view_all_link ||= nil %>
+<% show_preview ||= false %>
+<% sorted_posts = posts.sort_by { |x| [x.published_at.nil? ? 0 : 1, x.published_at] }.reverse %>
+<% sorted_posts = sorted_posts.first(limit) if limit.present? %>
 
 <% if posts.none? %>
   <p>
-    There are no related posts to show.
+    There are no related updates to show.
   </p>
 <% else %>
   <div class="list-group">
     <%# https://stackoverflow.com/a/35539062/1323144 %>
-    <% posts.sort_by { |x| [x.published_at.nil? ? 0 : 1, x.published_at] }.reverse_each do |post| %>
+    <% sorted_posts.each do |post| %>
       <a href="<%= post_path(post) %>" class="list-group-item list-group-item-action">
         <div class="d-flex w-100 justify-content-between">
           <h5 class="mb-0">
@@ -27,6 +31,13 @@
           </p>
         <% end %>
       </a>
+    <% end %>
+    <% if limit.present? && view_all_link && posts.size > limit %>
+      <div class="list-group-item list-group-item-action">
+        <div class="d-flex w-100 justify-content-between">
+          <%= link_to "View all #{posts.size} updates", view_all_link, class: 'btn btn-primary stretched-link mt-2 mb-2' %>
+        </div>
+      </div>
     <% end %>
   </div>
 <% end %>

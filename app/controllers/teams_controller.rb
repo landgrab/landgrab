@@ -9,6 +9,8 @@ class TeamsController < ApplicationController
     log_event_mixpanel('Teams: Show', { authed: user_signed_in?, team: @team.slug })
   end
 
+  def posts; end
+
   private
 
   def set_team

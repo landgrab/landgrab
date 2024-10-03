@@ -26,4 +26,8 @@ class Project < ApplicationRecord
   def hero_image_url_fallback
     hero_image_url.presence || "https://placehold.co/800x400?text=#{title}"
   end
+
+  def relevant_posts
+    posts.published.order(published_at: :desc)
+  end
 end
