@@ -1,3 +1,0 @@
-<h2 class="mt-3">Recent updates</h2>
-
-<%= render 'posts/list_group', posts: [plot, plot.project].compact.map { |x| x.posts.published }.flatten.uniq %>

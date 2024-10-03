@@ -130,4 +130,8 @@ class Tile < ApplicationRecord
   def redeemed_by?(user)
     latest_subscription&.redeemer == user
   end
+
+  def relevant_posts
+    [self, plot, plot&.project].compact.map { |x| x.posts.published }.flatten.uniq.sort_by(&:published_at)
+  end
 end

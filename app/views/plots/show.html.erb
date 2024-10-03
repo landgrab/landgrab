@@ -54,7 +54,12 @@
       <%= markdown(@plot.project&.subscriber_benefits) %>
     <% end %>
 
-    <%= render 'posts', plot: @plot %>
+    <%= render 'posts/list_group',
+                posts: @plot.relevant_posts,
+                show_preview: true,
+                view_all_link: posts_plot_path(@plot),
+                limit: 10 %>
+
   </div>
   <div class="col-md-6">
     <%= render 'static_pages/w3w_map', tiles: @plot.tiles_for_map %>

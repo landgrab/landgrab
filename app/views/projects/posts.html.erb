@@ -1,0 +1,12 @@
+<h1><%= title "Updates for #{@project.title}" %></h1>
+
+<% if @project.relevant_posts.any? %>
+  <p>
+    <%= link_to @project.title, project_path(@project) %> has
+    <%= pluralize(@project.relevant_posts.size, 'related update') %>;
+  </p>
+  <%= render 'posts/list_group', posts: @project.relevant_posts %>
+<% else %>
+  <p>There aren't any updates posted for this project yet.</p>
+  <p><%= link_to "Return to #{@project.title} page", project_path(@project) %></p>
+<% end %>

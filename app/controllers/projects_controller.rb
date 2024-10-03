@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class ProjectsController < ApplicationController
-  before_action :set_project, only: %i[show welcome find_tile]
+  before_action :set_project, only: %i[show welcome find_tile posts]
   skip_before_action :authenticate_user!, only: %i[index show find_tile]
 
   def index
@@ -12,6 +12,8 @@ class ProjectsController < ApplicationController
   def show
     log_event_mixpanel('Projects: Show', { authed: user_signed_in?, project: @project.hashid })
   end
+
+  def posts; end
 
   def welcome
     log_event_mixpanel('Projects: Welcome', { authed: user_signed_in?, project: @project.hashid })

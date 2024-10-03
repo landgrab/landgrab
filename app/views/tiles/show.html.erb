@@ -42,4 +42,8 @@
     plot: @tile.plot,
     popup_tiles: [@tile] %>
 
-<%= render 'posts', tile: @tile %>
+<%= render 'posts/list_group',
+            posts: @tile.relevant_posts,
+            show_preview: true,
+            view_all_link: posts_tile_path(@tile),
+            limit: 10 %>
