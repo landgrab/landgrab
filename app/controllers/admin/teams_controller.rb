@@ -46,7 +46,7 @@ module Admin
     private
 
     def set_team
-      @team = Team.find_by_hashid!(params[:id])
+      @team = Team.find_by!(slug: params[:id])
     end
 
     def team_params
