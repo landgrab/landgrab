@@ -42,6 +42,7 @@
 
     <title><%= if content_for?(:title) then yield(:title) + ' | ' end %><%= ENV.fetch('SITE_TITLE', 'LandGrab') %></title>
     <%= render 'layouts/analytics' %>
+    <%= render 'layouts/microsoft_clarity' %>
   </head>
 
   <body>
