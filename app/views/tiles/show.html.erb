@@ -1,4 +1,4 @@
-<% ready_to_claim = user_signed_in? && current_user.subscriptions_subscribed.where.missing(:tile).any? %>
+<% ready_to_claim = user_signed_in? && current_user.subscriptions_subscribed.stripe_status_active.where.missing(:tile).any? %>
 <% current_sub = user_signed_in? && @tile.plot.present? && current_user.subscription_for_plot(@tile.plot) %>
 
 <% if !user_signed_in? %>
