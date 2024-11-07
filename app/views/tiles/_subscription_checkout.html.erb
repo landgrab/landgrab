@@ -2,9 +2,9 @@
 <% if prices.any? %>
   <%= form_with url: checkout_checkout_path do |form| %>
     <%= form.hidden_field :tile, value: tile.hashid %>
-    <% prices.each do |price| %>
+    <% prices.each_with_index do |price, idx| %>
       <div class="form-check">
-        <%= radio_button_tag 'price', price.hashid, false, class: 'form-check-input', required: true %>
+        <%= radio_button_tag 'price', price.hashid, idx.zero?, class: 'form-check-input', required: true %>
         <%= label_tag "price_#{price.hashid}", "Subscribe for #{price.amount_display}", class: 'form-check-label' %>
       </div>
     <% end %>
