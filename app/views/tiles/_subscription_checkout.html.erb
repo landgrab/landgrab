@@ -8,6 +8,6 @@
         <%= label_tag "price_#{price.hashid}", "Subscribe for #{price.amount_display}", class: 'form-check-label' %>
       </div>
     <% end %>
-    <%= form.submit 'Pay & Subscribe', class: 'btn btn-primary' %>
+    <%= form.submit 'Pay & Subscribe', class: 'btn btn-primary', name: nil %>
   <% end %>
 <% end %>
