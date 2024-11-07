@@ -21,7 +21,7 @@
       <% end %>
     <% end %>
   <% elsif user_signed_in? %>
-    <% redeemable_subscription = current_user.subscriptions_subscribed.where.missing(:tile).first %>
+    <% redeemable_subscription = current_user.subscriptions_subscribed.stripe_status_active.where.missing(:tile).first %>
     <% if redeemable_subscription.present? %>
       <%= render 'tiles/subscription_redeem', tile: tile, subscription: redeemable_subscription %>
     <% else %>

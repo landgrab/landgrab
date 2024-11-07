@@ -1,9 +1,9 @@
 <% ready_to_claim = user_signed_in? && current_user.subscriptions_subscribed.where.missing(:tile).any? %>
-<% active_sub = user_signed_in? && @tile.plot.present? && current_user.subscription_for_plot(@tile.plot) %>
+<% current_sub = user_signed_in? && @tile.plot.present? && current_user.subscription_for_plot(@tile.plot) %>
 
 <% if !user_signed_in? %>
   <%= render 'layouts/progress_bar', step: 1, journey: :register_first %>
-<% elsif ready_to_claim && !active_sub %>
+<% elsif ready_to_claim && !current_sub %>
   <% if @tile.available? %>
     <%= render 'layouts/progress_bar', step: 4, journey: :pay_first %>
   <% else %>
@@ -21,10 +21,10 @@
     <%= render 'details', tile: @tile %>
   </div>
   <div class="col-md-6">
-    <% if active_sub.present? && active_sub.tile != @tile %>
+    <% if current_sub.present? && current_sub&.stripe_status_active? && current_sub.tile != @tile %>
       <%= bootstrap_alert safe_join([
         "You can view this tile already, as you're subscribed to ",
-        link_to(active_sub.tile.w3w, tile_path(active_sub.tile), class: 'alert-link'),
+        link_to(current_sub.tile.w3w, tile_path(current_sub.tile), class: 'alert-link'),
         '.'
       ], ''), :success %>
     <% else %>
