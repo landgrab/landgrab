@@ -39,7 +39,7 @@ RSpec.describe CheckoutController do
       end
 
       it 'redirects to registration page' do
-        get :checkout
+        get :checkout, params: { price: price.hashid }
 
         expect(response).to redirect_to(new_registration_url)
         expect(flash[:notice]).to include('Please register')
