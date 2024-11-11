@@ -50,7 +50,7 @@ class ApplicationController < ActionController::Base
   end
 
   def ensure_stripe_enrollment
-    return if current_user.stripe_customer_id.present?
+    return if current_user&.stripe_customer_id.present?
 
     StripeCustomerCreateJob.perform_now(current_user)
 
