@@ -1,0 +1,97 @@
+{
+  "id": "cs_test_abc123",
+  "object": "checkout.session",
+  "adaptive_pricing": null,
+  "after_expiration": null,
+  "allow_promotion_codes": true,
+  "amount_subtotal": 599,
+  "amount_total": 599,
+  "automatic_tax": {
+    "enabled": false,
+    "liability": null,
+    "status": null
+  },
+  "billing_address_collection": null,
+  "cancel_url": null,
+  "client_reference_id": null,
+  "client_secret": "cs_test_xxxxyyyyzzzz1111222233334444",
+  "consent": null,
+  "consent_collection": null,
+  "created": 1731225988,
+  "currency": "gbp",
+  "currency_conversion": null,
+  "custom_fields": [
+  ],
+  "custom_text": {
+    "after_submit": null,
+    "shipping_address": null,
+    "submit": null,
+    "terms_of_service_acceptance": null
+  },
+  "customer": "cus_xxxyyyzzz",
+  "customer_creation": null,
+  "customer_details": {
+    "address": null,
+    "email": "ollie@example.com",
+    "name": null,
+    "phone": null,
+    "tax_exempt": "none",
+    "tax_ids": null
+  },
+  "customer_email": null,
+  "expires_at": 1731312388,
+  "invoice": null,
+  "invoice_creation": null,
+  "livemode": false,
+  "locale": null,
+  "metadata": {
+  },
+  "mode": "subscription",
+  "payment_intent": null,
+  "payment_link": null,
+  "payment_method_collection": "always",
+  "payment_method_configuration_details": {
+    "id": "pmc_1M68YEIUdRPXBaHSIJli1YDL",
+    "parent": null
+  },
+  "payment_method_options": {
+    "card": {
+      "request_three_d_secure": "automatic"
+    }
+  },
+  "payment_method_types": [
+    "card",
+    "link"
+  ],
+  "payment_status": "unpaid",
+  "phone_number_collection": {
+    "enabled": false
+  },
+  "recovered_from": null,
+  "redirect_on_completion": "always",
+  "return_url": "http://localhost:3000/checkout/success?project=PN29G7&session_id={CHECKOUT_SESSION_ID}",
+  "saved_payment_method_options": {
+    "allow_redisplay_filters": [
+      "always"
+    ],
+    "payment_method_remove": null,
+    "payment_method_save": null
+  },
+  "setup_intent": null,
+  "shipping_address_collection": null,
+  "shipping_cost": null,
+  "shipping_details": null,
+  "shipping_options": [
+  ],
+  "status": "complete",
+  "submit_type": null,
+  "subscription": "sub_foo999",
+  "success_url": null,
+  "total_details": {
+    "amount_discount": 0,
+    "amount_shipping": 0,
+    "amount_tax": 0
+  },
+  "ui_mode": "embedded",
+  "url": null
+}

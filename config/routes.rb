@@ -43,10 +43,9 @@ Rails.application.routes.draw do
     post :redeem, on: :member
   end
 
-  post '/checkout/checkout', 'checkouts#checkout'
+  get '/checkout/checkout', 'checkouts#checkout'
   get '/checkout/generate', 'checkouts#generate'
   get '/checkout/success', 'checkouts#success'
-  get '/checkout/cancel', 'checkouts#cancel'
   get '/checkout/claim', 'checkouts#claim'
 
   get '/about', to: 'static_pages#about'

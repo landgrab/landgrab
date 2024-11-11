@@ -13,7 +13,7 @@ RSpec.describe 'StripeWebhook' do
 
     let(:headers) { { 'Stripe-Signature' => stripe_generate_header(payload: webhook_params.to_json) } }
 
-    let(:webhook_params) { JSON.parse(file_fixture('stripe/checkout_session_completed.json').read) }
+    let(:webhook_params) { json_fixture('stripe/webhooks/checkout_session_completed') }
 
     it 'returns a 200 status code with json content type' do
       run_hook
