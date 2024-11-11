@@ -6,7 +6,7 @@ module Admin
     before_action :set_price, only: %i[show edit update]
 
     def index
-      @prices = Price.order(id: :desc).page(params[:page])
+      @prices = Price.includes(:project).order(id: :desc).page(params[:page])
     end
 
     def show; end
