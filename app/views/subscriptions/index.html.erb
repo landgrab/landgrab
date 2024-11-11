@@ -19,4 +19,11 @@
     You can always subscribe to a new (unclaimed) tile from any
     project, plot or tile's details page.
   </p>
+
+  <p>
+    Alternatively, subscribe now and choose a tile later.
+  </p>
+
+  <%= render 'checkout/price_options_form', prices: Project.first.prices %>
 <% end %>
+

@@ -1,11 +1,11 @@
 {
-  "id": "evt_1MCsmMIUdRPXBaHSBrbcjTe9",
+  "id": "evt_bbbbbbbbbbbb",
   "object": "event",
   "api_version": "2022-08-01",
   "created": 1670539282,
   "data": {
     "object": {
-      "id": "cs_test_a15Y48cPqIhqjKZYWxxs0ICovRykdwuOrGEFxE0775CXpWuxOsJ8Db2Y1W",
+      "id": "cs_test_abc123",
       "object": "checkout.session",
       "after_expiration": null,
       "allow_promotion_codes": null,

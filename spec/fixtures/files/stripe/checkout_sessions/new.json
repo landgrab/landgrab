@@ -12,6 +12,7 @@
   "billing_address_collection": null,
   "cancel_url": "https://example.com/cancel",
   "client_reference_id": null,
+  "client_secret": "cs_test_xxxxyyyyzzzz1111222233334444",
   "consent": null,
   "consent_collection": null,
   "created": 1671278968,

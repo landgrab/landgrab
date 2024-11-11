@@ -1,0 +1,23 @@
+<script src="https://js.stripe.com/v3/"></script>
+
+<script>
+  const stripe = Stripe("<%= ENV.fetch('STRIPE_PUBLISHABLE_KEY') %>");
+
+  initialize();
+
+  async function initialize() {
+    const fetchClientSecret = async () => {
+      return "<%= stripe_checkout.client_secret %>";
+    };
+
+    const checkout = await stripe.initEmbeddedCheckout({
+      fetchClientSecret,
+    });
+
+    checkout.mount('#checkout');
+  }
+</script>
+
+<div id="checkout">
+  <!-- Stripe Checkout will insert the payment form here -->
+</div>

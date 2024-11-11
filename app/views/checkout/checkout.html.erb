@@ -1,0 +1,19 @@
+<h1><%= title 'Checkout' %></h1>
+
+<% if @stripe_err.present? %>
+  <div class="alert alert-danger" role="alert">
+    <%= @stripe_err %>
+  </div>
+<% else %>
+  <% if @tile.present? %>
+    <p>
+      You are subscribing to
+      <%= link_to @tile.w3w, tile_path(@tile) %>!
+    </p>
+  <% else %>
+    <p>
+      A tile can be chosen (or gifted) after you've set up the subscription.
+    </p>
+  <% end %>
+  <%= render 'stripe_embedded_checkout', stripe_checkout: @stripe_checkout %>
+<% end %>

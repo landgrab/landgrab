@@ -1,43 +1,27 @@
 # Checkout
 
-The checkout process involves buying a subscription.
+The checkout process supports a user in buying a subscription.
 
-Checkout is possible via two methods; internal or external.
-
-## Internal Checkout
-
-This relies on the user being authenticated in the Landgrab app;
+Checkout relies on the user being authenticated in the app first;
 they go to view any tile and can click the "subscribe" button
 to subscribe to that tile.
 
+As a pre-requisite, on arrival at the `checkout` page, we will
+synchronously ensure that the user has been set up as a
+customer on Stripe (see `StripeCustomerCreateJob`).
+
 We'll set up a Stripe checkout session associated to the tile,
-and redirect the user to Stripe to complete the payment.
+and render the checkout form via Stripe's JS SDK.
 
-After an internal checkout completes, the user is returned to
-the Landgrab app (`checkout_success_path`) and the subscription is completed,
-and associated to the user and corresponding tile.
+Refer to the [Stripe Embedded Checkout docs](https://docs.stripe.com/checkout/embedded/quickstart).
 
-## External Checkout
+After checkout completes, the user is returned to the
+`checkout_success_path` (with the `{CHECKOUT_SESSION_ID}`
+template variable substituted by Stripe), and the subscription is
+retrieved and its status checked.
 
-This works by sending a (optionally authenticated) visitor to
-the following (`checkout_generate_path`) path;
+The user is redirected to the tile or project page, as appropriate.
+They will subsequently be prompted to claim (via the
+`checkout_claim_path`) the chosen tile, or another in the project.
 
-```
-/checkout/generate?price=<price_hashid>
-```
-
-This endpoint will generate a Stripe checkout (associating it to the
-user if they are logged in) and redirect the customer to complete
-payment through Stripe.
-
-The endpoint accepts parameters;
-
-- `price` (required) - a hashid of an existing 'price' for the subscription.
-- `code` (optional) - a 'code' of an existing promo code.
-- `project` (optional) - a hashid to restrict the subscription to a specific project.
-
-After completing the payment, the user will reach a 'claim' page
-(`checkout_claim_path`) which is a dead end. We'll separately receive
-a webhook informing us of the subscription, and will send an email
-to the email provided during the Stripe checkout through which the
-recipient can claim the subscription.
+Payment failure simply results in returning the user to checkout to retry.

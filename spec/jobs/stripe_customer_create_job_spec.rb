@@ -8,8 +8,8 @@ RSpec.describe StripeCustomerCreateJob do
   describe '#perform' do
     context 'with no existing customer' do
       before do
-        stub_stripe_api(:get, 200, 'customers/search', 'empty', "query=email:'#{user.email}'")
-        stub_stripe_api(:post, 200, 'customers', 'create')
+        stub_stripe_api(:get, 200, 'customers/search', 'customers/search/empty', "query=email:'#{user.email}'")
+        stub_stripe_api(:post, 200, 'customers', 'customers/create')
       end
 
       it 'creates a Stripe customer' do
@@ -19,7 +19,7 @@ RSpec.describe StripeCustomerCreateJob do
 
     context 'with an existing customer matching by email' do
       before do
-        stub_stripe_api(:get, 200, 'customers/search', 'one', "query=email:'#{user.email}'")
+        stub_stripe_api(:get, 200, 'customers/search', 'customers/search/one', "query=email:'#{user.email}'")
       end
 
       it 'assigns found Stripe customer id' do
