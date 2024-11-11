@@ -4,7 +4,7 @@
   Enter your registered email address and we'll send you a link to set a new password.
 </p>
 
-<%= form_for(resource, as: resource_name, url: password_path(resource_name)) do |f| %>
+<%= form_for(resource, as: resource_name, url: user_password_path) do |f| %>
   <%= render "devise/shared/error_messages", resource: resource %>
 
   <%= render 'users/form_email', form: f %>
@@ -13,10 +13,10 @@
                class: 'btn btn-primary' %>
   or
   <%= link_to 'Register',
-              new_registration_path(resource_name),
+              new_user_registration_path,
               class: 'btn btn-secondary' %>
   or
   <%= link_to 'Log in',
-              new_session_path(resource_name),
+              new_user_session_path,
               class: 'btn btn-secondary' %>
 <% end %>

@@ -12,7 +12,7 @@ class CheckoutController < ApplicationController
   # See docs/CHECKOUT.md
   def checkout
     unless user_signed_in?
-      redirect_to new_registration_path(:user),
+      redirect_to new_user_registration_path,
                   flash: { notice: 'Please register so we can link the subscription to an account' }
       return
     end

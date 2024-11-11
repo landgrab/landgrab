@@ -18,7 +18,7 @@ class SubscriptionsController < ApplicationController
     log_event_mixpanel('Subscriptions: Claim', { authed: user_signed_in? })
 
     unless user_signed_in?
-      return redirect_to new_registration_path(:user, email: params[:email]),
+      return redirect_to new_user_registration_path(email: params[:email]),
                          flash: { notice: 'Please register an account (or login) to claim your tile' }
     end
 
