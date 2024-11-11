@@ -46,7 +46,6 @@ Rails.application.routes.draw do
   get '/checkout/checkout', 'checkouts#checkout'
   get '/checkout/generate', 'checkouts#generate'
   get '/checkout/success', 'checkouts#success'
-  get '/checkout/claim', 'checkouts#claim'
 
   get '/about', to: 'static_pages#about'
   get '/explore', to: 'static_pages#explore'

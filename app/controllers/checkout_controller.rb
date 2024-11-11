@@ -25,10 +25,6 @@ class CheckoutController < ApplicationController
     redirect_to checkout_checkout_path(code: params[:code], price: params[:price], tile: params[:tile])
   end
 
-  def claim
-    log_event_mixpanel('Checkout: Claim', { authed: user_signed_in? })
-  end
-
   def success
     log_event_mixpanel('Checkout: Success')
 

@@ -21,7 +21,7 @@ template variable substituted by Stripe), and the subscription is
 retrieved and its status checked.
 
 The user is redirected to the tile or project page, as appropriate.
-They will subsequently be prompted to claim (via the
-`checkout_claim_path`) the chosen tile, or another in the project.
+They will subsequently be prompted to claim the chosen tile,
+or any other within the project.
 
 Payment failure simply results in returning the user to checkout to retry.
