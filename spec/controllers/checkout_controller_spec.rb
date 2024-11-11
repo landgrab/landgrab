@@ -38,10 +38,11 @@ RSpec.describe CheckoutController do
         sign_out(user)
       end
 
-      it 'redirects to the login page' do
+      it 'redirects to registration page' do
         get :checkout
 
-        expect(response).to redirect_to(new_user_session_url)
+        expect(response).to redirect_to(new_registration_url)
+        expect(flash[:notice]).to include('Please register')
       end
     end
 
@@ -62,8 +63,6 @@ RSpec.describe CheckoutController do
 
     it 'returns success response with stripe javascript' do
       get :checkout, params: { price: price.hashid }
-
-      # raise response.body
 
       expect(response).to be_successful
       expect(response.body).to include('js.stripe.com')

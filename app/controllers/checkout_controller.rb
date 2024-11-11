@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class CheckoutController < ApplicationController
-  skip_before_action :authenticate_user!, only: %i[generate claim]
+  skip_before_action :authenticate_user!, only: %i[generate claim checkout]
 
   before_action :ensure_stripe_enrollment, only: %i[checkout]
 
@@ -11,6 +11,11 @@ class CheckoutController < ApplicationController
 
   # See docs/CHECKOUT.md
   def checkout
+    unless user_signed_in?
+      redirect_to new_registration_path,
+                  flash: { notice: 'Please register so we can link the subscription to an account' }
+    end
+
     promo_code = PromoCode.find_by!(code: params[:code]) if params[:code].present?
 
     @stripe_err = create_stripe_checkout(tile: @tile, promo_code:)
