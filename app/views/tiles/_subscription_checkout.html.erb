@@ -1,4 +1,4 @@
 <% prices = tile.plot&.project&.prices.to_a || [] %>
 <% if prices.any? %>
-  <%= render 'checkout/price_options_form', prices: prices if prices.any? %>
+  <%= render 'checkout/price_options_form', prices: prices %>
 <% end %>
