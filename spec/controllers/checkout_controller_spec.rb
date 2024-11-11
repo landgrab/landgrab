@@ -7,6 +7,7 @@ RSpec.describe CheckoutController do
   let(:project) { create(:project) }
 
   before do
+    allow(ENV).to receive(:fetch).and_call_original
     allow(ENV).to receive(:fetch).with('STRIPE_PUBLISHABLE_KEY').and_return('pk_test_123456')
   end
 
