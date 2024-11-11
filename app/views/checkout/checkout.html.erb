@@ -1,9 +1,7 @@
 <h1><%= title 'Checkout' %></h1>
 
 <% if @stripe_err.present? %>
-  <div class="alert alert-danger" role="alert">
-    <%= @stripe_err %>
-  </div>
+  <%= bootstrap_alert @stripe_err %>
 <% else %>
   <% if @tile.present? %>
     <p>

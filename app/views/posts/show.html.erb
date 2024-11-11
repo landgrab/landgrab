@@ -27,10 +27,7 @@
     <%= render 'associated_tiles_map', post: @post %>
     <% if @viewable %>
       <% if @sharer.present? %>
-        <div class="alert alert-info">
-          A subscriber - <%= @sharer.first_name %> - granted you access
-          to this post via a special link.
-        </div>
+        <%= bootstrap_alert "A subscriber - #{@sharer.first_name} - granted you access to this post via a special link.", 'info' %>
         <% if @sharer == current_user %>
           <p>
             This 👆 is exactly what visitors will see
