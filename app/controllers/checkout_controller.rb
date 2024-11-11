@@ -14,6 +14,7 @@ class CheckoutController < ApplicationController
     unless user_signed_in?
       redirect_to new_registration_path(:user),
                   flash: { notice: 'Please register so we can link the subscription to an account' }
+      return
     end
 
     promo_code = PromoCode.find_by!(code: params[:code]) if params[:code].present?
