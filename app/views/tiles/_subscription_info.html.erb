@@ -1,16 +1,16 @@
 <p>
   <% if tile.latest_subscription.present? %>
     <p>
-      <% if tile.latest_subscription.subscriber == current_user %>
+      <% if tile.latest_subscription.subscribed_by?(current_user) %>
         Your subscription to this tile began on
         <%= tile.latest_subscription.created_at.strftime('%e %b %Y') %>
         and is currently
         <%= render_subscription_status(tile.latest_subscription) %>
       <% else %>
-        This tile is already subscribed by someone else!
+        Someone has already subscribed to this tile.
       <% end %>
     </p>
-    <% if tile.latest_subscription.subscriber == current_user %>
+    <% if tile.latest_subscription.subscribed_by?(current_user) %>
       <% if tile.latest_subscription.stripe_status_canceled? %>
         <%= bootstrap_alert 'Your subscription is inactive. To resolve this, please re-subscribe below' %>
         <%= render 'tiles/subscription_checkout', tile: tile %>

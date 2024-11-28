@@ -48,4 +48,10 @@ class Subscription < ApplicationRecord
   def redeemed?
     redeemer_id.nil?
   end
+
+  def subscribed_by?(user)
+    return false if subscriber.nil?
+
+    subscriber == user
+  end
 end
