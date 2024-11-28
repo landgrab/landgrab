@@ -124,11 +124,11 @@ class Tile < ApplicationRecord
   end
 
   def subscribed_by?(user)
-    latest_subscription&.subscriber == user
+    latest_subscription.present? && latest_subscription.subscribed_by?(user)
   end
 
   def redeemed_by?(user)
-    latest_subscription&.redeemer == user
+    latest_subscription.present? && latest_subscription.redeemed_by?(user)
   end
 
   def relevant_posts

@@ -49,7 +49,7 @@ class Subscription < ApplicationRecord
     redeemer_id.present?
   end
 
-  def reedemed_by?(user)
+  def redeemed_by?(user)
     redeemed? && redeemer == user
   end
 
