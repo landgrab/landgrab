@@ -99,7 +99,31 @@ RSpec.describe TilesController do
       it 'shows a message that the tile is already claimed' do
         do_get
 
-        expect(response.body).to include('already subscribed by someone else')
+        expect(response.body).to include('Someone has already subscribed to this tile.')
+      end
+    end
+
+    context 'with a tile with unowned subscription' do
+      before do
+        subscription.update!(subscriber: nil, tile:)
+      end
+
+      it 'returns a 200 status code' do
+        do_get
+
+        expect(response).to have_http_status(:ok)
+      end
+
+      it 'shows the tile' do
+        do_get
+
+        expect(response.body).to include(tile.w3w)
+      end
+
+      it 'shows a message that the tile is already claimed' do
+        do_get
+
+        expect(response.body).to include('Someone has already subscribed to this tile.')
       end
     end
   end
