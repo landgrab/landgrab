@@ -5,9 +5,9 @@
     <tr>
       <th>Subscriber</th>
       <td>
-        <% if @subscription.subscriber.present? %>
+        <% if @subscription.subscribed? %>
           <%= link_to @subscription.subscriber.full_name, admin_user_path(@subscription.subscriber) %>
-          <%= " (that's you!)" if @subscription.subscriber == current_user %>
+          <%= " (that's you!)" if @subscription.subscribed_by?(current_user) %>
         <% else %>
           No user; purchase not yet claimed.
           <% if @subscription.claim_hash.nil? %>
@@ -23,9 +23,9 @@
     <tr>
       <th>Redeemer</th>
       <td>
-        <% if @subscription.redeemer.present? %>
+        <% if @subscription.redeemed? %>
           <%= link_to @subscription.redeemer.full_name, admin_user_path(@subscription.redeemer) %>
-          <%= " (that's you!)" if @subscription.redeemer == current_user %>
+          <%= " (that's you!)" if @subscription.redeemed_by?(current_user) %>
         <% else %>
           Subscription not yet redeemed.
         <% end %>

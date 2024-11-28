@@ -46,12 +46,18 @@ class Subscription < ApplicationRecord
   end
 
   def redeemed?
-    redeemer_id.nil?
+    redeemer_id.present?
+  end
+
+  def reedemed_by?(user)
+    redeemed? && redeemer == user
+  end
+
+  def subscribed?
+    subscriber_id.present?
   end
 
   def subscribed_by?(user)
-    return false if subscriber.nil?
-
-    subscriber == user
+    subscribed? && subscriber == user
   end
 end

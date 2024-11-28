@@ -33,16 +33,18 @@ module SubscriptionsHelper
   end
 
   def subscription_redemption_text(subscription, current_user)
-    if subscription.subscriber == current_user
+    if subscription.subscribed_by?(current_user)
       msg = "Sponsored by you since #{subscription.created_at.to_date.strftime('%d %B %Y')}"
-      if subscription.redeemer.nil?
-        "#{msg} (but not yet redeemed)"
-      elsif subscription.redeemer != current_user
-        "#{msg} (on behalf of #{subscription.redeemer.first_name})"
+      if subscription.redeemed?
+        if subscription.redeemed_by?(current_user)
+          msg # no need to state that they are both subscribing _and_ redeeming.
+        else
+          "#{msg} (on behalf of #{subscription.redeemer.first_name})"
+        end
       else
-        msg
+        "#{msg} (but not yet redeemed)"
       end
-    elsif subscription.redeemer == current_user
+    elsif subscription.redeemed_by?(current_user)
       "Sponsored on your behalf by #{subscription.subscriber.first_name}"
     else
       raise "Unhandled subscriber/redeemer state for Subscription##{subscription.id}"

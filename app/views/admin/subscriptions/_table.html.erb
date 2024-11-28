@@ -18,7 +18,7 @@
       <tr>
         <td><%= link_to subscription.hashid, admin_subscription_path(subscription) %></td>
         <td>
-          <% if subscription.subscriber.present? %>
+          <% if subscription.subscribed? %>
             <%= link_to subscription.subscriber.full_name, admin_user_path(subscription.subscriber) %>
             <br>
             <%= subscription.subscriber.email %>
@@ -28,7 +28,7 @@
           <% end %>
         </td>
         <td>
-          <% if subscription.redeemer.present? %>
+          <% if subscription.redeemed? %>
             <%= link_to subscription.redeemer.full_name, admin_user_path(subscription.redeemer) %>
             <br>
             <%= subscription.redeemer.email %>

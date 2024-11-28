@@ -4,7 +4,7 @@
     <%= link_to 'subscribed',
                 admin_subscription_path(@tile.latest_subscription) %>
 
-    <% if @tile.latest_subscription.subscriber.present? %>
+    <% if @tile.latest_subscription.subscribed? %>
       by
       <%= link_to @tile.latest_subscription.subscriber.display_name,
                   admin_user_path(@tile.latest_subscription.subscriber) %>
