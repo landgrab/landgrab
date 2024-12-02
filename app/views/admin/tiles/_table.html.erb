@@ -1,6 +1,7 @@
 <table class="table">
   <thead>
     <tr>
+      <th>ID</th>
       <th>South West</th>
       <th>North East</th>
       <th>What3Words</th>
@@ -15,9 +16,12 @@
   <tbody style="font-variant-numeric: tabular-nums;">
     <% @tiles.each do |tile| %>
       <tr>
+        <td><%= link_to tile.hashid, admin_tile_path(tile) %></td>
         <td><%= tile.southwest_rounded[0] %>,&nbsp;<%= tile.southwest_rounded[1] %></td>
         <td><%= tile.northeast_rounded[0] %>,&nbsp;<%= tile.northeast_rounded[1] %></td>
-        <td><%= content_tag(:code, tile.w3w) %></td>
+        <td>
+          <%= link_to content_tag(:code, "///#{tile.w3w}"), tile.w3w_url %>
+        </td>
         <% if @plot.nil? %>
           <td>
             <% if tile.plot.present? %>
@@ -28,8 +32,6 @@
           </td>
         <% end %>
         <td><%= tile.latest_subscription&.subscriber&.email || '-' %></td>
-        <td><%= link_to 'W3W', tile.w3w_url %></td>
-        <td><%= link_to 'Details', admin_tile_path(tile) %></td>
       </tr>
     <% end %>
   </tbody>

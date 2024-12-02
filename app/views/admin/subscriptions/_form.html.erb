@@ -29,6 +29,20 @@
     </div>
   </div>
 
+  <div class="row mb-3 g-3 align-items-center">
+    <div class="col-sm-2">
+      <%= form.label :tile_id, class: 'col-form-label' %>
+    </div>
+    <div class="col-sm-3">
+      <%= form.text_field :tile_id, value: form.object.tile&.hashid, class: 'form-control', aria: { describedby: 'tileHelp' } %>
+    </div>
+    <div class="col-sm-7">
+      <span id="tileHelp" class="form-text">
+        The ID of the tile this subscription is linked to.
+      </span>
+    </div>
+  </div>
+
   <% if subscription.persisted? %>
     <%= form.submit 'Update Subscription', class: 'btn btn-primary' %>
     or

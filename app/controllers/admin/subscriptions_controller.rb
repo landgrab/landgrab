@@ -37,7 +37,16 @@ module Admin
     end
 
     def update
-      if @subscription.update(subscription_params)
+      @subscription.assign_attributes(subscription_params)
+
+      new_tile_id = @subscription.changes.dig('tile_id', 1)
+      if new_tile_id.present?
+        new_tile = Tile.find(new_tile_id)
+        @subscription.errors.add(:tile, 'is already linked to another active subscription; unlink that first') if new_tile.subscriptions.any?(&:stripe_status_active?)
+      end
+
+      # Do not use `valid?` as that would clear any error added above
+      if @subscription.errors.none? && @subscription.save
         redirect_to admin_subscription_path(@subscription), notice: 'Subscription was successfully updated.'
       else
         render :edit, status: :unprocessable_entity
@@ -54,7 +63,8 @@ module Admin
       temp = params.dup
       temp[:subscription][:subscriber_id] = User.decode_id(temp[:subscription][:subscriber_id]) if temp[:subscription][:subscriber_id].present?
       temp[:subscription][:redeemer_id] = User.decode_id(temp[:subscription][:redeemer_id]) if temp[:subscription][:redeemer_id].present?
-      temp.require(:subscription).permit(:subscriber_id, :redeemer_id)
+      temp[:subscription][:tile_id] = Tile.decode_id(temp[:subscription][:tile_id]) if temp[:subscription][:tile_id].present?
+      temp.require(:subscription).permit(:subscriber_id, :redeemer_id, :tile_id)
     end
 
     # rubocop:disable Metrics/AbcSize
