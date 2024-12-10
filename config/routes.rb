@@ -38,9 +38,13 @@ Rails.application.routes.draw do
     get :posts, on: :member
     get :welcome, on: :member
   end
+
+  resources :redemption_invites, path: 'invites', only: %i[create] do
+    get 'redeem/:token', on: :member, action: :redeem, as: :redeem
+  end
+
   resources :subscriptions, only: %i[index show] do
-    get :claim, on: :member
-    post :redeem, on: :member
+    post 'link_tile/:tile_hashid', on: :member, action: :link_tile, as: :link_tile
   end
 
   get '/checkout/checkout', 'checkouts#checkout'

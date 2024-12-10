@@ -1,5 +1,5 @@
 <% ready_to_claim = user_signed_in? && current_user.subscriptions_subscribed.where.missing(:tile).any? %>
-<% random_tile = @project.plots.with_available_tiles.sample&.tiles&.available&.sample %>
+<% random_tile = @project.random_available_tile %>
 
 <h1><%= title "Welcome to #{@project.title}" %></h1>
 

@@ -41,6 +41,10 @@ class User < ApplicationRecord
     Subscription.where(subscriber_id: id).or(Subscription.where(redeemer_id: id))
   end
 
+  def linkable_subscriptions
+    subscriptions_redeemed.stripe_status_active.where.missing(:tile)
+  end
+
   private
 
   def titleize_lowercased_names

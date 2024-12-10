@@ -30,4 +30,8 @@ class Project < ApplicationRecord
   def relevant_posts
     posts.published.order(published_at: :desc)
   end
+
+  def random_available_tile
+    plots.with_available_tiles.sample&.tiles&.available&.sample
+  end
 end

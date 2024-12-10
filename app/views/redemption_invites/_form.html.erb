@@ -1,0 +1,35 @@
+<%= form_with(model: redemption_invite, local: true) do |form| %>
+  <%= render 'layouts/form_errors', errors: redemption_invite.errors %>
+
+  <div class="row mb-3 g-3 align-items-center">
+    <div class="col-sm-2">
+      <%= form.label :recipient_name, class: 'col-form-label' %>
+    </div>
+    <div class="col-sm-3">
+      <%= form.text_field :recipient_name, required: true, class: 'form-control', aria: { describedby: 'recipientNameHelp' } %>
+    </div>
+    <div class="col-sm-7">
+      <span id="recipientNameHelp" class="form-text">
+        Enter the name of the gift recipient.
+      </span>
+    </div>
+  </div>
+
+  <div class="row mb-3 g-3 align-items-center">
+    <div class="col-sm-2">
+      <%= form.label :recipient_email, class: 'col-form-label' %>
+    </div>
+    <div class="col-sm-3">
+      <%= form.text_field :recipient_email, class: 'form-control', aria: { describedby: 'recipientEmailHelp' } %>
+    </div>
+    <div class="col-sm-7">
+      <span id="recipientEmailHelp" class="form-text">
+        Enter the email of the gift recipient (where we'll send the invite).
+      </span>
+    </div>
+  </div>
+
+  <%= form.hidden_field :subscription_id, { value: form.object.subscription.hashid } %>
+
+  <%= form.submit 'Send Gift', class: 'btn btn-primary' %>
+<% end %>
