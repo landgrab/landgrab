@@ -1,0 +1,11 @@
+<% raise "Subject not provided" if subject.blank? %>
+<% raise "Body not provided" if body.blank? %>
+<% image_size ||= 50 %>
+
+<%= link_to "mailto:?subject=#{subject}&body=#{body}",
+  style: 'text-decoration: none;' do %>
+  <%= image_tag 'https://res.cloudinary.com/swra/image/upload/v1717706111/email_has7lf.png',
+  alt: 'Share via Email',
+  title: 'Share via Email',
+  size: image_size %>
+<% end %>

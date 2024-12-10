@@ -1,0 +1,33 @@
+<% raise "URL not provided" if url.blank? %>
+<% image_size ||= 50 %>
+
+<% copyid = SecureRandom.hex %>
+
+<%= link_to 'javascript:void();',
+  style: 'text-decoration: none;',
+  id: "copy_link_#{copyid}" do %>
+  <%= image_tag 'https://res.cloudinary.com/swra/image/upload/v1717706111/link_prnvpr.png',
+    alt: 'Copy Link',
+    title: 'Copy Link',
+    size: image_size,
+    id: "copy_img_#{copyid}" %>
+<% end %>
+
+<script>
+  let copyLink = document.getElementById("copy_link_<%= copyid %>");
+  let copyImage = document.getElementById("copy_img_<%= copyid %>");
+  let copyIcon = copyImage.src;
+  let copyIconTick = 'https://res.cloudinary.com/swra/image/upload/v1717708092/checked_llhcs6.png';
+  new Image().src = copyIconTick; // pre-cache
+  copyLink.addEventListener('click', event => {
+    let clipText = '<%= url %>';
+    navigator.clipboard.writeText(clipText).then(function() {
+      copyImage.src = copyIconTick;
+      window.setTimeout(function() {
+        copyImage.src = copyIcon;
+      }, 1250);
+    }, function() {
+      alert('Could not copy to clipboard.');
+    });
+  });
+</script>
