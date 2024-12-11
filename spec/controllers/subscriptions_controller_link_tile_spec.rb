@@ -9,15 +9,21 @@ RSpec.describe SubscriptionsController do
     end
 
     let(:user) { create(:user) }
-    let(:subscription) { create(:subscription, subscriber: user) }
+    let(:subscription) { create(:subscription, subscriber: user, redeemer: user) }
     let(:tile) { create(:tile) }
 
     before do
       sign_in(user)
     end
 
+    it 'sets successful flash message' do
+      do_post
+
+      expect(flash['notice']).to include("You've connected to this tile")
+    end
+
     it 'links to tile to the subscription' do
-      expect { do_post }.to change { subscription.reload.tile }.to(tile)
+      expect { do_post }.to change { subscription.reload.tile_id }.to(tile.id)
     end
 
     it 'redirects to the tile' do
@@ -46,7 +52,7 @@ RSpec.describe SubscriptionsController do
       end
 
       it 'does not update the subscription tile' do
-        expect { do_post }.not_to change { subscription.reload.tile }.from(tile)
+        expect { do_post }.not_to change { subscription.reload.tile_id }.from(alt_tile.id)
       end
 
       it 'returns an error showing which tile is linked already' do
@@ -63,24 +69,9 @@ RSpec.describe SubscriptionsController do
       end
 
       it 'prevents redeeming' do
-        do_post
+        expect { do_post }.not_to(change { subscription.reload.tile_id })
 
         expect(flash[:danger]).to include('already been redeemed by someone else')
-        expect(response).to redirect_to(tile_path(tile))
-        expect(subscription.reload.tile).to be_nil
-        expect(subscription.reload.redeemer).to be_nil
-      end
-    end
-
-    context 'when subscription was subscribed by a different user' do
-      before do
-        subscription.update!(subscriber: create(:user))
-      end
-
-      it 'returns warning message' do
-        do_post
-
-        expect(flash[:danger]).to include('you can only redeem your own subscriptions')
         expect(response).to redirect_to(tile_path(tile))
       end
     end

@@ -31,21 +31,11 @@ class SubscriptionsController < ApplicationController
   def link_tile
     @subscription = Subscription.find_by_hashid!(params[:id])
 
-    # if @subscription.subscribed_by?(current_user)
-
-    if @subscription.redeemed?
-      if @subscription.redeemed_by?(current_user)
-        return redirect_to @subscription, flash: { notice: 'This subscription is already linked to your account' }
-      else
-        return redirect_to support_path, flash: { danger: 'Oh! This subscription is already connected to a different account. Have you got two accounts? Please reach out to us and we can help.' }
-      end
-    end
-
     log_event_mixpanel('Subscriptions: Redeem')
     @tile = Tile.find_by_hashid!(params[:tile_hashid])
 
     flash = redeem_tile
-    redirect_to tile_path(@tile), flash:
+    redirect_back fallback_location: tile_path(@tile), flash:
   end
 
   private

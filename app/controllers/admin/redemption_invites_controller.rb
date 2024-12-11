@@ -5,7 +5,7 @@ module Admin
     before_action :check_admin
 
     def index
-      @redemption_invites = RedemptionInvite.all.includes(subscription: %i[subscriber redeemer])
+      @redemption_invites = RedemptionInvite.includes(subscription: %i[subscriber redeemer])
 
       respond_to do |format|
         format.html do
