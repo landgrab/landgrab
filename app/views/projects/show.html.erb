@@ -1,4 +1,4 @@
-<% ready_to_claim = user_signed_in? && current_user.subscriptions_subscribed.stripe_status_active.where.missing(:tile).any? %>
+<% ready_to_link = user_signed_in? && current_user.linkable_subscriptions.any? %>
 
 <h1><%= title "Project: #{@project.title}" %></h1>
 
@@ -6,7 +6,7 @@
   <div class="col-md-8">
     <%= image_tag @project.hero_image_url_fallback, class: 'mb-2 rounded img-fluid' %>
 
-    <% if ready_to_claim %>
+    <% if ready_to_link %>
       <%= bootstrap_alert "You've subscribed but need to choose a tile! First, pick a plot from below...", :success %>
     <% end %>
 

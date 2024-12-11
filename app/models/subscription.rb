@@ -5,6 +5,8 @@ class Subscription < ApplicationRecord
   belongs_to :redeemer, class_name: 'User', inverse_of: :subscriptions_redeemed, optional: true
   belongs_to :tile, optional: true
 
+  has_many :redemption_invites, dependent: :restrict_with_exception
+
   validates :stripe_id,
             format: { with: /\Asub_[0-9a-zA-Z]+\z/ },
             uniqueness: true

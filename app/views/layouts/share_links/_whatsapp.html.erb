@@ -1,0 +1,12 @@
+<% raise "Text not provided" if text.blank? %>
+<% image_size ||= 50 %>
+
+<%= link_to "https://api.whatsapp.com/send?text=#{text}",
+            target: '_blank',
+            rel: 'noopener',
+            style: 'text-decoration: none;' do %>
+  <%= image_tag 'https://res.cloudinary.com/swra/image/upload/v1717706111/whatsapp_lasgbq.png',
+  alt: 'Share via WhatsApp',
+  title: 'Share via WhatsApp',
+  size: image_size %>
+<% end %>

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_09_26_202015) do
+ActiveRecord::Schema[7.1].define(version: 2024_12_02_191457) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
   enable_extension "postgis"
@@ -102,6 +102,16 @@ ActiveRecord::Schema[7.1].define(version: 2024_09_26_202015) do
     t.index ["stripe_id"], name: "index_promo_codes_on_stripe_id", unique: true
   end
 
+  create_table "redemption_invites", force: :cascade do |t|
+    t.bigint "subscription_id", null: false
+    t.string "recipient_name"
+    t.string "recipient_email"
+    t.string "token", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["subscription_id"], name: "index_redemption_invites_on_subscription_id"
+  end
+
   create_table "subscriptions", force: :cascade do |t|
     t.bigint "subscriber_id"
     t.bigint "tile_id"
@@ -170,6 +180,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_09_26_202015) do
   add_foreign_key "post_views", "users"
   add_foreign_key "posts", "users", column: "author_id"
   add_foreign_key "prices", "projects"
+  add_foreign_key "redemption_invites", "subscriptions"
   add_foreign_key "subscriptions", "tiles"
   add_foreign_key "subscriptions", "users", column: "redeemer_id"
   add_foreign_key "subscriptions", "users", column: "subscriber_id"

@@ -20,7 +20,7 @@
       </small>
     </p>
 
-    <%= link_to 'View Tile', tile_path(subscription.tile), class: 'btn btn-primary stretched-link' %>
+    <%= link_to 'View Subscription Details', subscription_path(subscription), class: 'btn btn-primary stretched-link' %>
   </div>
   <div class="card-footer">
     <%= render_subscription_price(subscription) %>
