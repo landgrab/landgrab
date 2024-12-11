@@ -1,5 +1,4 @@
-<%= form_with url: link_tile_subscription_path(subscription) do |form| %>
-  <%= form.hidden_field :tile, value: tile.hashid %>
+<%= form_with url: link_tile_subscription_path(subscription, tile_hashid: tile.hashid) do |form| %>
   <%= form.submit 'Claim this tile', class: 'btn btn-primary' %>
   using your existing subscription.
 <% end %>

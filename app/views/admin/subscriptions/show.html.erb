@@ -92,6 +92,11 @@
   </tbody>
 </table>
 
-<div>
-  <%= link_to "Edit this subscription", edit_admin_subscription_path(@subscription) %>
-</div>
+<%= link_to "Edit this subscription", edit_admin_subscription_path(@subscription) %>
+
+<h3>Redemption Invites</h3>
+<p>
+  These are created to invite someone to redeem the subscription.
+</p>
+<%= render 'admin/redemption_invites/table', redemption_invites: @subscription.redemption_invites %>
+<%= render 'redemption_invites/form', redemption_invite: @subscription.redemption_invites.new, admin: true %>

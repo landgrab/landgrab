@@ -1,0 +1,45 @@
+<table class="table">
+  <thead>
+    <tr>
+      <th>Subscription</th>
+      <th>Subscriber</th>
+      <th>Redeemer</th>
+      <th>Recipient Name</th>
+      <th>Recipient Email</th>
+      <th>Redeem Link</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% redemption_invites.each do |ri| %>
+      <tr>
+        <td><%= link_to ri.subscription.hashid, admin_subscription_path(ri.subscription) %></td>
+        <td>
+          <% if ri.subscription.subscribed? %>
+            <%= link_to ri.subscription.subscriber.display_name, admin_user_path(ri.subscription.subscriber) %>
+          <% else %>
+            -
+          <% end %>
+        </td>
+        <td>
+          <% if ri.subscription.redeemed? %>
+            <%= link_to ri.subscription.redeemer.display_name, admin_user_path(ri.subscription.redeemer) %>
+          <% else %>
+            Not Redemeed Yet
+          <% end %>
+        </td>
+        <td><%= ri.recipient_name || 'No Name' %></td>
+        <td><%= ri.recipient_email || 'No Email' %></td>
+        <td>
+          <% if ri.subscription.redeemed? %>
+            Already Redeemed
+          <% else %>
+            <%= render 'layouts/copy_to_clipboard',
+                      copytext: redeem_redemption_invite_url(ri, token: ri.token),
+                      copycta: 'Copy Link' %>
+          <% end %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

@@ -1,4 +1,6 @@
-<%= form_with(model: redemption_invite, local: true) do |form| %>
+<% admin ||= false %>
+<% model_param = admin ? [:admin, redemption_invite] : redemption_invite%>
+<%= form_with(model: model_param, local: true) do |form| %>
   <%= render 'layouts/form_errors', errors: redemption_invite.errors %>
 
   <div class="row mb-3 g-3 align-items-center">
@@ -20,16 +22,16 @@
       <%= form.label :recipient_email, class: 'col-form-label' %>
     </div>
     <div class="col-sm-3">
-      <%= form.text_field :recipient_email, class: 'form-control', aria: { describedby: 'recipientEmailHelp' } %>
+      <%= form.email_field :recipient_email, class: 'form-control', aria: { describedby: 'recipientEmailHelp' } %>
     </div>
     <div class="col-sm-7">
       <span id="recipientEmailHelp" class="form-text">
-        Enter the email of the gift recipient (where we'll send the invite).
+        Enter the email of the gift recipient (we won't send the gift to this address until you ask us to).
       </span>
     </div>
   </div>
 
   <%= form.hidden_field :subscription_id, { value: form.object.subscription.hashid } %>
 
-  <%= form.submit 'Send Gift', class: 'btn btn-primary' %>
+  <%= form.submit 'Create Invite', class: 'btn btn-primary' %>
 <% end %>

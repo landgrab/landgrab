@@ -77,6 +77,7 @@ Rails.application.routes.draw do
     resources :prices, only: %i[create index show new edit update]
     resources :projects, only: %i[create index show new edit update]
     resources :promo_codes, only: %i[index]
+    resources :redemption_invites, only: %i[create index]
     resources :subscriptions, only: %i[create index show edit update] do
       get :refresh, on: :member
     end
