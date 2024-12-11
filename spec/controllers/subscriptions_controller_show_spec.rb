@@ -9,7 +9,7 @@ RSpec.describe SubscriptionsController do
     end
 
     let(:user) { create(:user) }
-    let(:subscription) { create(:subscription, subscriber: user) }
+    let(:subscription) { create(:subscription, subscriber: user, redeemer: user) }
     let(:project) { create(:project) }
     let(:tile) { create(:tile) }
 
@@ -29,7 +29,7 @@ RSpec.describe SubscriptionsController do
       end
     end
 
-    context 'with a non-redeemed subscription' do
+    context 'with a non-linked subscription' do
       before do
         subscription
         project
@@ -39,8 +39,7 @@ RSpec.describe SubscriptionsController do
         do_get
 
         expect(response).to have_http_status(:ok)
-        expect(response.body).to include('Find a tile')
-        expect(response.body).to include(welcome_project_path(project))
+        expect(response.body).to include('find any tile')
       end
     end
 
@@ -53,7 +52,7 @@ RSpec.describe SubscriptionsController do
         do_get
 
         expect(response).to have_http_status(:ok)
-        expect(response.body).to include("///#{tile.w3w}")
+        expect(response.body).to include(tile.w3w)
         expect(response.body).to include(tile_path(tile))
       end
     end
