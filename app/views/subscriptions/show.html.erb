@@ -93,8 +93,8 @@
 
 <% if @subscription.tile.present? %>
   <p>
-    <%= link_to @subscription.tile.hashid, tile_path(@subscription.tile) %>
-      - <%= content_tag(:code, @subscription.tile.w3w) %>
+    This subscription is for <%= content_tag(:code, @subscription.tile.w3w) %> -
+    <%= link_to 'view full details', tile_path(@subscription.tile) %>
   </p>
 <% else %>
   <p>
