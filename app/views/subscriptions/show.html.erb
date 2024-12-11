@@ -26,6 +26,15 @@
     </p>
 
     <p>
+      Change your mind?
+      You can
+      <%= button_to 'redeem the subscription yourself',
+                    redeem_own_subscription_path(@subscription),
+                    class: 'btn btn-primary' %>
+      any time before the recipient redeems it.
+    </p>
+
+    <p>
       You can send the gift directly
       (e.g. via WhatsApp)
       by sharing the following link.
@@ -62,8 +71,8 @@
     <p>
       Just click
 
-      <%= link_to 'I want this for myself!',
-                  redeem_subscription_path(@subscription, hash: @subscription.claim_hash, email: @subscription.claim_email),
+      <%= button_to 'I want this for myself!',
+                  redeem_own_subscription_path(@subscription),
                   class: 'btn btn-primary' %>
     </p>
 

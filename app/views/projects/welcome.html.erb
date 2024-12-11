@@ -1,4 +1,4 @@
-<% ready_to_claim = user_signed_in? && current_user.subscriptions_subscribed.where.missing(:tile).any? %>
+<% ready_to_link = user_signed_in? && current_user.linkable_subscriptions.any? %>
 <% random_tile = @project.random_available_tile %>
 
 <h1><%= title "Welcome to #{@project.title}" %></h1>
@@ -8,7 +8,7 @@
     <%= image_tag @project.hero_image_url_fallback, class: 'mb-2 rounded img-fluid' %>
   </div>
   <div class="col-xs-12">
-    <% if random_tile.present? && ready_to_claim %>
+    <% if random_tile.present? && ready_to_link %>
       <%= bootstrap_alert safe_join([
         "Great! You've subscribed but need to choose a tile. First, pick a plot from below or ",
         link_to('pick a random tile', tile_path(random_tile), class: 'alert-link'),

@@ -1,7 +1,7 @@
 <p>
   <% if tile.latest_subscription.present? %>
     <p>
-      <% if tile.latest_subscription.subscribed_by?(current_user) %>
+      <% if tile.latest_subscription.redeemed_by?(current_user) || tile.latest_subscription.subscribed_by?(current_user) %>
         Your subscription to this tile began on
         <%= tile.latest_subscription.created_at.strftime('%e %b %Y') %>
         and is currently

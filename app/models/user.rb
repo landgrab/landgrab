@@ -30,7 +30,7 @@ class User < ApplicationRecord
   end
 
   def subscription_for_plot(plot)
-    subscriptions_subscribed
+    associated_subscriptions
       .joins(:tile)
       .where(tiles: { plot_id: plot.id })
       .order(id: :desc)

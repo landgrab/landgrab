@@ -11,6 +11,23 @@ class SubscriptionsController < ApplicationController
     log_event_mixpanel('Subscriptions: Show')
   end
 
+  def redeem_own
+    @subscription = current_user.subscriptions_subscribed.find_by_hashid!(params[:id])
+
+    if @subscription.redeemed?
+      if @subscription.redeemed_by?(current_user)
+        redirect_to @subscription, flash: { notice: 'This subscription is already linked to your account' }
+      else
+        redirect_to support_path, flash: { danger: 'Oh! This subscription is already connected to a different account. Have you got two accounts? Please reach out to us and we can help.' }
+      end
+    end
+
+    log_event_mixpanel('Subscriptions: Redeem Own Subscription')
+
+    @subscription.update!(redeemer: current_user)
+    redirect_to @subscription, flash: { notice: "Great; we've redeemed the subscription against your account." }
+  end
+
   def link_tile
     @subscription = Subscription.find_by_hashid!(params[:id])
 
@@ -18,9 +35,9 @@ class SubscriptionsController < ApplicationController
 
     if @subscription.redeemed?
       if @subscription.redeemed_by?(current_user)
-        redirect_to @subscription, flash: { notice: 'This subscription is already linked to your account' }
+        return redirect_to @subscription, flash: { notice: 'This subscription is already linked to your account' }
       else
-        redirect_to support_path, flash: { danger: 'Oh! This subscription is already connected to a different account. Have you got two accounts? Please reach out to us and we can help.' }
+        return redirect_to support_path, flash: { danger: 'Oh! This subscription is already connected to a different account. Have you got two accounts? Please reach out to us and we can help.' }
       end
     end
 

@@ -1,10 +1,10 @@
-<% ready_to_claim = user_signed_in? && current_user.subscriptions_subscribed.stripe_status_active.where.missing(:tile).any? %>
+<% ready_to_link = user_signed_in? && current_user.linkable_subscriptions.any? %>
 <% current_sub = user_signed_in? && current_user.subscription_for_plot(@plot) %>
 <% random_tile = @plot.tiles.available.sample %>
 
 <% if !user_signed_in? %>
   <%= render 'layouts/progress_bar', step: 1, journey: :register_first %>
-<% elsif ready_to_claim && !current_sub %>
+<% elsif ready_to_link && !current_sub %>
   <%= render 'layouts/progress_bar', step: 3, journey: :pay_first %>
 <% end %>
 
@@ -14,7 +14,7 @@
 
 <div class="row">
   <div class="col-md-6 mb-3">
-    <% if random_tile.present? && ready_to_claim %>
+    <% if random_tile.present? && ready_to_link && !current_sub %>
       <%= bootstrap_alert safe_join([
         "Next, you need to choose a tile! Click a blue square on the map or ",
         link_to('pick a random tile', tile_path(random_tile), class: 'alert-link'),

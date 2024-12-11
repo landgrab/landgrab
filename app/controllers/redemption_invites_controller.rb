@@ -40,7 +40,7 @@ class RedemptionInvitesController < ApplicationController
       return redirect_to support_path, flash: { danger: 'Oh! This subscription is already connected to a different account. Have you got two accounts? Please reach out to us and we can help.' }
     end
 
-    return redirect_to @subscription, flash: { notice: 'This link is for sharing, not for clicking yourself!' } if @subscription.subscribed_by?(current_user) && params[:self_redeem].blank?
+    return redirect_to @subscription, flash: { notice: 'This link is for sharing, not for clicking yourself!' } if @subscription.subscribed_by?(current_user)
 
     log_event_mixpanel('Redemption Invite: Redeem')
 
