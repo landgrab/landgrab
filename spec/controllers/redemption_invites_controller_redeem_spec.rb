@@ -24,11 +24,19 @@ RSpec.describe RedemptionInvitesController do
         sign_out(user)
       end
 
-      it 'redirects to registration with flash' do
+      it 'redirects to registration with flash and details' do
+        do_get
+
+        expect(response).to redirect_to(new_user_registration_path(first_name: invite.recipient_name, email: invite.recipient_email))
+        expect(flash[:notice]).to include('redeem')
+      end
+
+      it 'does not include pre-fill details if token invalid' do
+        params[:token] = 'garbage'
+
         do_get
 
         expect(response).to redirect_to(new_user_registration_path)
-        expect(flash[:notice]).to include('redeem')
       end
     end
 
@@ -57,7 +65,7 @@ RSpec.describe RedemptionInvitesController do
       end
 
       it 'does not redeem the subscription' do
-        expect { do_get }.not_to change { subscription.reload.redeemer }
+        expect { do_get }.not_to(change { subscription.reload.redeemer })
       end
 
       it 'redirects to subscription page with warning' do

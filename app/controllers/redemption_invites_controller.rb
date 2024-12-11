@@ -21,15 +21,18 @@ class RedemptionInvitesController < ApplicationController
   end
 
   def redeem
+    @redemption_invite = RedemptionInvite.find_by_hashid!(params[:id])
+    valid_token = @redemption_invite.verify_token(params[:token])
     unless user_signed_in?
-      return redirect_to new_user_registration_path,
+      # Only pre-fill registration form from a valid invite
+      prefill_params = { first_name: @redemption_invite.recipient_name, email: @redemption_invite.recipient_email } if valid_token
+      return redirect_to new_user_registration_path(prefill_params),
                          flash: { notice: 'Please register in order to redeem an invite/gift' }
     end
 
-    @redemption_invite = RedemptionInvite.find_by_hashid!(params[:id])
     @subscription = @redemption_invite.subscription
 
-    unless @redemption_invite.verify_token(params[:token])
+    unless valid_token
       return redirect_to support_path,
                          flash: { danger: "That link doesn't look quite right; please contact us." }
     end
