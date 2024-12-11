@@ -89,9 +89,9 @@ RSpec.describe ProjectsController do
       end
     end
 
-    context 'when subscribed but not yet selected a tile in current project' do
+    context 'when subscription is redeemed in current project' do
       before do
-        create(:subscription, subscriber: user)
+        create(:subscription, redeemer: user)
       end
 
       it 'returns a 200 status code' do
@@ -103,7 +103,7 @@ RSpec.describe ProjectsController do
       it 'shows a prompt to choose a tile' do
         do_get
 
-        expect(response.body).to include('subscribed but need to choose a tile')
+        expect(response.body).to include('need to choose a tile')
       end
     end
   end

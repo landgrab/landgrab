@@ -1,0 +1,21 @@
+<%- headers = [
+  'Redemption Invite ID',
+  'Created At',
+  'Subscription ID',
+  'Recipient Name',
+  'Recipient Email',
+  'Subscriber ID',
+  'Redeemer ID'
+] -%>
+<%= CSV.generate_line headers -%>
+<%- @redemption_invites.includes(:subscription).find_each do |invite| -%>
+<%= CSV.generate_line([
+    invite.hashid,
+    invite.created_at,
+    invite.subscription.hashid,
+    invite.recipient_name,
+    invite.recipient_email,
+    User.encode_id(invite.subscription.subscriber_id),
+    User.encode_id(invite.subscription.redeemer_id)
+  ]).html_safe -%>
+<%- end -%>

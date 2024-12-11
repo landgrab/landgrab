@@ -1,9 +1,10 @@
-<% ready_to_claim = user_signed_in? && current_user.subscriptions_subscribed.stripe_status_active.where.missing(:tile).any? %>
+<% linkable_subs = current_user&.linkable_subscriptions %>
+<% ready_to_link = user_signed_in? && linkable_subs.any? %>
 <% current_sub = user_signed_in? && @tile.plot.present? && current_user.subscription_for_plot(@tile.plot) %>
 
 <% if !user_signed_in? %>
   <%= render 'layouts/progress_bar', step: 1, journey: :register_first %>
-<% elsif ready_to_claim && !current_sub %>
+<% elsif ready_to_link && !current_sub %>
   <% if @tile.available? %>
     <%= render 'layouts/progress_bar', step: 4, journey: :pay_first %>
   <% else %>
@@ -15,8 +16,14 @@
 
 <div class="row">
   <div class="col-md-6">
-    <% if @tile.available? && ready_to_claim %>
-      <%= bootstrap_alert "Last step! Use the 'claim this tile' button below.", :success %>
+    <% if @tile.available? && ready_to_link %>
+      <%= bootstrap_alert safe_join([
+        'You can ',
+        link_to('link this tile', link_tile_subscription_path(linkable_subs.last, tile_hashid: @tile.hashid), class: 'alert-link', method: :post),
+        ' to your existing ',
+        link_to('subscription', subscription_path(linkable_subs.last), class: 'alert-link'),
+        '.'
+      ]), :info %>
     <% end %>
     <%= render 'details', tile: @tile %>
   </div>

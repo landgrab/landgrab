@@ -3,13 +3,13 @@
 RSpec.describe SubscriptionsController do
   render_views
 
-  describe 'GET subscriptions#index' do
+  describe 'GET subscriptions#show' do
     subject(:do_get) do
-      get :index
+      get :show, params: { id: subscription.hashid }
     end
 
     let(:user) { create(:user) }
-    let(:subscription) { create(:subscription, subscriber: user) }
+    let(:subscription) { create(:subscription, subscriber: user, redeemer: user) }
     let(:project) { create(:project) }
     let(:tile) { create(:tile) }
 
@@ -29,22 +29,21 @@ RSpec.describe SubscriptionsController do
       end
     end
 
-    context 'with a redeemed but unlinked subscription' do
+    context 'with a non-linked subscription' do
       before do
-        subscription.update!(redeemer: user)
+        subscription
         project
       end
 
-      it 'displays the unallocated subscription' do
+      it 'displays an option to choose a project tile' do
         do_get
 
         expect(response).to have_http_status(:ok)
-        expect(response.body).to include('Unallocated subscription')
-        expect(response.body).to include(subscription_path(subscription))
+        expect(response.body).to include('find any tile')
       end
     end
 
-    context 'with a redeemed subscription' do
+    context 'with an associated tile' do
       before do
         subscription.update!(tile:)
       end
@@ -53,7 +52,8 @@ RSpec.describe SubscriptionsController do
         do_get
 
         expect(response).to have_http_status(:ok)
-        expect(response.body).to include("///#{tile.w3w}")
+        expect(response.body).to include(tile.w3w)
+        expect(response.body).to include(tile_path(tile))
       end
     end
   end

@@ -1,7 +1,7 @@
 <p>
   <% if tile.latest_subscription.present? %>
     <p>
-      <% if tile.latest_subscription.subscribed_by?(current_user) %>
+      <% if tile.latest_subscription.redeemed_by?(current_user) || tile.latest_subscription.subscribed_by?(current_user) %>
         Your subscription to this tile began on
         <%= tile.latest_subscription.created_at.strftime('%e %b %Y') %>
         and is currently
@@ -21,9 +21,9 @@
       <% end %>
     <% end %>
   <% elsif user_signed_in? %>
-    <% redeemable_subscription = current_user.subscriptions_subscribed.stripe_status_active.where.missing(:tile).first %>
-    <% if redeemable_subscription.present? %>
-      <%= render 'tiles/subscription_redeem', tile: tile, subscription: redeemable_subscription %>
+    <% linkable_subscription = current_user.linkable_subscriptions.first %>
+    <% if linkable_subscription.present? %>
+      <%= render 'tiles/link_tile_form', tile: tile, subscription: linkable_subscription %>
     <% else %>
       <%= render 'tiles/subscription_checkout', tile: tile %>
     <% end %>

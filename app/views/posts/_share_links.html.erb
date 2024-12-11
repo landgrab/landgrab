@@ -25,48 +25,6 @@
   title: 'Post to Twitter / X',
   size: image_size %>
 <% end %>
-<%= link_to "https://api.whatsapp.com/send?text=#{share_body}", target: '_blank', rel: 'noopener',
-  style: 'text-decoration: none;' do %>
-  <%= image_tag 'https://res.cloudinary.com/swra/image/upload/v1717706111/whatsapp_lasgbq.png',
-  alt: 'Share via WhatsApp',
-  title: 'Share via WhatsApp',
-  size: image_size %>
-<% end %>
-<%= link_to "mailto:?subject=#{share_title}&body=#{share_body}",
-  style: 'text-decoration: none;' do %>
-  <%= image_tag 'https://res.cloudinary.com/swra/image/upload/v1717706111/email_has7lf.png',
-  alt: 'Share via Email',
-  title: 'Share via Email',
-  size: image_size %>
-<% end %>
-
-<% copyid = SecureRandom.hex %>
-
-<%= link_to 'javascript:void();',
-  style: 'text-decoration: none;',
-  id: "copy_link_#{copyid}" do %>
-  <%= image_tag 'https://res.cloudinary.com/swra/image/upload/v1717706111/link_prnvpr.png',
-    alt: 'Copy Link',
-    title: 'Copy Link',
-    size: image_size,
-    id: "copy_img_#{copyid}" %>
-<% end %>
-
-<script>
-  let copyLink = document.getElementById("copy_link_<%= copyid %>");
-  let copyImage = document.getElementById("copy_img_<%= copyid %>");
-  let copyIcon = copyImage.src;
-  let copyIconTick = 'https://res.cloudinary.com/swra/image/upload/v1717708092/checked_llhcs6.png';
-  new Image().src = copyIconTick; // pre-cache
-  copyLink.addEventListener('click', event => {
-    let clipText = '<%= share_url %>';
-    navigator.clipboard.writeText(clipText).then(function() {
-      copyImage.src = copyIconTick;
-      window.setTimeout(function() {
-        copyImage.src = copyIcon;
-      }, 1250);
-    }, function() {
-      alert('Could not copy to clipboard.');
-    });
-  });
-</script>
+<%= render 'layouts/share_links/whatsapp', text: share_body %>
+<%= render 'layouts/share_links/email', subject: share_title, body: share_body %>
+<%= render 'layouts/share_links/clipboard', subject: share_title, body: share_body %>

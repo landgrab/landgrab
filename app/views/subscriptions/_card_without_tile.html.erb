@@ -1,13 +1,13 @@
 <div class="card mb-4">
   <div class="card-header">
-    Unclaimed subscription
+    Unallocated subscription
   </div>
   <div class="card-body">
     <h6 class="card-subtitle mb-2 text-muted">
       Find a tile you like!
     </h6>
     <p class="card-text">
-      You can redeem this subscription against any tile of your choice.
+      You can use this subscription against any tile of your choice.
     </p>
     <p class="card-text">
       <small class="text-muted">
@@ -15,7 +15,7 @@
       </small>
     </p>
 
-    <%= link_to 'Find a Tile', welcome_project_path(subscription.project_fallback), class: 'btn btn-success stretched-link' %>
+    <%= link_to 'View Subscription Details', subscription_path(subscription), class: 'btn btn-primary stretched-link' %>
   </div>
   <div class="card-footer">
     <%= render_subscription_price(subscription) %>

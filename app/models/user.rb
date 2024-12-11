@@ -30,7 +30,7 @@ class User < ApplicationRecord
   end
 
   def subscription_for_plot(plot)
-    subscriptions_subscribed
+    associated_subscriptions
       .joins(:tile)
       .where(tiles: { plot_id: plot.id })
       .order(id: :desc)
@@ -39,6 +39,10 @@ class User < ApplicationRecord
 
   def associated_subscriptions
     Subscription.where(subscriber_id: id).or(Subscription.where(redeemer_id: id))
+  end
+
+  def linkable_subscriptions
+    subscriptions_redeemed.stripe_status_active.where.missing(:tile)
   end
 
   private

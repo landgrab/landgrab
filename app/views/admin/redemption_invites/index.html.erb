@@ -1,0 +1,20 @@
+<h1><%= admin_title(RedemptionInvite) %></h1>
+
+<p>
+  Invites allow subscribers to share a link through which the recipient can redeem the subscription.
+</p>
+
+<%#= render 'filters' %>
+
+<p>
+  <%= page_entries_info @redemption_invites %>
+  <% if filtered? %>
+    matching selected filters
+  <% end %>
+  -
+  <%= link_to 'download csv', admin_redemption_invites_path(format: :csv, params: request.query_parameters) %>
+</p>
+
+<%= render 'table', redemption_invites: @redemption_invites %>
+
+<%= paginate @redemption_invites, theme: 'bootstrap-5' %>

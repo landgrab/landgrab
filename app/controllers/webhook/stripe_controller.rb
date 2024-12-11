@@ -30,6 +30,7 @@ module Webhook
     def checkout_session_completed
       @checkout_session = @event.data.object
 
+      # TODO: Check that current_user matches subscription user?
       user = extract_user
       tile = Tile.find_by_hashid(@checkout_session.metadata.tile) if @checkout_session.metadata.respond_to?(:tile)
 
@@ -38,8 +39,6 @@ module Webhook
       # TODO: Check tile still available?
 
       subscr = Subscription.create!(subscriber: user, tile:, stripe_id: sub_id, stripe_status: :incomplete)
-
-      handle_external_checkout(subscr) if user.nil?
 
       StripeSubscriptionRefreshJob.perform_later(subscr)
     end
@@ -50,15 +49,6 @@ module Webhook
       subscr = Subscription.find_by!(stripe_id: sub_id)
 
       StripeSubscriptionRefreshJob.perform_later(subscr)
-    end
-
-    # See docs/CHECKOUT.md
-    def handle_external_checkout(subscr)
-      claim_email = @checkout_session.customer_email || @checkout_session.customer_details.email
-      raise 'Missing customer/claim email from Stripe checkout session' if claim_email.nil?
-
-      subscr.update!(claim_email:, claim_hash: SecureRandom.base36)
-      SubscriptionMailer.claim(subscr).deliver_later
     end
 
     def extract_user
