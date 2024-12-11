@@ -1,4 +1,4 @@
-<% linkable_subs = current_user.linkable_subscriptions %>
+<% linkable_subs = current_user&.linkable_subscriptions %>
 <% ready_to_link = user_signed_in? && linkable_subs.any? %>
 <% current_sub = user_signed_in? && @tile.plot.present? && current_user.subscription_for_plot(@tile.plot) %>
 

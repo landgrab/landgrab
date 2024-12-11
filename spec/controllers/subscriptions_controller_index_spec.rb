@@ -29,18 +29,18 @@ RSpec.describe SubscriptionsController do
       end
     end
 
-    context 'with a non-redeemed subscription' do
+    context 'with a redeemed but unlinked subscription' do
       before do
-        subscription
+        subscription.update!(redeemer: user)
         project
       end
 
-      it 'displays an option to choose a project tile' do
+      it 'displays the unallocated subscription' do
         do_get
 
         expect(response).to have_http_status(:ok)
-        expect(response.body).to include('Find a tile')
-        expect(response.body).to include(welcome_project_path(project))
+        expect(response.body).to include('Unallocated subscription')
+        expect(response.body).to include(subscription_path(subscription))
       end
     end
 
@@ -54,7 +54,6 @@ RSpec.describe SubscriptionsController do
 
         expect(response).to have_http_status(:ok)
         expect(response.body).to include("///#{tile.w3w}")
-        expect(response.body).to include(tile_path(tile))
       end
     end
   end
