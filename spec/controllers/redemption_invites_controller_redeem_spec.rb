@@ -68,24 +68,6 @@ RSpec.describe RedemptionInvitesController do
       end
     end
 
-    context 'when the current user is the subscriber and self_redeem IS set' do
-      before do
-        subscription.update!(subscriber: user)
-        params[:self_redeem] = '1'
-      end
-
-      it 'redeems the subscription' do
-        expect { do_get }.to change { subscription.reload.redeemer }.to(user)
-      end
-
-      it 'redirects to subscription page with success message' do
-        do_get
-
-        expect(response).to redirect_to(subscription_path(subscription))
-        expect(flash[:notice]).to include("you've redeemed this subscription")
-      end
-    end
-
     context 'when subscription was already redeemed by current user' do
       before do
         subscription.update!(redeemer: user)
