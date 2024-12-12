@@ -20,7 +20,7 @@
         <td><%= tile.southwest_rounded[0] %>,&nbsp;<%= tile.southwest_rounded[1] %></td>
         <td><%= tile.northeast_rounded[0] %>,&nbsp;<%= tile.northeast_rounded[1] %></td>
         <td>
-          <%= link_to content_tag(:code, "///#{tile.w3w}"), tile.w3w_url %>
+          <%= link_to render_w3w_code(tile), tile.w3w_url %>
         </td>
         <% if @plot.nil? %>
           <td>

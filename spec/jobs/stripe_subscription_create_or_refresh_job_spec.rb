@@ -6,9 +6,10 @@ RSpec.describe StripeSubscriptionCreateOrRefreshJob do
   let(:user) { create(:user, stripe_customer_id: 'cus_abc123') }
   let(:tile) { create(:tile) }
   let(:project) { create(:project) }
+  let(:subscription_stripe_id) { 'sub_123' }
 
   describe '#perform' do
-    subject(:perform) { job.perform('sub_123') }
+    subject(:perform) { job.perform(subscription_stripe_id) }
 
     let(:subscription_body) { stripe_fixture('subscriptions/success') }
 
@@ -22,7 +23,7 @@ RSpec.describe StripeSubscriptionCreateOrRefreshJob do
 
     context 'with no metadata set' do
       before do
-        stub_stripe_api(:get, 200, 'subscriptions/sub_123', subscription_body)
+        stub_stripe_api(:get, 200, "subscriptions/#{subscription_stripe_id}", subscription_body)
       end
 
       it 'creates a new subscription' do
@@ -39,7 +40,7 @@ RSpec.describe StripeSubscriptionCreateOrRefreshJob do
     context 'when redemption_mode set to SELF in metadata' do
       before do
         subscription_body[:metadata][:redemption_mode] = 'self'
-        stub_stripe_api(:get, 200, 'subscriptions/sub_123', subscription_body)
+        stub_stripe_api(:get, 200, "subscriptions/#{subscription_stripe_id}", subscription_body)
       end
 
       it 'sets the redeemer on the subscription' do
@@ -52,7 +53,7 @@ RSpec.describe StripeSubscriptionCreateOrRefreshJob do
     context 'with project set in metadata' do
       before do
         subscription_body[:metadata][:project] = project.hashid
-        stub_stripe_api(:get, 200, 'subscriptions/sub_123', subscription_body)
+        stub_stripe_api(:get, 200, "subscriptions/#{subscription_stripe_id}", subscription_body)
       end
 
       it 'sets the project on the subscription' do
@@ -65,7 +66,7 @@ RSpec.describe StripeSubscriptionCreateOrRefreshJob do
     context 'with tile set in metadata' do
       before do
         subscription_body[:metadata][:tile] = tile.hashid
-        stub_stripe_api(:get, 200, 'subscriptions/sub_123', subscription_body)
+        stub_stripe_api(:get, 200, "subscriptions/#{subscription_stripe_id}", subscription_body)
       end
 
       it 'sets the tile on the subscription' do
@@ -80,6 +81,37 @@ RSpec.describe StripeSubscriptionCreateOrRefreshJob do
         subscription = perform
 
         expect(subscription.tile).to be_nil
+      end
+    end
+
+    context 'with existing subscription for current user' do
+      let(:existing_subscription) { create(:subscription, subscriber: user, stripe_id: subscription_stripe_id) }
+
+      before do
+        existing_subscription
+
+        subscription_body[:metadata][:tile] = tile.hashid
+        stub_stripe_api(:get, 200, "subscriptions/#{subscription_stripe_id}", subscription_body)
+      end
+
+      it 'does not create a new subscription' do
+        expect { perform }.not_to change(Subscription, :count)
+      end
+
+      it 'updates the tile (for example)' do
+        expect { perform }.to change { existing_subscription.reload.tile }.to(tile)
+      end
+    end
+
+    context 'with existing subscription for a different user' do
+      let(:existing_subscription) { create(:subscription, subscriber: create(:user), stripe_id: subscription_stripe_id) }
+
+      before do
+        stub_stripe_api(:get, 200, "subscriptions/#{subscription_stripe_id}", subscription_body)
+      end
+
+      it 'updates the existing subscription subscriber' do
+        expect { perform }.to change { existing_subscription.reload.subscriber }.to(user)
       end
     end
   end

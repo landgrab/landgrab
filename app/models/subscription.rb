@@ -28,10 +28,6 @@ class Subscription < ApplicationRecord
 
   EXTERNALLY_PAID_PREFIX = 'sub_externallypaid'
 
-  def project_fallback
-    Project.first
-  end
-
   def assign_latest_subscription
     return if tile.nil?
 
@@ -62,5 +58,13 @@ class Subscription < ApplicationRecord
 
   def subscribed_by?(user)
     subscribed? && subscriber == user
+  end
+
+  def stripe_status_readable
+    stripe_status.to_s.humanize.downcase.gsub('canceled', 'cancelled')
+  end
+
+  def usable_stripe_status?
+    stripe_status_active? || stripe_status_trialing?
   end
 end

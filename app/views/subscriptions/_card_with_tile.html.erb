@@ -1,6 +1,6 @@
 <div class="card mb-4">
   <div class="card-header">
-    <%= content_tag(:code, "///#{subscription.tile.w3w}") %>
+    <%= render_w3w_code(subscription.tile) %>
   </div>
   <div class="card-body">
     <% if subscription.tile.plot&.project.present? %>

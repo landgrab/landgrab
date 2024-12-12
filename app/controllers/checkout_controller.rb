@@ -136,7 +136,7 @@ class CheckoutController < ApplicationController
 
   def after_subscription_success_location
     # If already (immediately) redeemed, redirect to tile (or project)
-    return (@tile.present? ? tile_path(@tile) : project_path(@project)) if @subscription.redeemed?
+    return (@subscription.tile.present? ? tile_path(@subscription.tile) : project_path(@subscription.project)) if @subscription.redeemed?
 
     # ... otherwise show the subscription, where user can choose what to do next (i.e. redeem or gift)
     subscription_path(@subscription)

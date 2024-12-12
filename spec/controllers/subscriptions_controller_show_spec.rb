@@ -56,5 +56,18 @@ RSpec.describe SubscriptionsController do
         expect(response.body).to include(tile_path(tile))
       end
     end
+
+    context 'with a cancelled subscription' do
+      before do
+        subscription.update!(stripe_status: 'canceled') # EN-US spelling :facepalm:
+      end
+
+      it 'displays a message that the subscription is cancelled (with two Ls)' do
+        do_get
+
+        expect(response).to have_http_status(:ok)
+        expect(response.body).to include('subscription is cancelled') # EN-GB spelling :party:
+      end
+    end
   end
 end

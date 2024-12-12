@@ -1,7 +1,7 @@
 <p>
   <strong>What3Words:</strong>
-  <code>/// <%= tile.w3w %></code>
-  - <%= link_to 'View', tile.w3w_url %>
+  <%= render_w3w_code(tile) %>
+  - <%= link_to 'view on W3W', tile.w3w_url %>
 </p>
 
 <p>

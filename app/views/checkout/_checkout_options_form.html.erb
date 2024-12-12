@@ -10,16 +10,16 @@
   <%= form_with url: checkout_checkout_path, method: :get do |form| %>
     <%= form.hidden_field :tile, value: tile&.hashid %>
     <fieldset>
-      <legend>Payment Plan</legend>
+      <legend>I choose to subscribe for:</legend>
       <% prices.each_with_index do |price, idx| %>
         <div class="form-check">
           <%= radio_button_tag 'price', price.hashid, idx.zero?, class: 'form-check-input', required: true %>
-          <%= label_tag "price_#{price.hashid}", "Subscribe for #{price.amount_display}", class: 'form-check-label' %>
+          <%= label_tag "price_#{price.hashid}", price.amount_display, class: 'form-check-label' %>
         </div>
       <% end %>
     </fieldset>
     <fieldset class="mt-2">
-      <legend>This subscription is for:</legend>
+      <legend>The subscription will be for:</legend>
       <div class="form-check">
         <%= radio_button_tag 'redemption_mode', 'self', true, class: 'form-check-input', required: true %>
         <%= label_tag 'redemption_mode_self', 'myself (redeemed against my own account)', class: 'form-check-label' %>

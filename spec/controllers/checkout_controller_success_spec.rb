@@ -5,6 +5,7 @@ RSpec.describe CheckoutController do
 
   let(:user) { create(:user, stripe_customer_id: "cus_#{rand(999_999)}") }
   let(:project) { create(:project) }
+  let(:tile) { create(:tile) }
 
   before do
     allow(ENV).to receive(:fetch).and_call_original
@@ -12,6 +13,8 @@ RSpec.describe CheckoutController do
   end
 
   describe 'GET checkout#success' do
+    subject(:do_get) { get :success, params: { session_id: 'cs_test_abc123' } }
+
     let(:subscription_stripe_id) { 'sub_9988776655' }
 
     let(:cs_body) do
@@ -21,7 +24,7 @@ RSpec.describe CheckoutController do
       end
     end
 
-    let(:params) { { session_id: 'cs_test_abc123', project: project.hashid } }
+    let(:subscription) { create(:subscription, stripe_id: subscription_stripe_id, project:, subscriber: user) }
 
     before do
       sign_in(user)
@@ -29,10 +32,8 @@ RSpec.describe CheckoutController do
       stub_stripe_api(:get, 200, 'checkout/sessions/cs_test_abc123', cs_body)
 
       allow(Stripe::Checkout::Session).to receive(:retrieve).and_call_original
-      allow(StripeSubscriptionCreateOrRefreshJob).to receive(:perform_now)
+      allow(StripeSubscriptionCreateOrRefreshJob).to receive(:perform_now).and_return(subscription)
     end
-
-    subject(:do_get) { get :success, params: }
 
     it 'retrieves the checkout session data' do
       do_get
@@ -40,32 +41,10 @@ RSpec.describe CheckoutController do
       expect(Stripe::Checkout::Session).to have_received(:retrieve).with('cs_test_abc123')
     end
 
-    it 'redirects to project page with flash message' do
-      do_get
-
-      expect(response).to redirect_to(project_path(project))
-      expect(flash[:success]).to include('Your subscription has been successfully set up!')
-    end
-
-    it 'creates a subscription for the user' do
-      expect { do_get }.to change(Subscription, :count).by(1)
-    end
-
-    it 'triggers a subscription refresh job' do
+    it 'triggers a subscription creation job' do
       do_get
 
       expect(StripeSubscriptionCreateOrRefreshJob).to have_received(:perform_now).with(subscription_stripe_id)
-    end
-
-    context 'with tile specified' do
-      let(:tile) { create(:tile) }
-
-      it 'redirects to tile page with flash message' do
-        get :success, params: { session_id: 'cs_test_abc123', project: project.hashid, tile: tile.hashid }
-
-        expect(response).to redirect_to(tile_path(tile))
-        expect(flash[:success]).to include('Your subscription has been successfully set up!')
-      end
     end
 
     context 'when user is logged out' do
@@ -93,44 +72,25 @@ RSpec.describe CheckoutController do
       end
     end
 
-    context 'when subscription customer id mismatches current user' do
+    context 'when subscription is redeemed by current user' do
       before do
-        user.update!(stripe_customer_id: 'cus_somethingelse')
+        subscription.update!(redeemer: user)
       end
 
-      it 'raises an error' do
-        expect { do_get }.to raise_error(/Stripe Customer ID mismatch/)
-      end
-    end
+      it 'redirects to project if tile not set' do
+        do_get
 
-    context 'when subscription already exists for this user' do
-      before do
-        create(:subscription, subscriber: user, stripe_id: 'sub_foo999')
+        expect(response).to redirect_to(project_path(project))
+        expect(flash[:success]).to include('Your subscription has been successfully set up!')
       end
 
-      it 'does not create a new subscription' do
-        expect { do_get }.not_to change(Subscription, :count)
-      end
-    end
+      it 'redirects to tile if set' do
+        subscription.update!(tile:)
 
-    context 'when subscription already exists but for another user' do
-      before do
-        create(:subscription, subscriber: create(:user), stripe_id: 'sub_foo999')
-      end
+        do_get
 
-      it 'raises an error' do
-        expect { do_get }.to raise_error(/Stripe ID has already been taken/)
-      end
-    end
-
-    context 'when redemption mode is set to self' do
-      before do
-        params[:redemption_mode] = CheckoutService::REDEMPTION_MODE_SELF
-      end
-
-      it 'sets subscription user as the redeemer' do
-        expect { do_get }.to change(Subscription, :count).by(1)
-        expect(Subscription.last.redeemer).to eq(user)
+        expect(response).to redirect_to(tile_path(tile))
+        expect(flash[:success]).to include('Your subscription has been successfully set up!')
       end
     end
   end

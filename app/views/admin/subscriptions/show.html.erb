@@ -36,7 +36,7 @@
       <td>
         <% if @subscription.tile.present? %>
           <%= link_to @subscription.tile.hashid, admin_tile_path(@subscription.tile) %>
-          - <%= content_tag(:code, @subscription.tile.w3w) %>
+          - <%= render_w3w_code(@subscription.tile) %>
         <% else %>
           No tile; subscription not yet assigned
         <% end %>
