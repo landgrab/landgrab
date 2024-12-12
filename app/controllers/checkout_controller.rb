@@ -1,13 +1,15 @@
 # frozen_string_literal: true
 
 class CheckoutController < ApplicationController
-  skip_before_action :authenticate_user!, only: %i[generate checkout]
+  skip_before_action :authenticate_user!, only: %i[checkout generate]
 
   before_action :ensure_stripe_enrollment, only: %i[checkout]
 
-  before_action :set_tile, only: %i[checkout success]
-  before_action :set_price, only: %i[checkout generate]
-  before_action :set_project, only: %i[success]
+  before_action :set_project, only: %i[checkout]
+  before_action :set_tile, only: %i[checkout]
+  before_action :set_price, only: %i[checkout]
+  before_action :set_redemption_mode, only: %i[checkout]
+  before_action :set_promo_code, only: %i[checkout]
 
   # See docs/CHECKOUT.md
   def checkout
@@ -17,9 +19,7 @@ class CheckoutController < ApplicationController
       return
     end
 
-    promo_code = PromoCode.find_by!(code: params[:code]) if params[:code].present?
-
-    @stripe_err = create_stripe_checkout(tile: @tile, promo_code:)
+    @stripe_err = create_stripe_checkout
 
     log_event_mixpanel('Checkout: Checkout', { authed: user_signed_in? })
   end
@@ -43,31 +43,27 @@ class CheckoutController < ApplicationController
     end
 
     customer_id = session.customer
-
     unless current_user.stripe_customer_id == customer_id
       raise "Stripe Customer ID mismatch: current user '#{current_user.id}' has Stripe ID '#{current_user.stripe_customer_id}' but completed checkout had '#{customer_id}' (session '#{session.id}')"
     end
 
     subscription_id = session.subscription
-
     raise "Stripe session '#{session.id}' has no subscription ID" if subscription_id.nil?
 
-    create_and_refresh_subscription(subscription_id)
+    @subscription = create_subscription(subscription_id)
 
-    redirect_to @tile.present? ? tile_path(@tile) : project_path(@project),
+    redirect_to after_subscription_success_location,
                 flash: { success: 'Your subscription has been successfully set up!' }
   end
 
   private
 
-  def derive_success_url(tile)
-    project = tile&.plot&.project || Project.first
-
-    # Workaround to build URL because encoding '{' and '}' breaks Stripe's template variable substitution
-    "#{checkout_success_url(project: project.hashid, tile: tile&.hashid)}&session_id={CHECKOUT_SESSION_ID}"
+  def build_success_url
+    # Manually build URL because encoding '{' and '}' breaks Stripe's template variable substitution
+    "#{checkout_success_url}?session_id={CHECKOUT_SESSION_ID}"
   end
 
-  def stripe_checkout_payload(promo_code, tile)
+  def stripe_checkout_payload
     x = {
       # Stripe will create new customer if not supplied
       customer: current_user.stripe_customer_id,
@@ -75,23 +71,33 @@ class CheckoutController < ApplicationController
         price: @price.stripe_id,
         quantity: 1
       }],
-      metadata: {
-        tile: tile&.hashid
-      },
+      subscription_data: stripe_checkout_payload_subscription_data,
       mode: 'subscription',
       ui_mode: 'embedded',
-      return_url: derive_success_url(tile)
+      return_url: build_success_url
     }
-    if promo_code.nil?
+    if @promo_code.nil?
       x[:allow_promotion_codes] = true
     else
-      x[:discounts] = [{ promotion_code: promo_code&.stripe_id }]
+      x[:discounts] = [{ promotion_code: @promo_code&.stripe_id }]
     end
     x
   end
 
-  def create_stripe_checkout(promo_code: nil, tile: nil)
-    @stripe_checkout = Stripe::Checkout::Session.create(stripe_checkout_payload(promo_code, tile))
+  def stripe_checkout_payload_subscription_data
+    # Data to be stored with the subscription
+    # https://docs.stripe.com/api/checkout/sessions/create#create_checkout_session-subscription_data-metadata
+    {
+      metadata: {
+        project: @project.hashid,
+        tile: @tile&.hashid,
+        CheckoutService::REDEMPTION_MODE_KEY => @redemption_mode
+      }
+    }
+  end
+
+  def create_stripe_checkout
+    @stripe_checkout = Stripe::Checkout::Session.create(stripe_checkout_payload)
     nil # return no error
   rescue Stripe::InvalidRequestError => e
     raise e unless e.message == 'This promotion code cannot be redeemed because the associated customer has prior transactions.'
@@ -100,26 +106,39 @@ class CheckoutController < ApplicationController
     "You've already used this promo code so can't subscribe with this again"
   end
 
-  def set_price
-    @price = Price.find_by_hashid!(params[:price])
+  def set_project
+    # TODO: Stop relying on `Project.first` fallback
+    @project = params[:project].present? ? Project.find_by_hashid!(params[:project]&.upcase) : Project.first
   end
 
   def set_tile
-    @tile = Tile.find_by_hashid(params[:tile]&.upcase)
+    # TODO: Look only in the project's tiles (to prevent mismatched tile<>project)
+    @tile = Tile.find_by_hashid!(params[:tile].upcase) if params[:tile].present?
   end
 
-  def set_project
-    @project = Project.find_by_hashid!(params[:project]&.upcase)
+  def set_price
+    @price = Price.find_by_hashid!(params[:price].upcase)
   end
 
-  def create_and_refresh_subscription(subscription_id)
-    subscription = current_user.subscriptions_subscribed.create_with(
-      stripe_status: :active, # reasonably assumed
-      tile: @tile
-    ).find_or_create_by!(
-      stripe_id: subscription_id
-    )
+  def set_redemption_mode
+    @redemption_mode = params[:redemption_mode] if params[:redemption_mode].present?
 
-    StripeSubscriptionRefreshJob.perform_later(subscription)
+    raise "Invalid redemption mode: #{@redemption_mode}" unless [nil, CheckoutService::REDEMPTION_MODE_SELF, CheckoutService::REDEMPTION_MODE_GIFT].include?(@redemption_mode)
+  end
+
+  def set_promo_code
+    @promo_code = PromoCode.find_by!(code: params[:code]) if params[:code].present?
+  end
+
+  def create_subscription(subscription_id)
+    StripeSubscriptionCreateOrRefreshJob.perform_now(subscription_id)
+  end
+
+  def after_subscription_success_location
+    # If already (immediately) redeemed, redirect to tile (or project)
+    return (@subscription.tile.present? ? tile_path(@subscription.tile) : project_path(@subscription.project)) if @subscription.redeemed?
+
+    # ... otherwise show the subscription, where user can choose what to do next (i.e. redeem or gift)
+    subscription_path(@subscription)
   end
 end

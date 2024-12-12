@@ -2,10 +2,10 @@
 
 class Project < ApplicationRecord
   has_many :plots, dependent: :restrict_with_exception
-  has_many :prices, dependent: :restrict_with_exception
-
   has_many :post_associations, as: :postable, inverse_of: :postable, dependent: :restrict_with_exception
   has_many :posts, through: :post_associations
+  has_many :prices, dependent: :restrict_with_exception
+  has_many :subscriptions, dependent: :restrict_with_exception
 
   validates :title, presence: true
   validates :hero_image_url, :logo_url, :website, url: true, allow_blank: true

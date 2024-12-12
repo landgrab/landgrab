@@ -4,6 +4,7 @@ class Subscription < ApplicationRecord
   belongs_to :subscriber, class_name: 'User', inverse_of: :subscriptions_subscribed, optional: true
   belongs_to :redeemer, class_name: 'User', inverse_of: :subscriptions_redeemed, optional: true
   belongs_to :tile, optional: true
+  belongs_to :project, optional: true # TODO: Make this required (once any legacy data populated)
 
   has_many :redemption_invites, dependent: :restrict_with_exception
 
@@ -26,10 +27,6 @@ class Subscription < ApplicationRecord
   after_save :assign_latest_subscription
 
   EXTERNALLY_PAID_PREFIX = 'sub_externallypaid'
-
-  def project_fallback
-    Project.first
-  end
 
   def assign_latest_subscription
     return if tile.nil?
@@ -61,5 +58,13 @@ class Subscription < ApplicationRecord
 
   def subscribed_by?(user)
     subscribed? && subscriber == user
+  end
+
+  def stripe_status_readable
+    stripe_status.to_s.humanize.downcase.gsub('canceled', 'cancelled')
+  end
+
+  def usable_stripe_status?
+    stripe_status_active? || stripe_status_trialing?
   end
 end

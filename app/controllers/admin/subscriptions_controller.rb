@@ -31,7 +31,7 @@ module Admin
     end
 
     def refresh
-      StripeSubscriptionRefreshJob.perform_now(@subscription)
+      StripeSubscriptionCreateOrRefreshJob.perform_now(@subscription.stripe_id)
 
       redirect_to admin_subscription_url(@subscription), notice: 'Subscription status was refreshed from Stripe.'
     end

@@ -6,7 +6,7 @@
   <% if @tile.present? %>
     <p>
       You are subscribing to
-      <%= link_to @tile.w3w, tile_path(@tile) %>!
+      <%= link_to render_w3w_code(@tile), tile_path(@tile) %>!
     </p>
   <% else %>
     <p>

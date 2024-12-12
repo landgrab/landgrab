@@ -15,88 +15,20 @@
   <% end %>
 </p>
 
-<% if @subscription.redeemer.nil? %>
-  <% ri = @subscription.redemption_invites.last %>
-  <% if ri.present? %>
-    <p>
-      You've chosen to gift this subscription to
-      <b><%= ri.recipient_name || 'No Name' %></b>
-      (<%= ri.recipient_email || 'no email provided' %>)
-      but they have not yet redeemed it.
-    </p>
-
-    <p>
-      Change your mind?
-      You can
-      <%= button_to 'redeem the subscription yourself',
-                    redeem_own_subscription_path(@subscription),
-                    class: 'btn btn-primary' %>
-      any time before the recipient redeems it.
-    </p>
-
-    <p>
-      You can send the gift directly
-      (e.g. via WhatsApp)
-      by sharing the following link.
-    </p>
-
-    <%= bootstrap_alert 'Warning: Anyone with this link can redeem this subscription. Send it only to the intended recipient.', 'warning' %>
-
-    <% share_url = redeem_redemption_invite_url(ri, token: ri.token) %>
-    <% share_subject = "Subscription to #{ENV.fetch('SITE_TITLE', 'Landgrab')}" %>
-    <% share_body = "I've bought you a subscription on #{ENV.fetch('SITE_TITLE', 'Landgrab')}; register here and find your tile! #{share_url}" %>
-    <p>
-      <%= render 'layouts/copy_to_clipboard', copytext: share_url, copycta: 'Copy Link' %>
-    </p>
-    <%= render 'layouts/share_links/whatsapp', text: share_body %>
-    <%= render 'layouts/share_links/email', subject: share_subject, body: share_body %>
-  <% else %>
-    <p>
-      You can either choose to keep the subscription for yourself
-      (and choose a tile yourself) or gift it to someone else.
-    </p>
-
-    <p>
-      By gifting, you remain responsible for the subscription payment,
-      but the gift recipient
-      <% if @subscription.tile.nil? %>
-        can choose a tile
-      <% else %>
-        will enjoy the tile
-      <% end %>
-      thanks to you!
-    </p>
-
-    <h2>Use for myself</h2>
-    <p>
-      Just click
-
-      <%= button_to 'I want this for myself!',
-                  redeem_own_subscription_path(@subscription),
-                  class: 'btn btn-primary' %>
-    </p>
-
-    <h2>Send as a gift</h2>
-
-    <p>We'll send the email now (when you click the button)</p>
-
-    <p>We'll send a copy of the email to your email address too, for visibility.</p>
-
-    <p>
-      If you'd rather share the gift yourself (eg. via WhatsApp etc),
-      simply leave the email address blank.
-    </p>
-
-    <%= render 'redemption_invites/form', redemption_invite: @subscription.redemption_invites.new %>
+<% if @subscription.usable_stripe_status? %>
+  <% if @subscription.redeemer.nil? %>
+    <%= render 'subscriptions/redemption_options', subscription: @subscription %>
   <% end %>
+<% else %>
+  <%= bootstrap_alert "This subscription is #{@subscription.stripe_status_readable}.", 'warning' %>
 <% end %>
 
 <% if @subscription.tile.present? %>
   <p>
-    This subscription is for <%= content_tag(:code, @subscription.tile.w3w) %> -
-    <%= link_to 'view full details', tile_path(@subscription.tile) %>
+    This subscription is linked to <%= render_w3w_code(@subscription.tile) %> -
+    <%= link_to 'view this tile', tile_path(@subscription.tile) %>
   </p>
-<% else %>
+<% elsif @subscription.usable_stripe_status? %>
   <p>
     This subscription has not yet been linked to a tile.
     <% if @subscription.redeemed_by?(current_user) %>

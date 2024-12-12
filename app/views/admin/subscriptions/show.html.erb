@@ -36,7 +36,7 @@
       <td>
         <% if @subscription.tile.present? %>
           <%= link_to @subscription.tile.hashid, admin_tile_path(@subscription.tile) %>
-          - <%= content_tag(:code, @subscription.tile.w3w) %>
+          - <%= render_w3w_code(@subscription.tile) %>
         <% else %>
           No tile; subscription not yet assigned
         <% end %>
@@ -55,8 +55,8 @@
     <tr>
       <th>Project</th>
       <td>
-        <% if @subscription.tile&.plot&.project.present? %>
-          <%= link_to @subscription.tile.plot.project.title, admin_project_path(@subscription.tile.plot.project) %>
+        <% if @subscription.project.present? %>
+          <%= link_to @subscription.project.title, admin_project_path(@subscription.project) %>
         <% else %>
           NOT PRESENT
         <% end %>

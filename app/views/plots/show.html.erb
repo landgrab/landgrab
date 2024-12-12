@@ -27,7 +27,7 @@
     <% if current_sub.present? && current_sub.stripe_status_active? %>
       <%= bootstrap_alert safe_join([
         "You're already subscribed to a tile in this plot - ",
-        link_to(current_sub.tile.w3w, tile_path(current_sub.tile), class: 'alert-link'),
+        link_to(render_w3w_code(current_sub.tile), tile_path(current_sub.tile), class: 'alert-link'),
         '.'
       ], ''), :success %>
     <% elsif user_signed_in? %>

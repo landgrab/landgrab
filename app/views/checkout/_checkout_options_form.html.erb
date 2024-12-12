@@ -1,0 +1,34 @@
+<% tile ||= nil %>
+<% prices ||= [] %>
+
+<% if prices.empty? %>
+  <p>
+    There is no subscription pricing defined at the moment.
+    Please check back later.
+  </p>
+<% else %>
+  <%= form_with url: checkout_checkout_path, method: :get do |form| %>
+    <%= form.hidden_field :tile, value: tile&.hashid %>
+    <fieldset>
+      <legend>I choose to subscribe for:</legend>
+      <% prices.each_with_index do |price, idx| %>
+        <div class="form-check">
+          <%= radio_button_tag 'price', price.hashid, idx.zero?, class: 'form-check-input', required: true %>
+          <%= label_tag "price_#{price.hashid}", price.amount_display, class: 'form-check-label' %>
+        </div>
+      <% end %>
+    </fieldset>
+    <fieldset class="mt-2">
+      <legend>The subscription will be for:</legend>
+      <div class="form-check">
+        <%= radio_button_tag 'redemption_mode', 'self', true, class: 'form-check-input', required: true %>
+        <%= label_tag 'redemption_mode_self', 'myself (redeemed against my own account)', class: 'form-check-label' %>
+      </div>
+      <div class="form-check">
+        <%= radio_button_tag 'redemption_mode', 'gift', false, class: 'form-check-input', required: true %>
+        <%= label_tag 'redemption_mode_gift', 'someone else (to be sent as a gift after payment)', class: 'form-check-label' %>
+      </div>
+    </fieldset>
+    <%= form.submit 'Pay & Subscribe', class: 'btn btn-primary mt-2', name: nil %>
+  <% end %>
+<% end %>

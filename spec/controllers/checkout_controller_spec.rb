@@ -79,119 +79,19 @@ RSpec.describe CheckoutController do
 
       expect(Stripe::Checkout::Session).to have_received(:create).with(hash_including(discounts: [{ promotion_code: promo_code.stripe_id }]))
     end
-  end
 
-  describe 'GET checkout#success' do
-    let(:cs_body) do
-      stripe_fixture('checkout_sessions/complete').tap do |x|
-        x[:customer] = user.stripe_customer_id
-      end
+    it 'creates a checkout session with tile subscription metadata' do
+      tile = create(:tile)
+
+      get :checkout, params: { price: price.hashid, tile: tile.hashid }
+
+      expect(Stripe::Checkout::Session).to have_received(:create).with(hash_including(subscription_data: { metadata: hash_including(tile: tile.hashid) }))
     end
 
-    before do
-      sign_in(user)
+    it 'creates a checkout session with redemption_mode subscription metadata' do
+      get :checkout, params: { price: price.hashid, redemption_mode: 'self' }
 
-      stub_stripe_api(:get, 200, 'checkout/sessions/cs_test_abc123', cs_body)
-
-      allow(Stripe::Checkout::Session).to receive(:retrieve).and_call_original
-      allow(StripeSubscriptionRefreshJob).to receive(:perform_later)
-    end
-
-    it 'retrieves the checkout session data' do
-      get :success, params: { session_id: 'cs_test_abc123', project: project.hashid }
-
-      expect(Stripe::Checkout::Session).to have_received(:retrieve).with('cs_test_abc123')
-    end
-
-    it 'redirects to project page with flash message' do
-      get :success, params: { session_id: 'cs_test_abc123', project: project.hashid }
-
-      expect(response).to redirect_to(project_path(project))
-      expect(flash[:success]).to include('Your subscription has been successfully set up!')
-    end
-
-    it 'creates a subscription for the user' do
-      expect do
-        get :success, params: { session_id: 'cs_test_abc123', project: project.hashid }
-      end.to change(Subscription, :count).by(1)
-    end
-
-    it 'queues a subscription refresh job' do
-      get :success, params: { session_id: 'cs_test_abc123', project: project.hashid }
-
-      expect(StripeSubscriptionRefreshJob).to have_received(:perform_later)
-    end
-
-    context 'with tile specified' do
-      let(:tile) { create(:tile) }
-
-      it 'redirects to tile page with flash message' do
-        get :success, params: { session_id: 'cs_test_abc123', project: project.hashid, tile: tile.hashid }
-
-        expect(response).to redirect_to(tile_path(tile))
-        expect(flash[:success]).to include('Your subscription has been successfully set up!')
-      end
-    end
-
-    context 'when user is logged out' do
-      before do
-        sign_out(user)
-      end
-
-      it 'redirects to the login page' do
-        get :success
-
-        expect(response).to redirect_to(new_user_session_url)
-      end
-    end
-
-    context 'when subscription is not complete' do
-      before do
-        stub_stripe_api(:get, 200, 'checkout/sessions/cs_test_abc123', cs_body.tap { |x| x[:status] = 'open' })
-      end
-
-      it 'redirects back to checkout with error' do
-        get :success, params: { session_id: 'cs_test_abc123', project: project.hashid }
-
-        expect(response).to redirect_to(checkout_checkout_url)
-        expect(flash[:danger]).to include('try again')
-      end
-    end
-
-    context 'when subscription customer id mismatches current user' do
-      before do
-        user.update!(stripe_customer_id: 'cus_somethingelse')
-      end
-
-      it 'raises an error' do
-        expect do
-          get :success, params: { session_id: 'cs_test_abc123', project: project.hashid }
-        end.to raise_error(/Stripe Customer ID mismatch/)
-      end
-    end
-
-    context 'when subscription already exists for this user' do
-      before do
-        create(:subscription, subscriber: user, stripe_id: 'sub_foo999')
-      end
-
-      it 'does not create a new subscription' do
-        expect do
-          get :success, params: { session_id: 'cs_test_abc123', project: project.hashid }
-        end.not_to change(Subscription, :count)
-      end
-    end
-
-    context 'when subscription already exists but for another user' do
-      before do
-        create(:subscription, subscriber: create(:user), stripe_id: 'sub_foo999')
-      end
-
-      it 'raises an error' do
-        expect do
-          get :success, params: { session_id: 'cs_test_abc123', project: project.hashid }
-        end.to raise_error(/Stripe ID has already been taken/)
-      end
+      expect(Stripe::Checkout::Session).to have_received(:create).with(hash_including(subscription_data: { metadata: hash_including(redemption_mode: 'self') }))
     end
   end
 end

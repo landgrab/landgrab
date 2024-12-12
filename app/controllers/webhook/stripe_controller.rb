@@ -30,32 +30,15 @@ module Webhook
     def checkout_session_completed
       @checkout_session = @event.data.object
 
-      # TODO: Check that current_user matches subscription user?
-      user = extract_user
-      tile = Tile.find_by_hashid(@checkout_session.metadata.tile) if @checkout_session.metadata.respond_to?(:tile)
+      subscription_stripe_id = @checkout_session.subscription
 
-      sub_id = @checkout_session.subscription
-
-      # TODO: Check tile still available?
-
-      subscr = Subscription.create!(subscriber: user, tile:, stripe_id: sub_id, stripe_status: :incomplete)
-
-      StripeSubscriptionRefreshJob.perform_later(subscr)
+      StripeSubscriptionCreateOrRefreshJob.perform_later(subscription_stripe_id)
     end
 
     def refresh_subscription
-      sub_id = @event.data.object.id
+      subscription_stripe_id = @event.data.object.id
 
-      subscr = Subscription.find_by!(stripe_id: sub_id)
-
-      StripeSubscriptionRefreshJob.perform_later(subscr)
-    end
-
-    def extract_user
-      cus_id = @checkout_session.customer
-      raise 'Missing customer ID from webhook body' if cus_id.blank?
-
-      User.find_by(stripe_customer_id: cus_id)
+      StripeSubscriptionCreateOrRefreshJob.perform_later(subscription_stripe_id)
     end
 
     def parse_event

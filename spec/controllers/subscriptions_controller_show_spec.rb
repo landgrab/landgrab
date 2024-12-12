@@ -29,6 +29,18 @@ RSpec.describe SubscriptionsController do
       end
     end
 
+    context 'with an unredeemed subscription' do
+      before do
+        subscription.update(redeemer: nil)
+      end
+
+      it 'shows redemption invite form' do
+        do_get
+
+        expect(response.body).to include('Recipient name')
+      end
+    end
+
     context 'with a non-linked subscription' do
       before do
         subscription
@@ -54,6 +66,19 @@ RSpec.describe SubscriptionsController do
         expect(response).to have_http_status(:ok)
         expect(response.body).to include(tile.w3w)
         expect(response.body).to include(tile_path(tile))
+      end
+    end
+
+    context 'with a cancelled subscription' do
+      before do
+        subscription.update!(stripe_status: 'canceled') # EN-US spelling :facepalm:
+      end
+
+      it 'displays a message that the subscription is cancelled (with two Ls)' do
+        do_get
+
+        expect(response).to have_http_status(:ok)
+        expect(response.body).to include('subscription is cancelled') # EN-GB spelling :party:
       end
     end
   end
