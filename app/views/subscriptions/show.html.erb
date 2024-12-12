@@ -17,7 +17,7 @@
 
 <% if @subscription.usable_stripe_status? %>
   <% if @subscription.redeemer.nil? %>
-    <% render 'subscriptions/redemption_options', subscription: @subscription %>
+    <%= render 'subscriptions/redemption_options', subscription: @subscription %>
   <% end %>
 <% else %>
   <%= bootstrap_alert "This subscription is #{@subscription.stripe_status_readable}.", 'warning' %>

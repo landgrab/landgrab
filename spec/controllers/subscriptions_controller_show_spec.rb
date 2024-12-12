@@ -29,6 +29,18 @@ RSpec.describe SubscriptionsController do
       end
     end
 
+    context 'with an unredeemed subscription' do
+      before do
+        subscription.update(redeemer: nil)
+      end
+
+      it 'shows redemption invite form' do
+        do_get
+
+        expect(response.body).to include('Recipient name')
+      end
+    end
+
     context 'with a non-linked subscription' do
       before do
         subscription
