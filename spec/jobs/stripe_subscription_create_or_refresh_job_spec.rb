@@ -14,11 +14,9 @@ RSpec.describe StripeSubscriptionCreateOrRefreshJob do
     let(:subscription_body) { stripe_fixture('subscriptions/success') }
 
     before do
-      # HACK: Workaround for some leftover test data?
-      RedemptionInvite.destroy_all
-      Subscription.destroy_all
-
       user
+
+      subscription_body[:metadata][:project] = project.hashid
     end
 
     context 'with no metadata set' do
