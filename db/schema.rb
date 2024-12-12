@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_12_02_191457) do
+ActiveRecord::Schema[7.2].define(version: 2024_12_12_073810) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
   enable_extension "postgis"
@@ -124,6 +124,8 @@ ActiveRecord::Schema[7.1].define(version: 2024_12_02_191457) do
     t.string "claim_email"
     t.string "claim_hash"
     t.bigint "redeemer_id"
+    t.bigint "project_id"
+    t.index ["project_id"], name: "index_subscriptions_on_project_id"
     t.index ["redeemer_id"], name: "index_subscriptions_on_redeemer_id"
     t.index ["stripe_id"], name: "index_subscriptions_on_stripe_id", unique: true
     t.index ["subscriber_id"], name: "index_subscriptions_on_subscriber_id"
@@ -181,6 +183,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_12_02_191457) do
   add_foreign_key "posts", "users", column: "author_id"
   add_foreign_key "prices", "projects"
   add_foreign_key "redemption_invites", "subscriptions"
+  add_foreign_key "subscriptions", "projects"
   add_foreign_key "subscriptions", "tiles"
   add_foreign_key "subscriptions", "users", column: "redeemer_id"
   add_foreign_key "subscriptions", "users", column: "subscriber_id"
