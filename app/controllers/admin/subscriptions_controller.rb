@@ -64,7 +64,8 @@ module Admin
       temp[:subscription][:subscriber_id] = User.decode_id(temp[:subscription][:subscriber_id]) if temp[:subscription][:subscriber_id].present?
       temp[:subscription][:redeemer_id] = User.decode_id(temp[:subscription][:redeemer_id]) if temp[:subscription][:redeemer_id].present?
       temp[:subscription][:tile_id] = Tile.decode_id(temp[:subscription][:tile_id]) if temp[:subscription][:tile_id].present?
-      temp.require(:subscription).permit(:subscriber_id, :redeemer_id, :tile_id)
+      temp[:subscription][:project_id] = Project.decode_id(temp[:subscription][:project_id]) if temp[:subscription][:project_id].present?
+      temp.require(:subscription).permit(:subscriber_id, :redeemer_id, :tile_id, :project_id)
     end
 
     # rubocop:disable Metrics/AbcSize

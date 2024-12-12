@@ -31,6 +31,20 @@
 
   <div class="row mb-3 g-3 align-items-center">
     <div class="col-sm-2">
+      <%= form.label :project_id, class: 'col-form-label' %>
+    </div>
+    <div class="col-sm-3">
+      <%= form.text_field :project_id, value: form.object.project&.hashid, class: 'form-control', aria: { describedby: 'projectHelp' }, required: true %>
+    </div>
+    <div class="col-sm-7">
+      <span id="projectHelp" class="form-text">
+        The ID of the project this subscription is linked to.
+      </span>
+    </div>
+  </div>
+
+  <div class="row mb-3 g-3 align-items-center">
+    <div class="col-sm-2">
       <%= form.label :tile_id, class: 'col-form-label' %>
     </div>
     <div class="col-sm-3">

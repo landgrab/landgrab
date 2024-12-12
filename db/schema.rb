@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2024_12_12_073810) do
+ActiveRecord::Schema[7.2].define(version: 2024_12_12_233937) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
   enable_extension "postgis"
@@ -124,7 +124,7 @@ ActiveRecord::Schema[7.2].define(version: 2024_12_12_073810) do
     t.string "claim_email"
     t.string "claim_hash"
     t.bigint "redeemer_id"
-    t.bigint "project_id"
+    t.bigint "project_id", null: false
     t.index ["project_id"], name: "index_subscriptions_on_project_id"
     t.index ["redeemer_id"], name: "index_subscriptions_on_redeemer_id"
     t.index ["stripe_id"], name: "index_subscriptions_on_stripe_id", unique: true

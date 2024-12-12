@@ -4,7 +4,7 @@ class Subscription < ApplicationRecord
   belongs_to :subscriber, class_name: 'User', inverse_of: :subscriptions_subscribed, optional: true
   belongs_to :redeemer, class_name: 'User', inverse_of: :subscriptions_redeemed, optional: true
   belongs_to :tile, optional: true
-  belongs_to :project, optional: true # TODO: Make this required (once any legacy data populated)
+  belongs_to :project
 
   has_many :redemption_invites, dependent: :restrict_with_exception
 
