@@ -6,7 +6,7 @@ namespace :subscription do
     Subscription.find_each do |s|
       next if s.stripe_id.nil? || s.stripe_id.start_with?('sub_fake')
 
-      StripeSubscriptionRefreshJob.perform_later(s)
+      StripeSubscriptionCreateOrRefreshJob.perform_later(s.stripe_id)
     end
   end
 

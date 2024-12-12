@@ -22,7 +22,7 @@ RSpec.describe 'StripeWebhook' do
     end
 
     it 'refreshes the stripe subscription' do
-      expect { run_hook }.to enqueue_job(StripeSubscriptionRefreshJob)
+      expect { run_hook }.to enqueue_job(StripeSubscriptionCreateOrRefreshJob)
     end
   end
 end
