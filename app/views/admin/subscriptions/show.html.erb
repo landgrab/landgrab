@@ -55,8 +55,8 @@
     <tr>
       <th>Project</th>
       <td>
-        <% if @subscription.tile&.plot&.project.present? %>
-          <%= link_to @subscription.tile.plot.project.title, admin_project_path(@subscription.tile.plot.project) %>
+        <% if @subscription.project.present? %>
+          <%= link_to @subscription.project.title, admin_project_path(@subscription.project) %>
         <% else %>
           NOT PRESENT
         <% end %>
