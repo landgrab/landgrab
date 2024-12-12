@@ -40,7 +40,12 @@ class Tile < ApplicationRecord
   end
 
   def available?
-    latest_subscription.nil? || latest_subscription.new_record? # handle display on 'new' screen
+    return true if latest_subscription.nil?
+    return true if latest_subscription.new_record? # handle display on 'new' screen
+
+    # TODO: consider 'cancelled' etc as available again? Perhaps only if not re-subscribed again (by the same user)?
+    # Perhaps this becomes available_to?(user) and that allows snatching the tile again after subscription lapses, within a set time?
+    false
   end
 
   def unavailable?
