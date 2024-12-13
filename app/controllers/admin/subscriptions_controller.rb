@@ -59,13 +59,16 @@ module Admin
       @subscription = Subscription.find_by_hashid!(params[:id])
     end
 
-    def subscription_params
+    def subscription_params_parsed
       temp = params.dup
-      temp[:subscription][:subscriber_id] = User.decode_id(temp[:subscription][:subscriber_id]) if temp[:subscription][:subscriber_id].present?
-      temp[:subscription][:redeemer_id] = User.decode_id(temp[:subscription][:redeemer_id]) if temp[:subscription][:redeemer_id].present?
-      temp[:subscription][:tile_id] = Tile.decode_id(temp[:subscription][:tile_id]) if temp[:subscription][:tile_id].present?
-      temp[:subscription][:project_id] = Project.decode_id(temp[:subscription][:project_id]) if temp[:subscription][:project_id].present?
-      temp.require(:subscription).permit(:subscriber_id, :redeemer_id, :tile_id, :project_id)
+      { subscriber_id: User, redeemer_id: User, tile_id: Tile, project_id: Project }.each do |key, klass|
+        temp[:subscription][key] = klass.decode_id(temp[:subscription][key]) if temp[:subscription][key].present?
+      end
+      temp
+    end
+
+    def subscription_params
+      subscription_params_parsed.require(:subscription).permit(:subscriber_id, :redeemer_id, :tile_id, :project_id)
     end
 
     # rubocop:disable Metrics/AbcSize
