@@ -30,8 +30,8 @@
 
 <p>
   <strong>Project:</strong>
-  <% if @tile.plot&.project.present? %>
-    <%= link_to @tile.plot.project.title, admin_project_path(@tile.plot.project) %>
+  <% if @tile.project.present? %>
+    <%= link_to @tile.project.title, admin_project_path(@tile.project) %>
   <% else %>
     -
   <% end %>

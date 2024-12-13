@@ -26,7 +26,7 @@ class TilesController < ApplicationController
   end
 
   def show
-    log_event_mixpanel('Tiles: Show', { authed: user_signed_in?, tile: @tile.hashid, plot: @tile.plot&.hashid, project: @tile.plot&.project&.hashid })
+    log_event_mixpanel('Tiles: Show', { authed: user_signed_in?, tile: @tile.hashid, plot: @tile.plot&.hashid, project: @tile.project&.hashid })
   end
 
   def posts; end
