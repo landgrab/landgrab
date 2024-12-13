@@ -3,12 +3,10 @@
     <%= render_w3w_code(subscription.tile) %>
   </div>
   <div class="card-body">
-    <% if subscription.tile.plot&.project.present? %>
-      <h6 class="card-subtitle mb-2 text-muted">
-        Project:
-        <%= subscription.tile.plot.project.title %>
-      </h6>
-    <% end %>
+    <h6 class="card-subtitle mb-2 text-muted">
+      Project:
+      <%= subscription.project.title %>
+    </h6>
     <% if subscription.tile.plot.present? %>
       <h6 class="card-subtitle mb-2 text-muted">
         Plot: <%= subscription.tile.plot.title %>

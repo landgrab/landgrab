@@ -3,7 +3,7 @@
 class SubscriptionsController < ApplicationController
   def index
     log_event_mixpanel('Subscriptions: Index')
-    @subscriptions = current_user.associated_subscriptions.includes(:redeemer, tile: { plot: :project })
+    @subscriptions = current_user.associated_subscriptions.includes(:redeemer, :project, tile: :plot)
   end
 
   def show
