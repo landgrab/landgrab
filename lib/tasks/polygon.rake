@@ -13,6 +13,6 @@ namespace :polygon do
       puts "Title: #{plot[:title]}"
       polygon = PolygonService.polygon_from_w3w_list(plot[:w3w_list])
       puts "Polygon: #{polygon}"
-    end; nil
+    end
   end
 end

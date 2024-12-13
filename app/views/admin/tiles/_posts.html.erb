@@ -2,10 +2,10 @@
 <h2 class="mt-3">
 Posts about this Tile
 <% if @tile.plot.present? %>
-  (and corresponding plot<% if @tile.plot.project.present? %> and project<% end %>)
+  (and corresponding plot<% if @tile.project.present? %> and project<% end %>)
 <% end %>
 </h2>
 
 <%= render 'admin/posts/table',
            cols: %w[title author],
-           posts: [@tile, @tile.plot, @tile.plot&.project].compact.map(&:posts).flatten %>
+           posts: [@tile, @tile.plot, @tile.project].compact.map(&:posts).flatten %>
