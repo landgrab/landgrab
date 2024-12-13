@@ -26,9 +26,7 @@ class Tile < ApplicationRecord
 
   auto_strip_attributes :w3w, squish: true
 
-  def project
-    plot&.project
-  end
+  delegate :project, to: :plot, allow_nil: true
 
   def to_geojson
     geojson = RGeo::GeoJSON.encode(bounding_box.to_geometry)
