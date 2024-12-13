@@ -32,6 +32,8 @@ class Project < ApplicationRecord
   end
 
   def random_available_tile
-    plots.with_available_tiles.sample&.tiles&.available&.sample
+    random_plot = plots.with_available_tiles.sample
+    avail_tiles = random_plot&.tiles&.available
+    avail_tiles&.sample
   end
 end
