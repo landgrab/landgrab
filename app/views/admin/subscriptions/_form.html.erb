@@ -34,11 +34,11 @@
       <%= form.label :project_id, class: 'col-form-label' %>
     </div>
     <div class="col-sm-3">
-      <%= form.text_field :project_id, value: form.object.project&.hashid, class: 'form-control', aria: { describedby: 'projectHelp' }, required: true %>
+      <%= form.collection_select :project_id, Project.order(:title), :id, :title, { include_blank: '[ Select Project ]' }, { class: 'form-control', required: true, aria: { describedby: 'projectHelp' } } %>
     </div>
     <div class="col-sm-7">
       <span id="projectHelp" class="form-text">
-        The ID of the project this subscription is linked to.
+        Associate the subscription to a project.
       </span>
     </div>
   </div>
