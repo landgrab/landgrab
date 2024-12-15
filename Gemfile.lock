@@ -260,7 +260,7 @@ GEM
     puma (6.4.3)
       nio4r (~> 2.0)
     racc (1.8.1)
-    rack (3.1.8)
+    rack (3.0.0)
     rack-session (2.0.0)
       rack (>= 3.0.0)
     rack-test (2.1.0)
@@ -457,6 +457,7 @@ DEPENDENCIES
   pg
   postmark-rails
   puma
+  rack (= 3.0)
   rails (~> 7.0)
   redcarpet
   rgeo-geojson
