@@ -86,7 +86,7 @@ gem 'postmark-rails'
 gem 'puma'
 
 # TODO: Remove once rack version Stripe Webhook issue resolved
-gem 'rack', '3.0'
+gem 'rack', '<3'
 
 # Markdown editor
 gem 'redcarpet'
