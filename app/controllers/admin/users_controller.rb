@@ -17,6 +17,7 @@ module Admin
 
       respond_to do |format|
         format.html do
+          @users = @users.includes(:subscriptions_subscribed, :subscriptions_redeemed)
           @users = @users.order(id: :desc).page(params[:page])
           render :index
         end

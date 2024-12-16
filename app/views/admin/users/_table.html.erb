@@ -1,10 +1,11 @@
 <table class="table">
   <thead>
-    <tr>
+    <tr class="align-middle">
       <th>User ID</th>
       <th>Full Name</th>
       <th>Email</th>
       <th>Stripe Customer ID</th>
+      <th>Subscribed <br>+ Redeemed</th>
       <th>Team</th>
       <th>Created</th>
     </tr>
@@ -23,6 +24,11 @@
           <% else %>
             -
           <% end %>
+        </td>
+        <td>
+          <%= link_to_if user.subscriptions_subscribed.any?, user.subscriptions_subscribed.size, admin_subscriptions_path(subscriber_id: user.hashid) %>
+          +
+          <%= link_to_if user.subscriptions_redeemed.any?, user.subscriptions_redeemed.size, admin_subscriptions_path(redeemer_id: user.hashid) %>
         </td>
         <td>
           <% if user.team_id.present? %>
