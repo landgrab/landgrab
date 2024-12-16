@@ -54,7 +54,7 @@ module Webhook
     end
 
     def sig_header
-      request.headers['HTTP_STRIPE_SIGNATURE']
+      request.headers['http_stripe_signature']
     end
 
     def endpoint_secret
