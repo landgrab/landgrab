@@ -19,8 +19,10 @@ class CheckoutController < ApplicationController
       return
     end
 
-    @stripe_err = create_stripe_checkout
+    @stripe_err = 'You did not select a price' if @price.nil?
+    @stripe_err ||= create_stripe_checkout
 
+    log_error("Checkout error: #{@stripe_err}") if @stripe_err.present?
     log_event_mixpanel('Checkout: Checkout', { authed: user_signed_in? })
   end
 
@@ -38,8 +40,9 @@ class CheckoutController < ApplicationController
 
     status = session.status
     unless status == 'complete'
+      log_error("Stripe Session not 'complete' - Ref:#{session.id}")
       return redirect_to checkout_checkout_path,
-                         flash: { danger: "Something went wrong; please try again or contact us for help. Ref:#{session.id}" }
+                         flash: { danger: "Something went wrong; please try again or contact us for help." }
     end
 
     customer_id = session.customer
@@ -117,7 +120,7 @@ class CheckoutController < ApplicationController
   end
 
   def set_price
-    @price = Price.find_by_hashid!(params[:price].upcase)
+    @price = Price.find_by_hashid!(params[:price].upcase) if params[:price].present?
   end
 
   def set_redemption_mode

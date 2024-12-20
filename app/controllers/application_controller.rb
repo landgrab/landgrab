@@ -35,6 +35,12 @@ class ApplicationController < ActionController::Base
     stored_location_for(:user) || root_path
   end
 
+  def log_error(message)
+    Sentry.capture_message(message)
+
+    message
+  end
+
   def log_event_mixpanel(event_type, event_data = {})
     flash['a'] ||= {}
     flash['a']['mixpanel'] ||= []
