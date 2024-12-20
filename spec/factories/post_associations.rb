@@ -2,7 +2,7 @@
 
 FactoryBot.define do
   factory :post_association do
-    postable { create(:tile) }
+    postable { association :tile }
     post
   end
 end
