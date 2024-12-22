@@ -40,7 +40,6 @@ class CheckoutController < ApplicationController
 
     status = session.status
     unless status == 'complete'
-      log_error("Stripe Session not 'complete' - Ref:#{session.id}")
       return redirect_to checkout_checkout_path,
                          flash: { danger: "Something went wrong; please try again or contact us for help." }
     end
@@ -53,7 +52,7 @@ class CheckoutController < ApplicationController
     subscription_id = session.subscription
     raise "Stripe session '#{session.id}' has no subscription ID" if subscription_id.nil?
 
-    @subscription = create_subscription(subscription_id)
+    @subscription = StripeSubscriptionCreateOrRefreshJob.perform_now(subscription_id)
 
     redirect_to after_subscription_success_location,
                 flash: { success: 'Your subscription has been successfully set up!' }
@@ -131,10 +130,6 @@ class CheckoutController < ApplicationController
 
   def set_promo_code
     @promo_code = PromoCode.find_by!(code: params[:code]) if params[:code].present?
-  end
-
-  def create_subscription(subscription_id)
-    StripeSubscriptionCreateOrRefreshJob.perform_now(subscription_id)
   end
 
   def after_subscription_success_location
