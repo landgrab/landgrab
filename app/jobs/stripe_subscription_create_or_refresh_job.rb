@@ -6,19 +6,24 @@ class StripeSubscriptionCreateOrRefreshJob < ApplicationJob
   def perform(subscription_stripe_id)
     @subscription_stripe_id = subscription_stripe_id
 
-    @subscription = Subscription.find_or_initialize_by(stripe_id: @subscription_stripe_id)
+    stripe_subscription # Pre-fetch from Stripe API (to minimise lock time)
 
-    @subscription.subscriber = subscriber_user
-    @subscription.redeemer ||= subscriber_user if metadata_redemption_mode_self?
+    @subscription = Subscription.create_with(stripe_status: extract_status)
+                                .find_or_create_by(stripe_id: @subscription_stripe_id)
 
-    @subscription.project ||= metadata_project
-    @subscription.tile ||= metadata_tile
+    @subscription.with_lock do
+      @subscription.subscriber = subscriber_user
+      @subscription.redeemer ||= subscriber_user if metadata_redemption_mode_self?
 
-    @subscription.update!(
-      stripe_status: extract_status,
-      price_pence: extract_price_pence,
-      recurring_interval: extract_recurring_interval
-    )
+      @subscription.project ||= metadata_project
+      @subscription.tile ||= metadata_tile
+
+      @subscription.update!(
+        stripe_status: extract_status,
+        price_pence: extract_price_pence,
+        recurring_interval: extract_recurring_interval
+      )
+    end
 
     @subscription
   end
