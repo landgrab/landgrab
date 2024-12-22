@@ -41,7 +41,7 @@ class CheckoutController < ApplicationController
     status = session.status
     unless status == 'complete'
       return redirect_to checkout_checkout_path,
-                         flash: { danger: "Something went wrong; please try again or contact us for help." }
+                         flash: { danger: 'Something went wrong; please try again or contact us for help.' }
     end
 
     customer_id = session.customer
