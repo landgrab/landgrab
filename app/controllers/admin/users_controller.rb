@@ -7,11 +7,11 @@ module Admin
 
     def index
       @users = filtered_users.includes(:team)
-      if params[:subscribed_to_plot].present?
-        subscribed_to_plot_ids = params[:subscribed_to_plot].map { |x| Plot.decode_id(x) }
-        @users = @users.joins(subscriptions: { tile: :plot })
-                       .where(subscriptions: { stripe_status: %i[active trialing] })
-                       .where(plots: { id: subscribed_to_plot_ids })
+      if params[:redeemed_subscription_to_plot].present?
+        plot_ids = params[:redeemed_subscription_to_plot].map { |x| Plot.decode_id(x) }
+        @users = @users.joins(subscriptions_redeemed: { tile: :plot })
+                       .where(subscriptions_redeemed: { stripe_status: %i[active trialing] })
+                       .where(plots: { id: plot_ids })
                        .distinct
       end
 
