@@ -11,7 +11,7 @@ RSpec.describe 'StripeWebhook' do
   describe 'GET #webhook' do
     subject(:run_hook) { post '/webhook/stripe', params: webhook_params.to_json, headers: }
 
-    let(:headers) { { 'Stripe-Signature' => stripe_generate_header(payload: webhook_params.to_json) } }
+    let(:headers) { { 'stripe-signature' => stripe_generate_header(payload: webhook_params.to_json) } }
 
     let(:webhook_params) { json_fixture('stripe/webhooks/checkout_session_completed') }
 
