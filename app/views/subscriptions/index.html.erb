@@ -16,8 +16,9 @@
   <%= render 'table', subscriptions: @subscriptions %>
 
   <p>
-    You can always subscribe to any unallocated tile for any
-    plot (or project) by visiting that tile's page.
+    You can always subscribe to any unallocated tile for any plot
+    <%= '(or project)' if Project.count > 1 %>
+    by visiting that tile's page.
   </p>
 
   <p>
