@@ -1,5 +1,7 @@
 <% ready_to_link = user_signed_in? && current_user.linkable_subscriptions.any? %>
 
+<%= render 'layouts/progress_bar' %>
+
 <h1><%= title "Project: #{@project.title}" %></h1>
 
 <div class="row">

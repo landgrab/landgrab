@@ -1,30 +1,40 @@
 <%
-steps = case journey
-        when :pay_first
-          [
-            { id: 1, text: 'Choose<br>Subscription', done: step >= 1 },
-            { id: 2, text: 'Pay', done: step >= 2 },
-            { id: 3, text: 'Create<br>Profile', done: step >= 3 },
-            { id: 4, text: 'Choose<br>Tile', done: step >= 4 },
-            { id: 5, text: "You're<br>Rewilding!", done: step >= 5 }
-          ]
-        when :register_first
-          [
-            { id: 1, text: 'Choose<br>Tile', done: step >= 1 },
-            { id: 2, text: 'Create<br>Profile', done: step >= 2 },
-            { id: 3, text: 'Choose<br>Subscription', done: step >= 3 },
-            { id: 4, text: 'Pay', done: step >= 4 },
-            { id: 5, text: "You're<br>Rewilding!", done: step >= 5 }
-          ]
-        else
-          raise "Unexpected journey: #{journey}"
-        end
+subs = current_user&.associated_subscriptions&.select(&:usable_stripe_status?) || []
+viewing_tile = false
+subs_with_tile = subs.select { |sub| sub.tile.present? }
+latest_sub = subs_with_tile.sort_by(&:created_at).first
+
+# Don't show progress bar some time after completion
+return if latest_sub && latest_sub.created_at < 10.seconds.ago
 %>
+
+<% steps = [
+  {
+    text: 'Create<br>Profile',
+    done: user_signed_in?,
+    active: !user_signed_in?
+  },
+  {
+    text: 'Choose<br>Subscription',
+    done: subs.any?,
+    active: user_signed_in? && subs.none?,
+  },
+  {
+    text: 'Choose<br>Tile',
+    done: subs_with_tile.any?,
+    active: subs.any? && subs_with_tile.none?
+  },
+  {
+    text: "You're<br>Rewilding!",
+    done: subs_with_tile.any?,
+    active: false
+  }
+] %>
 
 <div class="stepper-wrapper">
   <% steps.each do |step| %>
     <% klass = 'completed' if step.fetch(:done) %>
-    <% klass ||= 'active' if step.fetch(:id) == step %>
+    <% klass ||= 'active' if step.fetch(:active) %>
     <div class="stepper-item <%= klass %>">
       <div class="step-blob"></div>
       <div class="step-text"><%= step.fetch(:text).html_safe %></div>

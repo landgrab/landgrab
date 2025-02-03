@@ -1,8 +1,6 @@
 <h1><%= title 'Explore' %></h1>
 
-<% unless user_signed_in? %>
-  <%= render 'layouts/progress_bar', step: 0, journey: :register_first %>
-<% end %>
+<%= render 'layouts/progress_bar' %>
 
 <p>
   We've randomly selected a plot with tiles available for adopting -

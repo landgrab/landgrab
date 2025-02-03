@@ -2,11 +2,7 @@
 <% current_sub = user_signed_in? && current_user.subscription_for_plot(@plot) %>
 <% random_tile = @plot.tiles.available.sample %>
 
-<% if !user_signed_in? %>
-  <%= render 'layouts/progress_bar', step: 1, journey: :register_first %>
-<% elsif ready_to_link && !current_sub %>
-  <%= render 'layouts/progress_bar', step: 3, journey: :pay_first %>
-<% end %>
+<%= render 'layouts/progress_bar' %>
 
 <h1>
   Plot: <%= title @plot.title %>

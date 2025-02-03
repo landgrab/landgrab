@@ -2,15 +2,7 @@
 <% ready_to_link = user_signed_in? && linkable_subs.any? %>
 <% current_sub = user_signed_in? && @tile.plot.present? && current_user.subscription_for_plot(@tile.plot) %>
 
-<% if !user_signed_in? %>
-  <%= render 'layouts/progress_bar', step: 1, journey: :register_first %>
-<% elsif ready_to_link && !current_sub %>
-  <% if @tile.available? %>
-    <%= render 'layouts/progress_bar', step: 4, journey: :pay_first %>
-  <% else %>
-    <%= render 'layouts/progress_bar', step: 3, journey: :pay_first %>
-  <% end %>
-<% end %>
+<%= render 'layouts/progress_bar' %>
 
 <h1><%= title @tile.w3w %></h1>
 
