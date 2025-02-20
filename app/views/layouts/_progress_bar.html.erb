@@ -12,7 +12,8 @@ return if latest_sub && latest_sub.created_at < 10.seconds.ago
   {
     text: 'Create<br>Profile',
     done: user_signed_in?,
-    active: !user_signed_in?
+    active: !user_signed_in?,
+    link: new_user_registration_path
   },
   {
     text: 'Choose<br>Subscription',
@@ -37,7 +38,15 @@ return if latest_sub && latest_sub.created_at < 10.seconds.ago
     <% klass ||= 'active' if step.fetch(:active) %>
     <div class="stepper-item <%= klass %>">
       <div class="step-blob"></div>
-      <div class="step-text"><%= step.fetch(:text).html_safe %></div>
+      <div class="step-text">
+        <%
+          if step.fetch(:done) && step.key?(:link)
+            link_to(step.fetch(:text).html_safe, step.fetch(:link))
+          else
+            step.fetch(:text).html_safe
+          end
+        %>
+      </div>
     </div>
   <% end %>
 </div>
