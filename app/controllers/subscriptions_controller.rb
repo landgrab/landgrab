@@ -38,10 +38,26 @@ class SubscriptionsController < ApplicationController
     redirect_back fallback_location: tile_path(@tile), flash:
   end
 
+  def manage_billing
+    redirect_to_billing_portal_session(flow_data: { type: :payment_method_update })
+  end
+
   private
 
   def subscription_params
     params.require(:subscription).permit(:tile_id)
+  end
+
+  def redirect_to_billing_portal_session(extra_args)
+    args = {
+      customer: current_user.stripe_customer_id,
+      # Return URL where the customer will be redirected after they are done managing their billing
+      return_url: subscriptions_url
+    }.merge(extra_args)
+
+    redirect_to Stripe::BillingPortal::Session.create(args).url,
+                status: :see_other,
+                allow_other_host: true
   end
 
   def redeem_tile
