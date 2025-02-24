@@ -16,6 +16,12 @@
   <%= render 'table', subscriptions: @subscriptions %>
 
   <p>
+    <%= button_to 'Update Payment Method',
+                  manage_billing_subscriptions_path,
+                  class: 'btn btn-secondary' %>
+  </p>
+
+  <p>
     You can always subscribe to any unallocated tile for any plot
     <%= '(or project)' if Project.count > 1 %>
     by visiting that tile's page.
