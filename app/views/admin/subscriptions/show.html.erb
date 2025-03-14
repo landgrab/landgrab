@@ -98,5 +98,13 @@
 <p>
   These are created to invite someone to redeem the subscription.
 </p>
-<%= render 'admin/redemption_invites/table', redemption_invites: @subscription.redemption_invites %>
-<%= render 'redemption_invites/form', redemption_invite: @subscription.redemption_invites.new, admin: true %>
+<% if @subscription.redemption_invites.any? %>
+  <%= render 'admin/redemption_invites/table', redemption_invites: @subscription.redemption_invites %>
+<% else %>
+  <p>No invites have yet been created</p>
+<% end %>
+<% if @subscription.redeemed? %>
+  <p>The subscription has already been redeemed, so we can't create new invites.</p>
+<% else %>
+  <%= render 'redemption_invites/form', redemption_invite: @subscription.redemption_invites.new, admin: true %>
+<% end %>
