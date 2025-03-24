@@ -3,7 +3,7 @@
 RSpec.describe SubscriptionsController do
   describe 'DELETE subscriptions#cancel' do
     subject(:do_delete) do
-      post :cancel, id: subscription.hashid
+      delete :cancel, id: subscription.hashid
     end
 
     let(:user) { create(:user, stripe_customer_id: 'cus_0123456789') }
