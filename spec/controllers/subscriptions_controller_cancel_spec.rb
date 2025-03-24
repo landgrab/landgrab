@@ -3,11 +3,11 @@
 RSpec.describe SubscriptionsController do
   describe 'DELETE subscriptions#cancel' do
     subject(:do_delete) do
-      delete :cancel, id: subscription.hashid
+      delete :cancel, params: { id: subscription.hashid }
     end
 
     let(:user) { create(:user, stripe_customer_id: 'cus_0123456789') }
-    let(:subscription) { create(:subscription, subscriber: user)}
+    let(:subscription) { create(:subscription, subscriber: user) }
 
     before do
       sign_in(user)
@@ -35,17 +35,27 @@ RSpec.describe SubscriptionsController do
       expect(response).to redirect_to('https://billing.stripe.com/p/session/test_9999999999')
     end
 
-    it 'generates a session using user stripe id and flow data' do
+    it 'generates a session using user stripe id' do
       do_delete
 
       expect(Stripe::BillingPortal::Session).to have_received(:create).with(
-        hash_including(
-          customer: user.stripe_customer_id,
-          flow_data: hash_including(
-            type: :subscription_cancel,
-            subscription: hash_including(subscription.stripe_id)
-          )
-        )
+        hash_including(customer: user.stripe_customer_id)
+      )
+    end
+
+    it 'generates a session using cancellation flow type' do
+      do_delete
+
+      expect(Stripe::BillingPortal::Session).to have_received(:create).with(
+        hash_including(flow_data: hash_including(type: :subscription_cancel))
+      )
+    end
+
+    it 'generates a session using cancellation flow sub id' do
+      do_delete
+
+      expect(Stripe::BillingPortal::Session).to have_received(:create).with(
+        hash_including(flow_data: hash_including(subscription: hash_including(subscription.stripe_id)))
       )
     end
 
