@@ -11,7 +11,7 @@ ruby '3.3.3'
 # IMPORTANT: When upgrading Rails, follow all instructions!
 # Eg. run `app:update` script, action `new_framework_defaults_*.rb`, update `config.load_defaults`
 # https://guides.rubyonrails.org/upgrading_ruby_on_rails.html
-gem 'rails', '~> 7.0' # REMEMBER TO `app:update` AFTER CHANGING
+gem 'rails', '~> 8.0' # REMEMBER TO `app:update` AFTER CHANGING
 
 # Support PostGIS (spatial PostgreSQL extension)
 gem 'activerecord-postgis-adapter'
