@@ -50,12 +50,12 @@ module Admin
     end
 
     def team_params
-      params.require(:team).permit(
-        :title,
+      params.expect(
+        team: [:title,
         :slug,
         :logo_url,
         :website,
-        :description
+        :description]
       )
     end
   end

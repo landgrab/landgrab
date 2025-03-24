@@ -44,7 +44,7 @@ module Admin
     end
 
     def user_params_for_update
-      params.require(:user).permit(:first_name, :last_name, :team_id)
+      params.expect(user: [:first_name, :last_name, :team_id])
     end
 
     # rubocop:disable Metrics/AbcSize

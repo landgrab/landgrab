@@ -82,11 +82,11 @@ module Admin
     end
 
     def post_params_for_create
-      params.require(:post).permit(:title, :preview, :body, :publish_immediately)
+      params.expect(post: [:title, :preview, :body, :publish_immediately])
     end
 
     def post_params_for_update
-      params.require(:post).permit(:title, :preview, :body, :published_at)
+      params.expect(post: [:title, :preview, :body, :published_at])
     end
   end
 end

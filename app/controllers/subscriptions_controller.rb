@@ -63,7 +63,7 @@ class SubscriptionsController < ApplicationController
   end
 
   def subscription_params
-    params.require(:subscription).permit(:tile_id)
+    params.expect(subscription: [:tile_id])
   end
 
   def redirect_to_billing_portal_session(extra_args)

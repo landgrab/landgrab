@@ -22,7 +22,7 @@ module Admin
     end
 
     def comment_params
-      params.require(:comment).permit(:text, :public)
+      params.expect(comment: [:text, :public])
     end
   end
 end

@@ -43,12 +43,12 @@ module Admin
     end
 
     def price_params
-      params.require(:price)
-            .permit(
-              :title,
+      params
+            .expect(
+              price: [:title,
               :amount_display,
               :project_id,
-              :stripe_id
+              :stripe_id]
             )
     end
   end
