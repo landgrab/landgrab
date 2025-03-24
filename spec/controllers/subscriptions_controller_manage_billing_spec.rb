@@ -34,11 +34,19 @@ RSpec.describe SubscriptionsController do
       expect(response).to redirect_to('https://billing.stripe.com/p/session/test_9999999999')
     end
 
-    it 'generates a session using stripe id for current user' do
+    it 'generates a session passing the user stripe id' do
       do_post
 
       expect(Stripe::BillingPortal::Session).to have_received(:create).with(
         hash_including(customer: user.stripe_customer_id)
+      )
+    end
+
+    it 'generates a session passing the flow type' do
+      do_post
+
+      expect(Stripe::BillingPortal::Session).to have_received(:create).with(
+        hash_including(flow_data: hash_including(type: :payment_method_update))
       )
     end
   end

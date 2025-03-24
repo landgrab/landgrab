@@ -44,6 +44,7 @@ Rails.application.routes.draw do
   end
 
   resources :subscriptions, only: %i[index show] do
+    delete :cancel, on: :member
     post :redeem, on: :member, action: :redeem_own, as: :redeem_own
 
     post :manage_billing, on: :collection
