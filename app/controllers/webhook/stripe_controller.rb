@@ -43,6 +43,8 @@ module Webhook
 
     def parse_event
       # event = Stripe::Event.construct_from(JSON.parse(payload, symbolize_names: true))
+      puts "payload: #{payload.inspect}"
+      puts "sig_header: #{sig_header.inspect}"
       Stripe::Webhook.construct_event(payload, sig_header, endpoint_secret)
     rescue JSON::ParserError
       raise 'Invalid JSON'
