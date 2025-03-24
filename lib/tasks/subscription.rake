@@ -48,6 +48,6 @@ namespace :subscription do
 
       puts "Subscription #{subscr.hashid} (stripe:#{subscr.stripe_id}) has mismatched customer_id: #{customer_id}"
       puts "User.find_by_hashid!('#{subscr.subscriber.hashid}').update!(stripe_customer_id: '#{customer_id}')"
-    end; nil
+    end
   end
 end

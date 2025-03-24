@@ -15,8 +15,8 @@
         <%= bootstrap_alert 'Your subscription is inactive. To resolve this, please re-subscribe below' %>
         <%= render 'tiles/subscription_checkout', tile: tile %>
       <% else %>
-        <%= link_to 'Change Subscription',
-                    "javascript:alert('Please contact us if you need to change your subscription')",
+        <%= link_to 'Manage Subscription',
+                    subscription_path(tile.latest_subscription),
                     class: 'btn btn-outline-info' %>
       <% end %>
     <% end %>

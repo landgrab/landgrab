@@ -41,7 +41,7 @@
 </div>
 
 <% unless user_signed_in? %>
-  <%= markdown(@tile&.plot&.project&.subscriber_benefits) %>
+  <%= markdown(@tile.project&.subscriber_benefits) %>
 <% end %>
 
 <%= render 'static_pages/w3w_map',

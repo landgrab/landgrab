@@ -15,9 +15,18 @@
 
   <%= render 'table', subscriptions: @subscriptions %>
 
+  <% if current_user.stripe_customer_id.present? %>
+    <p>
+      <%= button_to 'Update Payment Method',
+                    manage_billing_subscriptions_path,
+                    class: 'btn btn-secondary' %>
+    </p>
+  <% end %>
+
   <p>
-    You can always subscribe to any unallocated tile for any
-    plot (or project) by visiting that tile's page.
+    You can always subscribe to any unallocated tile for any plot
+    <%= '(or project)' if Project.where(public: true).count > 1 %>
+    by visiting that tile's page.
   </p>
 
   <p>

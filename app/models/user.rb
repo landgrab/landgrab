@@ -45,6 +45,10 @@ class User < ApplicationRecord
     subscriptions_redeemed.stripe_status_active.where.missing(:tile)
   end
 
+  def viewed_post_ids
+    post_views&.distinct(:post_id)&.pluck(:post_id)
+  end
+
   private
 
   def titleize_lowercased_names

@@ -7,6 +7,8 @@ class ApplicationController < ActionController::Base
 
   before_action :store_location
 
+  rescue_from ActiveRecord::RecordNotFound, with: :render_not_found
+
   protected
 
   def configure_permitted_parameters
@@ -35,6 +37,12 @@ class ApplicationController < ActionController::Base
     stored_location_for(:user) || root_path
   end
 
+  def log_error(message)
+    Sentry.capture_message(message)
+
+    message
+  end
+
   def log_event_mixpanel(event_type, event_data = {})
     flash['a'] ||= {}
     flash['a']['mixpanel'] ||= []
@@ -43,10 +51,14 @@ class ApplicationController < ActionController::Base
 
   private
 
+  def render_not_found
+    render file: Rails.public_path.join('404.html'), status: :not_found, layout: false
+  end
+
   def check_admin
     return if current_user&.admin?
 
-    render file: Rails.public_path.join('404.html'), status: :not_found, layout: false
+    render_not_found
   end
 
   def ensure_stripe_enrollment

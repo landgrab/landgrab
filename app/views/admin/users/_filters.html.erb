@@ -5,9 +5,9 @@
   <%= render_filter_text(:stripe_customer_id, 'Stripe ID', col: 3) %>
 
   <div class="col-sm-5">
-    <%= label_tag :subscribed_to_plot, 'Subscribed to Plot', class: 'visually-hidden' %>
-    <%= select_tag :subscribed_to_plot, option_groups_from_collection_for_select(Project.includes(:plots).order(:title), :plots, :title, :hashid, :title, params[:subscribed_to_plot]),
-                                         { include_blank: '[ Subscribed to Plot ]', multiple: true, size: 2, class: 'form-select' } %>
+    <%= label_tag :redeemed_subscription_to_plot, 'Redeemed Subscription to Plot', class: 'visually-hidden' %>
+    <%= select_tag :redeemed_subscription_to_plot, option_groups_from_collection_for_select(Project.includes(:plots).order(:title), :plots, :title, :hashid, :title, params[:redeemed_subscription_to_plot]),
+                                         { include_blank: '[ Redeemed Subscription to Plot ]', multiple: true, size: 2, class: 'form-select' } %>
   </div>
 
   <div class="col-sm-5">

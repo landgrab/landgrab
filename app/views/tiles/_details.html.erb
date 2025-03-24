@@ -11,8 +11,8 @@
   <p>
     This tile is part of
     <%= link_to tile.plot.title, plot_path(tile.plot) %>
-    <% if tile.plot.project.present? %>
-      in the <%= link_to tile.plot.project.title, project_path(tile.plot.project) %> project.
+    <% if tile.project.present? %>
+      in the <%= link_to tile.project.title, project_path(tile.project) %> project.
     <% end %>
   </p>
 <% end %>

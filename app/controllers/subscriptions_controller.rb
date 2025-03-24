@@ -1,19 +1,18 @@
 # frozen_string_literal: true
 
 class SubscriptionsController < ApplicationController
+  before_action :set_subscription, only: %i[cancel redeem_own show]
+
   def index
     log_event_mixpanel('Subscriptions: Index')
     @subscriptions = current_user.associated_subscriptions.includes(:redeemer, :project, tile: :plot)
   end
 
   def show
-    @subscription = current_user.associated_subscriptions.find_by_hashid!(params[:id])
     log_event_mixpanel('Subscriptions: Show')
   end
 
   def redeem_own
-    @subscription = current_user.subscriptions_subscribed.find_by_hashid!(params[:id])
-
     if @subscription.redeemed?
       if @subscription.redeemed_by?(current_user)
         redirect_to @subscription, flash: { notice: 'This subscription is already linked to your account' }
@@ -38,10 +37,46 @@ class SubscriptionsController < ApplicationController
     redirect_back fallback_location: tile_path(@tile), flash:
   end
 
+  def manage_billing
+    redirect_to_billing_portal_session(
+      flow_data: {
+        type: :payment_method_update
+      }
+    )
+  end
+
+  def cancel
+    redirect_to_billing_portal_session(
+      flow_data: {
+        type: :subscription_cancel,
+        subscription_cancel: {
+          subscription: @subscription.stripe_id
+        }
+      }
+    )
+  end
+
   private
+
+  def set_subscription
+    @subscription = current_user.associated_subscriptions.find_by_hashid!(params[:id])
+  end
 
   def subscription_params
     params.require(:subscription).permit(:tile_id)
+  end
+
+  def redirect_to_billing_portal_session(extra_args)
+    args = {
+      customer: current_user.stripe_customer_id,
+      # Return URL where the customer will be redirected after they are done managing their billing
+      return_url: subscriptions_url
+    }.merge(extra_args)
+
+    # Docs: https://docs.stripe.com/api/customer_portal/sessions/create
+    redirect_to Stripe::BillingPortal::Session.create(args).url,
+                status: :see_other,
+                allow_other_host: true
   end
 
   def redeem_tile

@@ -1,5 +1,5 @@
 <% limit ||= nil %>
-<% viewed_post_ids = current_user&.post_views&.distinct(:post_id)&.pluck(:post_id) || [] %>
+<% viewed_post_ids = current_user&.viewed_post_ids || [] %>
 <% view_all_link ||= nil %>
 <% show_preview ||= false %>
 <% sorted_posts = posts.sort_by { |x| [x.published_at.nil? ? 0 : 1, x.published_at] }.reverse %>

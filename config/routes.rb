@@ -44,7 +44,10 @@ Rails.application.routes.draw do
   end
 
   resources :subscriptions, only: %i[index show] do
+    delete :cancel, on: :member
     post :redeem, on: :member, action: :redeem_own, as: :redeem_own
+
+    post :manage_billing, on: :collection
 
     # TODO: Remove GET option once all links are updated to use POST
     match 'link_tile/:tile_hashid', on: :member, action: :link_tile, as: :link_tile, via: %i[get post]

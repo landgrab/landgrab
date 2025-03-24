@@ -19,8 +19,10 @@ class CheckoutController < ApplicationController
       return
     end
 
-    @stripe_err = create_stripe_checkout
+    @stripe_err = 'You did not select a price' if @price.nil?
+    @stripe_err ||= create_stripe_checkout
 
+    log_error("Checkout error: #{@stripe_err}") if @stripe_err.present?
     log_event_mixpanel('Checkout: Checkout', { authed: user_signed_in? })
   end
 
@@ -39,7 +41,7 @@ class CheckoutController < ApplicationController
     status = session.status
     unless status == 'complete'
       return redirect_to checkout_checkout_path,
-                         flash: { danger: "Something went wrong; please try again or contact us for help. Ref:#{session.id}" }
+                         flash: { danger: 'Something went wrong; please try again or contact us for help.' }
     end
 
     customer_id = session.customer
@@ -50,7 +52,7 @@ class CheckoutController < ApplicationController
     subscription_id = session.subscription
     raise "Stripe session '#{session.id}' has no subscription ID" if subscription_id.nil?
 
-    @subscription = create_subscription(subscription_id)
+    @subscription = StripeSubscriptionCreateOrRefreshJob.perform_now(subscription_id)
 
     redirect_to after_subscription_success_location,
                 flash: { success: 'Your subscription has been successfully set up!' }
@@ -117,7 +119,7 @@ class CheckoutController < ApplicationController
   end
 
   def set_price
-    @price = Price.find_by_hashid!(params[:price].upcase)
+    @price = Price.find_by_hashid!(params[:price].upcase) if params[:price].present?
   end
 
   def set_redemption_mode
@@ -128,10 +130,6 @@ class CheckoutController < ApplicationController
 
   def set_promo_code
     @promo_code = PromoCode.find_by!(code: params[:code]) if params[:code].present?
-  end
-
-  def create_subscription(subscription_id)
-    StripeSubscriptionCreateOrRefreshJob.perform_now(subscription_id)
   end
 
   def after_subscription_success_location
