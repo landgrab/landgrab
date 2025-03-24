@@ -38,3 +38,12 @@
     <% end %>
   </p>
 <% end %>
+
+<% unless @subscription.stripe_status_canceled? %>
+  <p>
+    <%= button_to 'Cancel Subscription',
+                  cancel_subscription_path(@subscription),
+                  method: :delete,
+                  class: 'btn btn-outline-danger' %>
+  </p>
+<% end %>
