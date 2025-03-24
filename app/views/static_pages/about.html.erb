@@ -6,3 +6,12 @@
   <%= link_to('LandGrab', LandgrabService::SOURCE_CODE_REPO_URL) %>
   - open source software where contributions or questions are welcome!
 </p>
+
+<% if ENV.key?('EMAIL_FROM_ADDRESS') %>
+  <p>
+    Get in touch with
+    <%= ENV.fetch('SITE_TITLE', 'us') %>
+    by emailing
+    <%= mail_to ENV.fetch('EMAIL_FROM_ADDRESS') %>.
+  </p>
+<% end %>
