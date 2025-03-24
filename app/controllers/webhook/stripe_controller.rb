@@ -45,8 +45,8 @@ module Webhook
       Stripe::Webhook.construct_event(payload, sig_header, endpoint_secret)
     rescue JSON::ParserError
       raise 'Invalid JSON'
-    rescue Stripe::SignatureVerificationError
-      raise 'Invalid signature'
+    rescue Stripe::SignatureVerificationError => e
+      raise "Invalid signature: #{e.message}"
     end
 
     def payload
