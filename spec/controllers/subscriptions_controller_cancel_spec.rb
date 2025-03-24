@@ -1,12 +1,13 @@
 # frozen_string_literal: true
 
 RSpec.describe SubscriptionsController do
-  describe 'POST subscriptions#manage_billing' do
-    subject(:do_post) do
-      post :manage_billing
+  describe 'DELETE subscriptions#cancel' do
+    subject(:do_delete) do
+      post :cancel
     end
 
     let(:user) { create(:user, stripe_customer_id: 'cus_0123456789') }
+    let(:subscription) { create(:subscription, subscriber: user)}
 
     before do
       sign_in(user)
@@ -22,27 +23,40 @@ RSpec.describe SubscriptionsController do
       end
 
       it 'redirects to login' do
-        do_post
+        do_delete
 
         expect(response).to redirect_to(new_user_session_path)
       end
     end
 
     it 'redirects to the Stripe billing portal url' do
-      do_post
+      do_delete
 
       expect(response).to redirect_to('https://billing.stripe.com/p/session/test_9999999999')
     end
 
-    it 'generates a session using user stripe id and flow type' do
-      do_post
+    it 'generates a session using user stripe id and flow data' do
+      do_delete
 
       expect(Stripe::BillingPortal::Session).to have_received(:create).with(
         hash_including(
           customer: user.stripe_customer_id,
-          flow_data: hash_including(type: :payment_method_update)
+          flow_data: hash_including(
+            type: :subscription_cancel,
+            subscription: hash_including(subscription.stripe_id)
+          )
         )
       )
+    end
+
+    context 'with a subscription subscribed by another user' do
+      before do
+        subscription.update(subscriber: create(:user))
+      end
+
+      it 'returns a not found error' do
+        expect(do_delete).to have_http_status(:not_found)
+      end
     end
   end
 end
