@@ -53,9 +53,9 @@ Rails.application.routes.draw do
     match 'link_tile/:tile_hashid', on: :member, action: :link_tile, as: :link_tile, via: %i[get post]
   end
 
-  get '/checkout/checkout', 'checkouts#checkout'
-  get '/checkout/generate', 'checkouts#generate'
-  get '/checkout/success', 'checkouts#success'
+  get '/checkout/checkout'
+  get '/checkout/generate'
+  get '/checkout/success'
 
   get '/about', to: 'static_pages#about'
   get '/explore', to: 'static_pages#explore'
