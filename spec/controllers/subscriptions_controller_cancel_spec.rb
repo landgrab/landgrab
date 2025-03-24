@@ -55,13 +55,13 @@ RSpec.describe SubscriptionsController do
       do_delete
 
       expect(Stripe::BillingPortal::Session).to have_received(:create).with(
-        hash_including(flow_data: hash_including(subscription: hash_including(subscription.stripe_id)))
+        hash_including(flow_data: hash_including(subscription_cancel: { subscription: subscription.stripe_id }))
       )
     end
 
     context 'with a subscription subscribed by another user' do
       before do
-        subscription.update(subscriber: create(:user))
+        subscription.update!(subscriber: create(:user))
       end
 
       it 'returns a not found error' do
