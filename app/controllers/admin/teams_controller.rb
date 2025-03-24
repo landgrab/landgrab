@@ -51,11 +51,11 @@ module Admin
 
     def team_params
       params.expect(
-        team: [:title,
-        :slug,
-        :logo_url,
-        :website,
-        :description]
+        team: %i[title
+                 slug
+                 logo_url
+                 website
+                 description]
       )
     end
   end

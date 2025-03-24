@@ -55,7 +55,7 @@ class RedemptionInvitesController < ApplicationController
   private
 
   def redemption_invite_params
-    params.expect(redemption_invite: [:subscription_id, :recipient_name, :recipient_email]).tap do |tmp|
+    params.expect(redemption_invite: %i[subscription_id recipient_name recipient_email]).tap do |tmp|
       tmp[:subscription_id] = Subscription.decode_id(tmp[:subscription_id])
     end
   end

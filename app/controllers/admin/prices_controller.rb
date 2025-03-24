@@ -44,12 +44,12 @@ module Admin
 
     def price_params
       params
-            .expect(
-              price: [:title,
-              :amount_display,
-              :project_id,
-              :stripe_id]
-            )
+        .expect(
+          price: %i[title
+                    amount_display
+                    project_id
+                    stripe_id]
+        )
     end
   end
 end

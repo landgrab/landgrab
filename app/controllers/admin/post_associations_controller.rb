@@ -33,7 +33,7 @@ module Admin
     end
 
     def post_association_params
-      params.expect(post_association: [:postable_type, :postable_id, :post_id]).tap do |tmp|
+      params.expect(post_association: %i[postable_type postable_id post_id]).tap do |tmp|
         tmp[:post_id] = Post.decode_id(tmp[:post_id])
         tmp[:postable_id] =
           case tmp[:postable_type]

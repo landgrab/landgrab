@@ -82,11 +82,11 @@ module Admin
     end
 
     def post_params_for_create
-      params.expect(post: [:title, :preview, :body, :publish_immediately])
+      params.expect(post: %i[title preview body publish_immediately])
     end
 
     def post_params_for_update
-      params.expect(post: [:title, :preview, :body, :published_at])
+      params.expect(post: %i[title preview body published_at])
     end
   end
 end

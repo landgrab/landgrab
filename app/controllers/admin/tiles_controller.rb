@@ -51,7 +51,7 @@ module Admin
     end
 
     def tile_params
-      params.expect(tile: [:southwest, :northeast, :w3w])
+      params.expect(tile: %i[southwest northeast w3w])
     end
   end
 end

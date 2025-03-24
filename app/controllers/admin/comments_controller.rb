@@ -22,7 +22,7 @@ module Admin
     end
 
     def comment_params
-      params.expect(comment: [:text, :public])
+      params.expect(comment: %i[text public])
     end
   end
 end

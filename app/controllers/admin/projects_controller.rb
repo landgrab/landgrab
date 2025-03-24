@@ -43,16 +43,16 @@ module Admin
 
     def project_params
       params
-            .expect(
-              project: [:title,
-              :description,
-              :website,
-              :hero_image_url,
-              :logo_url,
-              :welcome_text,
-              :subscriber_benefits,
-              :public]
-            )
+        .expect(
+          project: %i[title
+                      description
+                      website
+                      hero_image_url
+                      logo_url
+                      welcome_text
+                      subscriber_benefits
+                      public]
+        )
     end
   end
 end
