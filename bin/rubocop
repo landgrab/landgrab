@@ -1,3 +1,10 @@
-#!/usr/bin/env bash
+#!/usr/bin/env ruby
+# frozen_string_literal: true
 
-bundle exec rubocop --parallel
+require 'rubygems'
+require 'bundler/setup'
+
+# explicit rubocop config increases performance slightly while avoiding config confusion.
+ARGV.unshift('--config', File.expand_path('../.rubocop.yml', __dir__))
+
+load Gem.bin_path('rubocop', 'rubocop')

@@ -1,4 +1,13 @@
-#!/usr/bin/env bash
+#!/usr/bin/env ruby
+# frozen_string_literal: true
 
-# Use 'markdown' format to avoid output line concatenation with default (text) formatter
-bundle exec brakeman --quiet --exit-on-warn --no-exit-on-error --format markdown
+require 'rubygems'
+require 'bundler/setup'
+
+ARGV.unshift('--ensure-latest')
+ARGV.unshift('--quiet')
+ARGV.unshift('--exit-on-warn')
+ARGV.unshift('--no-exit-on-error')
+ARGV.unshift('--format=markdown')
+
+load Gem.bin_path('brakeman', 'brakeman')

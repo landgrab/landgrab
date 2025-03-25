@@ -43,13 +43,13 @@ module Admin
     end
 
     def price_params
-      params.require(:price)
-            .permit(
-              :title,
-              :amount_display,
-              :project_id,
-              :stripe_id
-            )
+      params
+        .expect(
+          price: %i[title
+                    amount_display
+                    project_id
+                    stripe_id]
+        )
     end
   end
 end

@@ -51,7 +51,7 @@ module Admin
     end
 
     def plot_params
-      params.require(:plot).permit(:title, :description, :polygon, :project_id, :hero_image_url)
+      params.expect(plot: %i[title description polygon project_id hero_image_url])
     end
   end
 end

@@ -29,7 +29,7 @@ class CommentsController < ApplicationController
   end
 
   def comment_params
-    params.require(:comment).permit(:post_id, :text, :public).tap do |tmp|
+    params.expect(comment: %i[post_id text public]).tap do |tmp|
       tmp[:post_id] = Post.decode_id(tmp[:post_id])
     end
   end
