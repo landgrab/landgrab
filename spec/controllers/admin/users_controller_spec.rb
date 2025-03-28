@@ -8,7 +8,7 @@ RSpec.describe Admin::UsersController do
     let(:user) { create(:user) }
 
     before do
-      sign_in(admin)
+      sign_in(admin, scope: :user)
 
       user
     end

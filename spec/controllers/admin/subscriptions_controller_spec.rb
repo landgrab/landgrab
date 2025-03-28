@@ -19,7 +19,7 @@ RSpec.describe Admin::SubscriptionsController do
     let(:redeemer) { create(:user) }
 
     before do
-      sign_in(auth_user)
+      sign_in(auth_user, scope: :user)
     end
 
     context 'when not an admin' do

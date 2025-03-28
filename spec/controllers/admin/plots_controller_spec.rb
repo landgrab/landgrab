@@ -9,7 +9,7 @@ RSpec.describe Admin::PlotsController do
 
     before do
       allow(PlotTilesPopulateJob).to receive(:perform_later)
-      sign_in(admin)
+      sign_in(admin, scope: :user)
     end
 
     it 'redirects to the plot details' do
