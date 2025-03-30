@@ -23,9 +23,16 @@ class Subscription < ApplicationRecord
   # TODO: Migrate to prices table (subscription.price.amount_display)
   monetize :price_pence, as: :price, numericality: { greater_than: 0 }, allow_nil: true
 
+  before_destroy :wipe_latest_subscription
   after_save :reset_tile_latest_subscription
 
   EXTERNALLY_PAID_PREFIX = 'sub_externallypaid'
+
+  def wipe_latest_subscription
+    return unless tile&.latest_subscription == self
+
+    tile.update!(latest_subscription: nil)
+  end
 
   def reset_tile_latest_subscription
     tile&.reset_latest_subscription!

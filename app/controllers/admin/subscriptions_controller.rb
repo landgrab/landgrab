@@ -47,7 +47,7 @@ module Admin
 
       # Do not use `valid?` as that would clear any error added above
       if @subscription.errors.none? && @subscription.save
-        old_tile&.reset_latest_subscription! if old_tile.present? && old_tile != new_tile
+        old_tile&.reset_latest_subscription! if old_tile != new_tile
 
         redirect_to admin_subscription_path(@subscription), notice: 'Subscription was successfully updated.'
       else
