@@ -28,14 +28,14 @@ class Subscription < ApplicationRecord
 
   EXTERNALLY_PAID_PREFIX = 'sub_externallypaid'
 
+  def reset_tile_latest_subscription
+    tile&.reset_latest_subscription!
+  end
+
   def wipe_latest_subscription
     return unless tile&.latest_subscription == self
 
     tile.update!(latest_subscription: nil)
-  end
-
-  def reset_tile_latest_subscription
-    tile&.reset_latest_subscription!
   end
 
   def verify_claims_hash(provided_hash)
