@@ -6,17 +6,17 @@
 
 <p>
   <strong>South West:</strong>
-  <%= @tile.southwest_rounded.join(', ') %>
+  <%= rounded_coordinates(@tile.southwest) %>
 </p>
 
 <p>
   <strong>North East:</strong>
-  <%= @tile.northeast_rounded.join(', ') %>
+  <%= rounded_coordinates(@tile.northeast) %>
 </p>
 
 <p>
   <strong>Midpoint:</strong>
-  <%= @tile.midpoint_rounded.join(', ') %>
+  <%= rounded_coordinates(@tile.midpoint) %>
 </p>
 
 <p>

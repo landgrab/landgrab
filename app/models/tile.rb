@@ -94,18 +94,6 @@ class Tile < ApplicationRecord
     plot.polygon.contains?(midpoint)
   end
 
-  def southwest_rounded
-    [southwest.x, southwest.y].map { |coord| format('%.6f', coord) }
-  end
-
-  def northeast_rounded
-    [northeast.x, northeast.y].map { |coord| format('%.6f', coord) }
-  end
-
-  def midpoint_rounded
-    [midpoint.x, midpoint.y].map { |coord| format('%.6f', coord) }
-  end
-
   def populate_coords
     x = W3wApiService.convert_to_coordinates(w3w)
     populate_coords_from_w3w_response(x)

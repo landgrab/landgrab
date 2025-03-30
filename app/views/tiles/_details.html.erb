@@ -4,7 +4,7 @@
 
 <p>
   <strong>Coordinates (longitude,latitude at tile centre):</strong>
-  <%= tile.midpoint_rounded.join(', ') %>
+  <%= rounded_coordinates(tile.midpoint) %>
 </p>
 
 <% if tile.plot.present? %>
