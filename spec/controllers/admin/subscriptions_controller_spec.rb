@@ -12,6 +12,7 @@ RSpec.describe Admin::SubscriptionsController do
 
     let(:auth_user) { create(:user, admin: true) }
     let(:tile) { create(:tile) }
+    let(:another_tile) { create(:tile) }
 
     let(:subscription_params) { {} }
 
@@ -64,7 +65,7 @@ RSpec.describe Admin::SubscriptionsController do
       expect { do_patch }.to change { subscription.reload.tile_id }.from(nil).to(tile.id)
     end
 
-    it 'updates assigned tile latest_subscription value' do
+    it 'sets the latest_subscription on newly assigned tile' do
       subscription_params[:tile_id] = tile.hashid
 
       expect { do_patch }.to change { tile.reload.latest_subscription_id }.from(nil).to(subscription.id)
@@ -92,6 +93,51 @@ RSpec.describe Admin::SubscriptionsController do
         other_subscription.update!(stripe_status: :canceled)
 
         expect { do_patch }.to(change { subscription.reload.tile_id })
+      end
+    end
+
+    context 'when unsetting the tile for which this subscription was the latest_subscription' do
+      before do
+        subscription.update!(tile:)
+        subscription_params[:tile_id] = nil
+        tile.update!(latest_subscription: subscription)
+      end
+
+      it 'wipes the subscription tile' do
+        expect { do_patch }.to(change { subscription.reload.tile_id }.from(tile.id).to(nil))
+      end
+
+      it 'wipes the latest_subscription value on the tile' do
+        expect { do_patch }.to(change { tile.reload.latest_subscription_id }.from(subscription.id).to(nil))
+      end
+
+      it 'sets the latest_subscription on the wiped tile to the next latest associated subscription' do
+        another_subscription = create(:subscription, tile:)
+        subscription_params[:tile_id] = nil
+        tile.update!(latest_subscription: subscription)
+
+        expect { do_patch }.to(change { tile.reload.latest_subscription_id }.from(subscription.id).to(another_subscription.id))
+      end
+    end
+
+    context 'when changing the tile from one where this subscription was the latest_subscription' do
+      before do
+        another_tile
+        subscription.update!(tile:)
+        subscription_params[:tile_id] = another_tile.hashid
+        tile.update!(latest_subscription: subscription)
+      end
+
+      it 'assigns new subscription tile' do
+        expect { do_patch }.to(change { subscription.reload.tile_id }.from(tile.id).to(another_tile.id))
+      end
+
+      it 'wipes the latest_subscription value on the old tile' do
+        expect { do_patch }.to(change { tile.reload.latest_subscription_id }.from(subscription.id).to(nil))
+      end
+
+      it 'sets the latest_subscription value on the new tile' do
+        expect { do_patch }.to(change { another_tile.reload.latest_subscription_id }.from(nil).to(subscription.id))
       end
     end
   end

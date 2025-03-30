@@ -10,7 +10,7 @@ class Tile < ApplicationRecord
   belongs_to :plot, optional: true
   has_many :subscriptions, dependent: :restrict_with_exception
 
-  has_many :previous_subscriptions, ->(tile) { where.not(subscriptions: { id: tile.latest_subscription_id }) }, class_name: 'Subscription', inverse_of: :tile, dependent: :nullify
+  has_many :previous_subscriptions, ->(tile) { where.not(subscriptions: { id: tile.latest_subscription_id }) }, class_name: 'Subscription', inverse_of: :tile, dependent: :restrict_with_exception
   belongs_to :latest_subscription, class_name: 'Subscription', optional: true
   has_many :post_associations, as: :postable, inverse_of: :postable, dependent: :restrict_with_exception
   has_many :posts, through: :post_associations
@@ -27,6 +27,10 @@ class Tile < ApplicationRecord
   auto_strip_attributes :w3w, squish: true
 
   delegate :project, to: :plot, allow_nil: true
+
+  def reset_latest_subscription!
+    update!(latest_subscription: subscriptions.order(id: :desc).first)
+  end
 
   def to_geojson
     geojson = RGeo::GeoJSON.encode(bounding_box.to_geometry)

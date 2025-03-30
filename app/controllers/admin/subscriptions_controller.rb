@@ -37,16 +37,18 @@ module Admin
     end
 
     def update
+      old_tile = @subscription.tile
       @subscription.assign_attributes(subscription_params)
+      new_tile = @subscription.tile
 
-      new_tile_id = @subscription.changes.dig('tile_id', 1)
-      if new_tile_id.present?
-        new_tile = Tile.find(new_tile_id)
+      if new_tile.present? && new_tile != old_tile
         @subscription.errors.add(:tile, 'is already linked to another active subscription; unlink that first') if new_tile.subscriptions.any?(&:stripe_status_active?)
       end
 
       # Do not use `valid?` as that would clear any error added above
       if @subscription.errors.none? && @subscription.save
+        old_tile&.reset_latest_subscription! if old_tile.present? && old_tile != new_tile
+
         redirect_to admin_subscription_path(@subscription), notice: 'Subscription was successfully updated.'
       else
         render :edit, status: :unprocessable_entity
