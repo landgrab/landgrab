@@ -18,4 +18,15 @@ RSpec.describe User do
       expect(gertrude.last_name).to eq 'van Dyk'
     end
   end
+
+  describe '#auto_strip_attributes' do
+    it 'trims whitespace on names' do
+      user = build(:user, first_name: '  oscar  ', last_name: '  spacey')
+
+      user.save!
+
+      expect(user.first_name).to eq 'Oscar'
+      expect(user.last_name).to eq 'Spacey'
+    end
+  end
 end

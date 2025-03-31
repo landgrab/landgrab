@@ -21,6 +21,8 @@ class User < ApplicationRecord
 
   before_create :titleize_lowercased_names
 
+  auto_strip_attributes :first_name, :last_name, squish: true
+
   def full_name
     [first_name, last_name].join(' ')
   end
