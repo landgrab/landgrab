@@ -24,20 +24,18 @@ class Subscription < ApplicationRecord
   monetize :price_pence, as: :price, numericality: { greater_than: 0 }, allow_nil: true
 
   before_destroy :wipe_latest_subscription
-  after_save :assign_latest_subscription
+  after_save :reset_tile_latest_subscription
 
   EXTERNALLY_PAID_PREFIX = 'sub_externallypaid'
 
-  def assign_latest_subscription
-    return if tile.nil?
-
-    tile.update!(latest_subscription: tile.subscriptions.order(id: :desc).first)
+  def reset_tile_latest_subscription
+    tile&.reset_latest_subscription!
   end
 
   def wipe_latest_subscription
-    return if tile.nil? || tile.latest_subscription != self
+    return unless tile&.latest_subscription == self
 
-    tile&.update!(latest_subscription: nil)
+    tile.update!(latest_subscription: nil)
   end
 
   def verify_claims_hash(provided_hash)

@@ -10,7 +10,7 @@ class Tile < ApplicationRecord
   belongs_to :plot, optional: true
   has_many :subscriptions, dependent: :restrict_with_exception
 
-  has_many :previous_subscriptions, ->(tile) { where.not(subscriptions: { id: tile.latest_subscription_id }) }, class_name: 'Subscription', inverse_of: :tile, dependent: :nullify
+  has_many :previous_subscriptions, ->(tile) { where.not(subscriptions: { id: tile.latest_subscription_id }) }, class_name: 'Subscription', inverse_of: :tile, dependent: :restrict_with_exception
   belongs_to :latest_subscription, class_name: 'Subscription', optional: true
   has_many :post_associations, as: :postable, inverse_of: :postable, dependent: :restrict_with_exception
   has_many :posts, through: :post_associations
@@ -28,6 +28,10 @@ class Tile < ApplicationRecord
 
   delegate :project, to: :plot, allow_nil: true
 
+  def reset_latest_subscription!
+    update!(latest_subscription: subscriptions.order(id: :desc).first)
+  end
+
   def to_geojson
     geojson = RGeo::GeoJSON.encode(bounding_box.to_geometry)
 
@@ -41,17 +45,18 @@ class Tile < ApplicationRecord
     geojson.to_json
   end
 
-  def available?
+  def available?(allow_cancelled: false)
     return true if latest_subscription.nil?
     return true if latest_subscription.new_record? # handle display on 'new' screen
 
-    # TODO: consider 'cancelled' etc as available again? Perhaps only if not re-subscribed again (by the same user)?
-    # Perhaps this becomes available_to?(user) and that allows snatching the tile again after subscription lapses, within a set time?
+    # Anyone else can subscribe once a tile's subscription is cancelled.
+    return true if allow_cancelled && latest_subscription.stripe_status_canceled?
+
     false
   end
 
-  def unavailable?
-    !available?
+  def unavailable?(allow_cancelled: false)
+    !available?(allow_cancelled:)
   end
 
   def popup_content
