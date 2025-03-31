@@ -22,6 +22,17 @@
     </tr>
 
     <tr>
+      <th>Hero Image</th>
+      <td>
+        <% if post.hero_image.attached? %>
+          <%= image_tag post.hero_image, height: '250px' %>
+        <% else %>
+          <p>None</p>
+        <% end %>
+      </td>
+    </tr>
+
+    <tr>
       <th>Author</th>
       <td><%= link_to post.author.full_name, admin_user_path(post.author) %></td>
     </tr>

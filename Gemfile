@@ -19,6 +19,9 @@ gem 'activerecord-postgis-adapter'
 # Remove whitespace in user-supplied data
 gem 'auto_strip_attributes'
 
+# Amazon S3 storage for Active Storage
+gem 'aws-sdk-s3', require: false
+
 # Reduces boot times through caching; required in config/boot.rb
 gem 'bootsnap', require: false
 

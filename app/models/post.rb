@@ -9,6 +9,8 @@ class Post < ApplicationRecord
   has_many :post_views, dependent: :destroy
   has_many :comments, dependent: :restrict_with_exception
 
+  has_one_attached :hero_image if ENV.key?('ACTIVE_STORAGE_S3_BUCKET_NAME')
+
   validates :title, presence: true
   validates :body, presence: true
 
