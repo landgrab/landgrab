@@ -24,10 +24,14 @@
     <tr>
       <th>Hero Image</th>
       <td>
-        <% if post.hero_image.attached? %>
-          <%= image_tag post.hero_image, height: '250px' %>
+        <% if ENV.key?('ACTIVE_STORAGE_S3_BUCKET_NAME') %>
+          <% if post.hero_image.attached? %>
+            <%= image_tag post.hero_image, height: '250px' %>
+          <% else %>
+            <p>None</p>
+          <% end %>
         <% else %>
-          <p>None</p>
+          No hero image; image uploads are not yet configured in this environment.
         <% end %>
       </td>
     </tr>
