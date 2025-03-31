@@ -7,6 +7,5 @@ class Price < ApplicationRecord
   validates :amount_display, presence: true
   validates :stripe_id, format: { with: /\Aprice_[0-9a-zA-Z]+\z/ }
 
-  auto_strip_attributes :title, squish: true
-  auto_strip_attributes :amount_display, squish: true
+  auto_strip_attributes :title, :amount_display, :stripe_id, squish: true
 end

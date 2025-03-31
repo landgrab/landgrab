@@ -10,7 +10,7 @@ class Project < ApplicationRecord
   validates :title, presence: true
   validates :hero_image_url, :logo_url, :website, url: true, allow_blank: true
 
-  auto_strip_attributes :title, squish: true
+  auto_strip_attributes :title, :hero_image_url, :logo_url, :website, squish: true
   auto_strip_attributes :description, :welcome_text, :subscriber_benefits
 
   def viewable_by?(user)

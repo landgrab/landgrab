@@ -17,6 +17,9 @@ class Post < ApplicationRecord
   scope :body, ->(value) { where('posts.body ILIKE ?', "%#{value}%") }
   scope :preview, ->(value) { where('posts.preview ILIKE ?', "%#{value}%") }
 
+  auto_strip_attributes :title, squish: true
+  auto_strip_attributes :body, :preview
+
   W3W_REGEX = %r{/{3}([a-z]+\.[a-z]+\.[a-z]+)}
 
   def associated_tiles

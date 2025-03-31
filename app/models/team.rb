@@ -10,6 +10,8 @@ class Team < ApplicationRecord
 
   before_validation :normalize_slug
 
+  auto_strip_attributes :title, :slug, :logo_url, :website, :description, squish: true
+
   def normalize_slug
     self.slug = slug.present? ? slug&.parameterize : title&.parameterize
   end

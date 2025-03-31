@@ -15,7 +15,7 @@ class Plot < ApplicationRecord
   validate :validate_bounding_box_dimensions
   validate :validate_overlapping_polygons
 
-  auto_strip_attributes :title, squish: true
+  auto_strip_attributes :title, :hero_image_url, squish: true
 
   enum :tile_population_status, {
     pending: 0,
