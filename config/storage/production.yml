@@ -8,5 +8,5 @@
     region: <%= ENV.fetch('ACTIVE_STORAGE_S3_REGION') %>
     request_checksum_calculation: when_required
     response_checksum_validation: when_required
-    public: true
+    # public: true
 <% end %>
