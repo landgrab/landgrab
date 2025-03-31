@@ -39,9 +39,7 @@ module Admin
     def update
       @subscription.assign_attributes(subscription_params)
 
-      if @subscription.tile&.unavailable?(allow_cancelled: true)
-        @subscription.errors.add(:tile, 'is unavailable; unlink other subscriptions from it first')
-      end
+      validate_new_tile_availability
 
       # Do not use `valid?` as that would clear any error added above
       if @subscription.errors.none? && @subscription.save
@@ -78,6 +76,13 @@ module Admin
       return if old_tile_id.nil?
 
       Tile.find(old_tile_id).reset_latest_subscription!
+    end
+
+    def validate_new_tile_availability
+      return if @subscription.tile.nil?
+      return if @subscription.tile.available?(allow_cancelled: true)
+
+      @subscription.errors.add(:tile, 'is unavailable; unlink other subscriptions from it first')
     end
 
     # rubocop:disable Metrics/AbcSize
