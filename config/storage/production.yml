@@ -6,4 +6,6 @@
     secret_access_key: <%= ENV.fetch('ACTIVE_STORAGE_S3_SECRET_ACCESS_KEY') %>
     bucket: <%= ENV.fetch('ACTIVE_STORAGE_S3_BUCKET_NAME') %>
     region: <%= ENV.fetch('ACTIVE_STORAGE_S3_REGION') %>
+    request_checksum_calculation: when_required
+    response_checksum_validation: when_required
 <% end %>
