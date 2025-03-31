@@ -86,7 +86,7 @@ RSpec.describe Admin::SubscriptionsController do
       it 'returns an error' do
         do_patch
 
-        expect(response.body).to include('already linked to another active subscription')
+        expect(response.body).to include('Tile is unavailable')
       end
 
       it 'allows update if the other subscription was cancelled' do

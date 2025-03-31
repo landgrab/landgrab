@@ -37,12 +37,10 @@ module Admin
     end
 
     def update
-      old_tile = @subscription.tile
       @subscription.assign_attributes(subscription_params)
-      new_tile = @subscription.tile
 
-      if new_tile.present? && new_tile != old_tile
-        @subscription.errors.add(:tile, 'is already linked to another active subscription; unlink that first') if new_tile.subscriptions.any?(&:stripe_status_active?)
+      if @subscription.tile&.unavailable?(allow_cancelled: true)
+        @subscription.errors.add(:tile, 'is unavailable; unlink other subscriptions from it first')
       end
 
       # Do not use `valid?` as that would clear any error added above
