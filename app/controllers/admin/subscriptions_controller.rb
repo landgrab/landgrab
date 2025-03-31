@@ -47,7 +47,7 @@ module Admin
 
       # Do not use `valid?` as that would clear any error added above
       if @subscription.errors.none? && @subscription.save
-        old_tile&.reset_latest_subscription! if old_tile != new_tile
+        reset_previous_tile_latest_subscription
 
         redirect_to admin_subscription_path(@subscription), notice: 'Subscription was successfully updated.'
       else
@@ -71,6 +71,15 @@ module Admin
 
     def subscription_params
       subscription_params_parsed.require(:subscription).permit(:subscriber_id, :redeemer_id, :tile_id, :project_id)
+    end
+
+    def reset_previous_tile_latest_subscription
+      return unless @subscription.previous_changes.key?(:tile_id)
+
+      old_tile_id = @subscription.previous_changes.dig(:tile_id, 0)
+      return if old_tile_id.nil?
+
+      Tile.find(old_tile_id).reset_latest_subscription!
     end
 
     # rubocop:disable Metrics/AbcSize
