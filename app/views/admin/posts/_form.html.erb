@@ -45,6 +45,28 @@
     </div>
   </div>
 
+  <% if ENV.key?('ACTIVE_STORAGE_S3_BUCKET_NAME')%>
+    <% if post.persisted? %>
+      <p>A hero image can currently only be attached when first creating the post.</p>
+    <% else %>
+      <div class="row mb-3 g-3 align-items-center">
+        <div class="col-sm-2">
+          <%= form.label :hero_image, class: 'col-form-label' %>
+        </div>
+        <div class="col-sm-5">
+          <%= form.file_field :hero_image, class: 'form-control', aria: { describedby: 'heroImageHelp' } %>
+        </div>
+        <div class="col-sm-5">
+          <span id="heroImageHelp" class="form-text">
+            Attach an image to be shown when previewing the post and as a main image.
+          </span>
+        </div>
+      </div>
+    <% end %>
+  <% else %>
+    <p>Image uploads (such as hero images) are not yet configured in this environment.</p>
+  <% end %>
+
   <% if post.new_record? %>
     <div class="row mb-3 g-3 align-items-center">
       <div class="col-sm-2">

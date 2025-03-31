@@ -18,5 +18,7 @@ ignore_unreachable_actions:
 - devise/unlocks#new
 - devise/unlocks#show
 - devise#_prefixes
+- active_storage/blobs/proxy#send_stream
+- active_storage/representations/proxy#send_stream
 
 ignore_unused_routes:

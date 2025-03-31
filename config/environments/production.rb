@@ -46,6 +46,9 @@ Rails.application.configure do
   # Prevent health checks from clogging up the logs.
   config.silence_healthcheck_path = '/up'
 
+  # Store files on an AWS S3 compatible service.
+  config.active_storage.service = :s3 if ENV.key?('ACTIVE_STORAGE_S3_BUCKET_NAME')
+
   # Don't log any deprecations.
   config.active_support.report_deprecations = false
 
