@@ -2,7 +2,8 @@
 <% viewed_post_ids = current_user&.viewed_post_ids || [] %>
 <% view_all_link ||= nil %>
 <% show_preview ||= false %>
-<% posts = Post.where(id: posts.map(&:id)).includes(:hero_image_attachment) %>
+<% posts = Post.where(id: posts.map(&:id)) %>
+<% posts = posts.includes(:hero_image_attachment) if LandgrabService.attachments_enabled? %>
 <% sorted_posts = posts.sort_by { |x| [x.published_at.nil? ? 0 : 1, x.published_at] }.reverse %>
 <% sorted_posts = sorted_posts.first(limit) if limit.present? %>
 
