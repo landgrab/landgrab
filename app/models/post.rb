@@ -9,7 +9,11 @@ class Post < ApplicationRecord
   has_many :post_views, dependent: :destroy
   has_many :comments, dependent: :restrict_with_exception
 
-  has_one_attached :hero_image if LandgrabService.attachments_enabled?
+  if LandgrabService.attachments_enabled?
+    has_one_attached :hero_image do |attachable|
+      attachable.variant :thumb, resize_to_fill: [100, 100]
+    end
+  end
 
   validates :title, presence: true
   validates :body, presence: true
