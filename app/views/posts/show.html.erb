@@ -10,6 +10,10 @@
 <div class="row">
   <div class="col-md-8">
     <% if @viewable %>
+      <% if LandgrabService.attachments_enabled? && @post.hero_image.attached? %>
+        <%= image_tag @post.hero_image, class: 'img-fluid rounded' %>
+        <hr>
+      <% end %>
       <%= markdown(linkify_tiles(@post.body)) %>
     <% else %>
       <% if user_signed_in? %>

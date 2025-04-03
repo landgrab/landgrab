@@ -67,6 +67,9 @@ gem 'has_scope'
 # Replace raw numeric IDs with short unique ids
 gem 'hashid-rails'
 
+# Generating variants of images
+gem 'image_processing'
+
 # JSON APIs
 gem 'jbuilder'
 
