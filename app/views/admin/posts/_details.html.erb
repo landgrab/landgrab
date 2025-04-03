@@ -24,9 +24,9 @@
     <tr>
       <th>Hero Image</th>
       <td>
-        <% if ENV.key?('ACTIVE_STORAGE_S3_BUCKET_NAME') %>
+        <% if LandgrabService.attachments_enabled? %>
           <% if post.hero_image.attached? %>
-            <%= image_tag post.hero_image, height: '250px' %>
+            <%= image_tag post.hero_image, height: '250px', class: 'rounded' %>
           <% else %>
             <p>None</p>
           <% end %>

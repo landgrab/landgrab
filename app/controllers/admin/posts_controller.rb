@@ -86,7 +86,7 @@ module Admin
     end
 
     def post_params_for_update
-      params.expect(post: %i[title preview body published_at])
+      params.expect(post: %i[title preview body hero_image published_at])
     end
   end
 end
