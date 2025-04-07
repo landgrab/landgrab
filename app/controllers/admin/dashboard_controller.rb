@@ -7,5 +7,7 @@ module Admin
     def dashboard
       render 'admin/dashboard'
     end
+
+    def settings; end
   end
 end

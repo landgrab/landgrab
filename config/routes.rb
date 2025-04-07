@@ -67,6 +67,8 @@ Rails.application.routes.draw do
   namespace :admin do
     root to: 'dashboard#dashboard', as: :dashboard
 
+    get '/settings' => 'dashboard#settings', as: :settings
+
     resources :comments, only: %i[index show]
     resources :teams, only: %i[create index show new edit update]
     resources :tiles, only: %i[create index show new]
