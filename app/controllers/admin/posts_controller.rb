@@ -93,11 +93,11 @@ module Admin
     end
 
     def post_params_for_create
-      params.expect(post: [:title, :preview, :body, :hero_image, :publish_immediately, images: []])
+      params.expect(post: [:title, :preview, :body, :hero_image, :publish_immediately, { images: [] }])
     end
 
     def post_params_for_update
-      params.expect(post: [:title, :preview, :body, :hero_image, :published_at, images: []])
+      params.expect(post: [:title, :preview, :body, :hero_image, :published_at, { images: [] }])
     end
   end
 end
