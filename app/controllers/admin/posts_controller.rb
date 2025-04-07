@@ -38,6 +38,7 @@ module Admin
       @post.author = current_user
 
       if @post.save
+        inject_image_tags
         @post.update!(published_at: @post.created_at) if @post.publish_immediately == 'true'
         redirect_to admin_post_path(@post), notice: 'Post was successfully created.'
       else
@@ -47,6 +48,7 @@ module Admin
 
     def update
       if @post.update(post_params_for_update)
+        inject_image_tags if @post.previous_changes.key?('images')
         redirect_to admin_post_path(@post), notice: 'Post was successfully updated.'
       else
         render :edit
@@ -81,12 +83,21 @@ module Admin
       @post = Post.find_by_hashid!(params[:id])
     end
 
+    def inject_image_tags
+      return unless LandgrabService.attachments_enabled?
+
+      @post.images.each do |image|
+        @post.body = "![#{image.filename}](#{Rails.application.routes.url_helpers.rails_blob_path(image)})\n\n#{@post.body}" if @post.body.exclude?(image.filename.to_s)
+      end
+      @post.save!
+    end
+
     def post_params_for_create
-      params.expect(post: %i[title preview body hero_image publish_immediately])
+      params.expect(post: [:title, :preview, :body, :hero_image, :publish_immediately, { images: [] }])
     end
 
     def post_params_for_update
-      params.expect(post: %i[title preview body hero_image published_at])
+      params.expect(post: [:title, :preview, :body, :hero_image, :published_at, { images: [] }])
     end
   end
 end
