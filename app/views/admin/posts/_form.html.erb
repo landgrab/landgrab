@@ -63,8 +63,47 @@
         </span>
       </div>
     </div>
+
+    <div class="row mb-3 g-3 align-items-center">
+      <div class="col-sm-2">
+        <%= form.label :images, 'More Images', class: 'col-form-label' %>
+      </div>
+      <div class="col-sm-5">
+        <%= form.file_field :images, class: 'form-control', aria: { describedby: 'moreImagesHelp' }, multiple: true %>
+      </div>
+      <div class="col-sm-5">
+        <span id="moreImagesHelp" class="form-text">
+          Attach additional images to be inserted into the post.
+        </span>
+      </div>
+    </div>
+    <% if post.images.any? %>
+      <div class="row mb-3 g-3 align-items-center">
+        <div class="col-sm-2">
+          Existing images
+        </div>
+        <div class="col-sm-5">
+          <% post.images.each do |image| %>
+            <span class="click-to-remove-container">
+              <%= image_tag image.variant(:thumb),
+                            height: '50px',
+                            width: '50px',
+                            class: 'rounded mt-1 click-to-remove-trigger',
+                            style: 'cursor: not-allowed;',
+                            title: 'Click to remove' %>
+              <%= form.hidden_field :images, multiple: true, value: image.signed_id %>
+            </span>
+          <% end %>
+        </div>
+        <div class="col-sm-5">
+          <span class="form-text">
+            Select images to remove them from the post.
+          </span>
+        </div>
+      </div>
+    <% end %>
   <% else %>
-    <p>Image uploads (such as hero images) are not yet configured in this environment.</p>
+    <p>Image uploads (hero or other images) are not yet configured in this environment.</p>
   <% end %>
 
   <% if post.new_record? %>
@@ -114,3 +153,16 @@
     <%= form.submit 'Create Post', class: 'btn btn-primary' %>
   <% end %>
 <% end %>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const removeTriggers = document.querySelectorAll('.click-to-remove-trigger');
+    removeTriggers.forEach(trigger => {
+      trigger.addEventListener('click', function(event) {
+        event.preventDefault();
+        const container = event.target.closest('.click-to-remove-container');
+        container.remove();
+      });
+    });
+  });
+</script>

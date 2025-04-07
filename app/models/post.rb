@@ -13,6 +13,9 @@ class Post < ApplicationRecord
     has_one_attached :hero_image do |attachable|
       attachable.variant :thumb, resize_to_fill: [100, 100]
     end
+    has_many_attached :images, dependent: :detach do |attachable|
+      attachable.variant :thumb, resize_to_fill: [100, 100]
+    end
   end
 
   validates :title, presence: true
