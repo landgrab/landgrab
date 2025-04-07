@@ -4,7 +4,6 @@
 require 'rubygems'
 require 'bundler/setup'
 
-ARGV.unshift('--ensure-latest')
 ARGV.unshift('--quiet')
 ARGV.unshift('--exit-on-warn')
 ARGV.unshift('--no-exit-on-error')
