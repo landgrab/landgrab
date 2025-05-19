@@ -13,13 +13,13 @@ cp .env.sample .env
 Build the services via docker;
 
 ```sh
-docker-compose build
+docker compose build
 ```
 
 Run the server...
 
 ```sh
-docker-compose up
+docker compose up
 ```
 
 Open the site at [localhost:3000](http://localhost:3000)!
@@ -27,13 +27,13 @@ Open the site at [localhost:3000](http://localhost:3000)!
 Register in the UI, then set yourself (the first user) as admin;
 
 ```sh
-docker-compose exec app bin/rails runner 'User.first.update!(admin: true)'
+docker compose exec app bin/rails runner 'User.first.update!(admin: true)'
 ```
 
 Access the Rails console (for any other changes);
 
 ```sh
-docker-compose exec app bin/rails c
+docker compose exec app bin/rails c
 ```
 
 ## Troubleshooting
@@ -65,5 +65,5 @@ docker compose run app rm /usr/app/landgrab/tmp/pids/server.pid
 ### Could not find xxx in locally installed gems
 
 ```sh
-docker-compose exec app bin/bundle install
+docker compose exec app bin/bundle install
 ```

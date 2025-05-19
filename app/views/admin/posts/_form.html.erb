@@ -66,13 +66,13 @@
 
     <div class="row mb-3 g-3 align-items-center">
       <div class="col-sm-2">
-        <%= form.label :images, 'More Images', class: 'col-form-label' %>
+        <%= form.label :images, 'Other Images', class: 'col-form-label' %>
       </div>
       <div class="col-sm-5">
-        <%= form.file_field :images, class: 'form-control', aria: { describedby: 'moreImagesHelp' }, multiple: true %>
+        <%= form.file_field :images, class: 'form-control', aria: { describedby: 'otherImagesHelp' }, multiple: true %>
       </div>
       <div class="col-sm-5">
-        <span id="moreImagesHelp" class="form-text">
+        <span id="otherImagesHelp" class="form-text">
           Attach additional images to be inserted into the post.
         </span>
       </div>
@@ -86,8 +86,8 @@
           <% post.images.each do |image| %>
             <span class="click-to-remove-container">
               <%= image_tag image.variant(:thumb),
-                            height: '50px',
-                            width: '50px',
+                            height: 50,
+                            width: 50,
                             class: 'rounded mt-1 click-to-remove-trigger',
                             style: 'cursor: not-allowed;',
                             title: 'Click to remove' %>
