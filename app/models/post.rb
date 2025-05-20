@@ -15,6 +15,7 @@ class Post < ApplicationRecord
     end
     has_many_attached :images, dependent: :detach do |attachable|
       attachable.variant :thumb, resize_to_fill: [100, 100]
+      attachable.variant :web, resize_to_limit: [822, 822]
     end
   end
 

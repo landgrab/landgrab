@@ -37,6 +37,9 @@ gem 'bullet', group: %i[development test]
 # Call 'byebug' anywhere in the code to stop execution and get a debugger console
 gem 'byebug', groups: %i[development test]
 
+# Cloudinary image uploads
+gem 'cloudinary', require: false
+
 # CSV building (for data export)
 gem 'csv'
 
