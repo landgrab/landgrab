@@ -83,17 +83,26 @@
           Existing images
         </div>
         <div class="col-sm-5">
-          <% post.images.each do |image| %>
-            <span class="click-to-remove-container">
-              <%= image_tag image.variant(:thumb),
-                            height: 50,
-                            width: 50,
-                            class: 'rounded mt-1 click-to-remove-trigger',
+          <div class="row row-cols-6 g-2">
+            <% post.images.each do |image| %>
+              <div class="col">
+                <div class="card click-to-remove-container">
+                  <%= image_tag image.variant(:thumb),
+                            class: 'rounded-top click-to-remove-trigger',
                             style: 'cursor: not-allowed;',
                             title: 'Click to remove' %>
-              <%= form.hidden_field :images, multiple: true, value: image.signed_id %>
-            </span>
-          <% end %>
+                  <%= form.hidden_field :images, multiple: true, value: image.signed_id %>
+                  <div class="card-body">
+                    <%= link_to 'thumb', image.variant(:thumb) %>
+                    <br>
+                    <%= link_to 'web', image.variant(:web) %>
+                    <br>
+                    <%= link_to 'full', image %>
+                  </div>
+                </div>
+              </div>
+            <% end %>
+          </div>
         </div>
         <div class="col-sm-5">
           <span class="form-text">

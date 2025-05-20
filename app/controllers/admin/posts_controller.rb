@@ -48,7 +48,7 @@ module Admin
 
     def update
       if @post.update(post_params_for_update)
-        inject_image_tags if @post.previous_changes.key?('images')
+        inject_image_tags
         redirect_to admin_post_path(@post), notice: 'Post was successfully updated.'
       else
         render :edit
@@ -87,7 +87,9 @@ module Admin
       return unless LandgrabService.attachments_enabled?
 
       @post.images.each do |image|
-        @post.body = "![#{image.filename}](#{Rails.application.routes.url_helpers.rails_blob_path(image)})\n\n#{@post.body}" if @post.body.exclude?(image.filename.to_s)
+        image_url = Rails.application.routes.url_helpers.url_for(image.variant(:web))
+
+        @post.body = "![#{image.filename}](#{image_url})\n\n#{@post.body}" if @post.body.exclude?(image_url)
       end
       @post.save!
     end
