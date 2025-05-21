@@ -47,7 +47,7 @@ Rails.application.configure do
   config.silence_healthcheck_path = '/up'
 
   # Store files on an AWS S3 compatible service.
-  config.active_storage.service = ENV.fetch('ACTIVE_STORAGE_SERVICE_PROVIDER').downcase.to_sym if ENV.key?('ACTIVE_STORAGE_SERVICE_PROVIDER')
+  config.active_storage.service = ENV.fetch('ACTIVE_STORAGE_SERVICE_PROVIDER').downcase if ENV.key?('ACTIVE_STORAGE_SERVICE_PROVIDER')
 
   # Don't log any deprecations.
   config.active_support.report_deprecations = false
