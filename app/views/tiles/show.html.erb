@@ -34,6 +34,9 @@
         link_to(render_w3w_code(current_sub.tile), tile_path(current_sub.tile), class: 'alert-link'),
         '.'
       ], ''), :success %>
+      Your tile - <%= current_sub.tile.w3w %> - is
+      <%= content_tag(:b, TileService.distance_between_tile_midpoints_human(current_sub.tile, @tile)) %>
+      away from this one!
     <% else %>
       <%= render 'subscription_info', tile: @tile %>
     <% end %>
