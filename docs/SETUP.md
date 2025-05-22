@@ -40,7 +40,7 @@ docker compose exec app bin/rails c
 
 ### Crash when trying to view plots
 
-Check that Rgeo is configured with Geos;
+Check that RGeo is configured with Geos;
 
 ```sh
 RGeo::Geos.supported?
