@@ -5,8 +5,11 @@
   <%= form_with(url: bulk_association_edit_admin_post_path(@post), method: :get) do |form| %>
     <div class="col-sm-4 mb-3">
       <%= label_tag :plot, 'Plot', class: 'visually-hidden' %>
-      <%= select_tag :plot, option_groups_from_collection_for_select(Project.order(:title).includes(:plots), :plots, :title, :hashid, :title, params[:plot]),
-                            { include_blank: '[ Select Plot ]', class: 'form-select' } %>
+      <% projects_collection = Project.all.includes(:plots).order(:title).to_a %>
+      <% projects_collection << Project.new(title: 'PLOTS WITH NO PROJECT', plots: Plot.where(project: nil).all) if Plot.where(project: nil).any? %>
+      <%= select_tag :plot,
+                     option_groups_from_collection_for_select(projects_collection, :plots, :title, :hashid, :title, params[:plot]),
+                     { include_blank: '[ Select Plot ]', class: 'form-select' } %>
     </div>
 
     <%= form.submit 'Choose Plot', class: 'btn btn-primary' %>
