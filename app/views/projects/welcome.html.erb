@@ -32,6 +32,8 @@
         <% if random_tile.present? %>
           <p>
             <%= link_to 'Pick a random tile for me', tile_path(random_tile), class: 'btn btn-primary' %>
+            or
+            <%= link_to 'search for a tile', find_tile_project_path(@project), class: 'btn btn-primary' %>
           </p>
         <% end %>
       </div>
