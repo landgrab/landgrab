@@ -38,7 +38,7 @@ gem 'bullet', group: %i[development test]
 gem 'byebug', groups: %i[development test]
 
 # Cloudinary image uploads
-gem 'cloudinary', require: false
+gem 'cloudinary'
 
 # CSV building (for data export)
 gem 'csv'
