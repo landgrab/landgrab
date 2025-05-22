@@ -95,6 +95,13 @@ class Tile < ApplicationRecord
     RGeo::Cartesian::PointImpl.new(RGeo::Cartesian::Factory.new, bounding_box.center_x, bounding_box.center_y)
   end
 
+  def midpoint_geo
+    avg_x = (southwest.x + northeast.x) / 2
+    avg_y = (southwest.y + northeast.y) / 2
+
+    RGeo::Geographic::SphericalPointImpl.new(RGeo::Geographic.spherical_factory, avg_x, avg_y)
+  end
+
   def within_plot?(plot)
     plot.polygon.contains?(midpoint)
   end
