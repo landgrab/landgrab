@@ -1,5 +1,5 @@
 cloudinary:
-  service: :cloudinary
+  service: Cloudinary
 s3:
   service: S3
   endpoint: <%= ENV.fetch('ACTIVE_STORAGE_S3_ENDPOINT', nil) %>
