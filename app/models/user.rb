@@ -31,6 +31,16 @@ class User < ApplicationRecord
     first_name || email.split('@').first
   end
 
+  def subscription_for_project(project)
+    return if project.nil?
+
+    associated_subscriptions
+      .joins(:tile)
+      .where(tiles: { plot_id: project.plots.ids })
+      .order(id: :desc)
+      .first # assume latest is most likely to be active
+  end
+
   def subscription_for_plot(plot)
     associated_subscriptions
       .joins(:tile)

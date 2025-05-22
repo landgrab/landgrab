@@ -1,5 +1,5 @@
 <% ready_to_link = user_signed_in? && current_user.linkable_subscriptions.any? %>
-<% current_sub = user_signed_in? && current_user.subscription_for_plot(@plot) %>
+<% current_sub = user_signed_in? && current_user.subscription_for_plot(@plot) || current_user.subscription_for_project(@plot.project) %>
 <% random_tile = @plot.tiles.available.sample %>
 
 <% if !user_signed_in? %>
@@ -26,7 +26,7 @@
 
     <% if current_sub.present? && current_sub.stripe_status_active? %>
       <%= bootstrap_alert safe_join([
-        "You're already subscribed to a tile in this plot - ",
+        "You're already subscribed to a tile in this #{current_sub.tile.plot == @plot ? 'plot' : 'project'} - ",
         link_to(render_w3w_code(current_sub.tile), tile_path(current_sub.tile), class: 'alert-link'),
         '.'
       ], ''), :success %>
