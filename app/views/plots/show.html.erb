@@ -1,5 +1,5 @@
 <% ready_to_link = user_signed_in? && current_user.linkable_subscriptions.any? %>
-<% current_sub = user_signed_in? && current_user.subscription_for_plot(@plot) || current_user.subscription_for_project(@plot.project) %>
+<% current_sub = user_signed_in? && (current_user.subscription_for_plot(@plot) || current_user.subscription_for_project(@plot.project)) %>
 <% random_tile = @plot.tiles.available.sample %>
 
 <% if !user_signed_in? %>
