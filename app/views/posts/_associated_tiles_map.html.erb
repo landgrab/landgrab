@@ -1,7 +1,8 @@
 <% mentioned_tiles = post.mentioned_tiles %>
-<% plot_assocs = post.post_associations.where(postable_type: 'Plot') %>
-<% tile_assocs = post.post_associations.where(postable_type: 'Tile') %>
-<% linked_tiles = tile_assocs.map(&:postable) %>
+<% project = post.post_associations.where(postable_type: 'Project').first&.postable %>
+<% plots = post.post_associations.where(postable_type: 'Plot').map(&:postable) %>
+<% linked_tiles = post.post_associations.where(postable_type: 'Tile').map(&:postable) %>
+<% user_subscribed_tiles = current_user&.associated_subscriptions&.select(&:usable_stripe_status?) %>
 
 <% if mentioned_tiles.any? || linked_tiles.any? %>
   <p>
@@ -23,7 +24,10 @@
   </p>
   <%= render 'static_pages/w3w_map',
     tiles: linked_tiles + mentioned_tiles,
-    plot: plot_assocs.first&.postable,
+    plot: plots.first,
     popup_tiles: mentioned_tiles,
-    featured_description: 'Mentioned' %>
+    tile_legend: [
+      { key: 'My Tile', tiles: user_subscribed_tiles, colour: 'gold' },
+      { key: 'Mentioned Tile', tiles: linked_tiles + mentioned_tiles, colour: 'green' }
+    ] %>
 <% end %>

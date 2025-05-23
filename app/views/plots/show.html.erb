@@ -62,6 +62,13 @@
 
   </div>
   <div class="col-md-6">
-    <%= render 'static_pages/w3w_map', tiles: @plot.tiles_for_map %>
+    <% tiles_for_map = @plot.tiles_for_map(include_tile: current_sub&.tile) %>
+    <%= render 'static_pages/w3w_map',
+                tiles: tiles_for_map,
+                tile_legend: [
+                  { key: :your, title: 'Your Tile', tiles: [current_sub&.tile].compact, colour: 'gold' },
+                  { key: :available, title: 'Available', tiles: tiles_for_map.select(&:available?), colour: 'blue' },
+                  { key: :unavailable, title: 'Unavailable', tiles: tiles_for_map.select(&:unavailable?), colour: 'darkred' }
+                ] %>
   </div>
 </div>
