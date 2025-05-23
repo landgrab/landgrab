@@ -50,7 +50,10 @@
 <%= render 'static_pages/w3w_map',
     tiles: @tile.plot&.tiles_for_map(include_tile: @tile) || [@tile],
     plot: @tile.plot,
-    popup_tiles: [@tile] %>
+    tile_legend: [
+      { key: :your, title: 'Your Tile', tiles: [current_sub&.tile].compact, colour: 'gold' },
+      { key: :this, title: 'This Tile', tiles: [@tile], colour: 'green' }
+    ] %>
 
 <%= render 'posts/list_group',
             posts: @tile.relevant_posts,

@@ -5,7 +5,8 @@ class Tile < ApplicationRecord
 
   after_initialize :sanitize_w3w
 
-  attr_accessor :map_popup
+  attr_accessor :map_action
+  attr_accessor :map_colour
 
   belongs_to :plot, optional: true
   has_many :subscriptions, dependent: :restrict_with_exception
@@ -39,7 +40,8 @@ class Tile < ApplicationRecord
     geojson['properties']['available'] = available?
     geojson['properties']['w3w'] = w3w
     geojson['properties']['popupContent'] = popup_content
-    geojson['properties']['focussed'] = (map_popup == :w3w)
+    geojson['properties']['action'] = (map_action == :w3w)
+    geojson['properties']['colour'] = map_colour || 'pink'
     geojson['properties']['link'] = Rails.application.routes.url_helpers.tile_path(self)
 
     geojson.to_json
@@ -60,13 +62,13 @@ class Tile < ApplicationRecord
   end
 
   def popup_content
-    return if map_popup.blank?
+    return if map_action.blank?
 
-    return "///#{w3w}" if map_popup == :w3w
+    return "///#{w3w}" if map_action == :w3w
 
-    return popup_content_details if map_popup == :view_details_or_unavailable
+    return popup_content_details if map_action == :view_details_or_unavailable
 
-    raise "Unexpected map_popup type: '#{map_popup}'"
+    raise "Unexpected map_action type: '#{map_action}'"
   end
 
   def popup_content_details
