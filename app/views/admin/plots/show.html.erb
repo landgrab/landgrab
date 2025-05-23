@@ -65,7 +65,7 @@
         <% when 'in_progress' %>
           <br>
           <br>
-          <%= bootstrap_alert 'Tile population is in progress. Please wait a few minutes and refresh the page.' %>
+          <%= bootstrap_alert "Tile population is in progress. Please wait a few minutes and refresh the page. Processed #{@plot.tiles.size} of approx #{(@plot.area / 9).ceil} total" %>
         <% when 'succeeded' %>
           <!-- tile population succeeded -->
         <% when 'errored' %>
