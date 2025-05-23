@@ -25,6 +25,9 @@
   <p>
     Click a tile on the map below to see subscription options,
     or <%= link_to 'choose one at random', tile_path(@available_tiles.sample) %>
+    <% if @plot.project.present? %>
+      or even <%= link_to 'search for a tile by name', find_tile_project_path(@plot.project) %>
+    <% end %>
   </p>
 <% end %>
 
