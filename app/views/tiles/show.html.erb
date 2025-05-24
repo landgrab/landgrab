@@ -1,6 +1,6 @@
 <% linkable_subs = current_user&.linkable_subscriptions %>
 <% ready_to_link = user_signed_in? && linkable_subs.any? %>
-<% current_sub = user_signed_in? && @tile.plot.present? && (current_user.subscription_for_plot(@tile.plot) || current_user.subscription_for_project(@tile.plot.project)) %>
+<% current_sub = current_user.presence && @tile.plot.presence && (current_user.subscription_for_plot(@tile.plot) || current_user.subscription_for_project(@tile.plot.project)) %>
 
 <% if !user_signed_in? %>
   <%= render 'layouts/progress_bar', step: 1, journey: :register_first %>
