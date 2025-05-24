@@ -47,11 +47,10 @@ class StaticPagesController < ApplicationController
 
   def explore
     log_event_mixpanel('Explore Page', { authed: user_signed_in? })
-    @plot = Plot.select('plots.id, plots.title, COUNT(tiles)')
-                .joins(:project)
+    @plot = Plot.joins(:project)
                 .where(projects: { public: true })
+                .includes(:project)
                 .with_available_tiles
-                .group('plots.id')
                 .sample
 
     return redirect_to root_url, flash: { danger: 'No plots exist yet so nothing to explore!' } if @plot.nil?
