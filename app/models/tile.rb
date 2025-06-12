@@ -5,8 +5,7 @@ class Tile < ApplicationRecord
 
   after_initialize :sanitize_w3w
 
-  attr_accessor :map_action
-  attr_accessor :map_colour
+  attr_accessor :map_action, :map_colour
 
   belongs_to :plot, optional: true
   has_many :subscriptions, dependent: :restrict_with_exception
