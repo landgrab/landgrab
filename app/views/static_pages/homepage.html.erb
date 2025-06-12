@@ -25,7 +25,16 @@
 
 <% sample_plot = Plot.joins(:tiles).distinct.sample %>
 <% if sample_plot.present? %>
-  <%= render 'w3w_map', tiles: sample_plot.tiles_for_map %>
+  <% current_sub = current_user.presence && (current_user.subscription_for_plot(@plot) || current_user.subscription_for_project(@plot.project)) %>
+  <% current_tile_in_plot = current_sub&.tile if current_sub&.tile&.plot == sample_plot %>
+  <% available, unavailable, combined_tiles = sample_plot.tiles_for_map(include_tile: current_tile_in_plot) %>
+  <%= render 'w3w_map',
+             tiles: combined_tiles,
+             tile_legend: [
+               { key: :your, title: 'Your Tile', tiles: [current_tile_in_plot].compact, colour: 'gold' },
+               { key: :available, title: 'Available', tiles: available, colour: 'blue' },
+               { key: :unavailable, title: 'Unavailable', tiles: unavailable, colour: 'darkred' }
+             ] %>
 <% else %>
   There aren't any plots in the system yet...
 <% end %>

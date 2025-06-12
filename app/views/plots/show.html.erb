@@ -62,14 +62,14 @@
 
   </div>
   <div class="col-md-6">
-    <% tiles_for_map = @plot.tiles_for_map(include_tile: current_sub&.tile) %>
+    <% available, unavailable, combined_tiles = @plot.tiles_for_map(include_tile: current_sub&.tile) %>
     <% current_tile_in_plot = current_sub&.tile if current_sub&.tile&.plot == @plot %>
     <%= render 'static_pages/w3w_map',
-                tiles: tiles_for_map,
+                tiles: combined_tiles,
                 tile_legend: [
                   { key: :your, title: 'Your Tile', tiles: [current_tile_in_plot].compact, colour: 'gold' },
-                  { key: :available, title: 'Available', tiles: tiles_for_map.select(&:available?), colour: 'blue' },
-                  { key: :unavailable, title: 'Taken', tiles: tiles_for_map.select(&:unavailable?), colour: 'darkred' }
+                  { key: :available, title: 'Available', tiles: available, colour: 'blue' },
+                  { key: :unavailable, title: 'Unavailable', tiles: unavailable, colour: 'darkred' }
                 ] %>
   </div>
 </div>
