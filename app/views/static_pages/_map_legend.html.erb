@@ -1,10 +1,9 @@
 <% show_current ||= false %>
+<% tile_legend ||= [] %>
 
 <ul class="list-inline">
-  <li class="list-inline-item"><span class="tile-legend tile-legend-available">&nbsp;</span> Available</li>
-  <li class="list-inline-item"><span class="tile-legend tile-legend-subscribed">&nbsp;</span> Taken</li>
-  <% if show_current %>
-    <li class="list-inline-item"><span class="tile-legend tile-legend-focussed">&nbsp;</span> <%= featured_description %></li>
+  <% tile_legend.each do |legend| %>
+    <li class="list-inline-item"><span class="tile-legend tile-legend-<%= legend.fetch(:key) %>">&nbsp;</span> <%= legend.fetch(:title) %></li>
   <% end %>
 </ul>
 
@@ -14,15 +13,11 @@
   width: 30px;
   border: 2px solid black;
   display: inline-block;
-  opacity: 0.5;
+  opacity: 0.75;
 }
-.tile-legend-focussed {
-  background-color: var(--landgrab-color-green-light, limegreen);
-}
-.tile-legend-available {
-  background-color: var(--landgrab-color-blue, blue);
-}
-.tile-legend-subscribed {
-  background-color: var(--landgrab-color-red-dark, darkred);
-}
+<% tile_legend.each do |legend| %>
+  .tile-legend-<%= legend.fetch(:key) %> {
+    background-color: var(--landgrab-color-<%= legend.fetch(:colour) %>, <%= legend.fetch(:colour) %>);
+  }
+<% end %>
 </style>

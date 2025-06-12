@@ -1,5 +1,5 @@
 <% ready_to_link = user_signed_in? && current_user.linkable_subscriptions.any? %>
-<% current_sub = user_signed_in? && (current_user.subscription_for_plot(@plot) || current_user.subscription_for_project(@plot.project)) %>
+<% current_sub = current_user.presence && (current_user.subscription_for_plot(@plot) || current_user.subscription_for_project(@plot.project)) %>
 <% random_tile = @plot.tiles.available.sample %>
 
 <% if !user_signed_in? %>
@@ -62,6 +62,14 @@
 
   </div>
   <div class="col-md-6">
-    <%= render 'static_pages/w3w_map', tiles: @plot.tiles_for_map %>
+    <% available, unavailable, combined_tiles = @plot.tiles_for_map(include_tile: current_sub&.tile) %>
+    <% current_tile_in_plot = current_sub&.tile if current_sub&.tile&.plot == @plot %>
+    <%= render 'static_pages/w3w_map',
+                tiles: combined_tiles,
+                tile_legend: [
+                  { key: :your, title: 'Your Tile', tiles: [current_tile_in_plot].compact, colour: 'gold' },
+                  { key: :available, title: 'Available', tiles: available, colour: 'blue' },
+                  { key: :unavailable, title: 'Unavailable', tiles: unavailable, colour: 'darkred' }
+                ] %>
   </div>
 </div>

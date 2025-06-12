@@ -1,10 +1,12 @@
-<% popup_tiles ||= [] %>
-<% tiles ||= [] %>
-<% plot ||= nil %>
-<% hide_legend ||= false %>
-<% map_height ||= '500px' %>
-<% featured_description ||= 'Current Tile' %>
-<% non_focussed_modal_type ||= nil %>
+<%
+popup_tiles ||= []
+tiles ||= []
+plot ||= nil
+hide_legend ||= false
+map_height ||= '500px'
+tile_legend ||= []
+non_focussed_modal_type ||= nil
+%>
 
 <script src="https://assets.what3words.com/sdk/v3/what3words.js?key=<%= ENV.fetch('WHAT3WORDS_API_KEY') %>"></script>
 
@@ -14,13 +16,26 @@
 
 <div id="map" style="width: 100%; height: <%= map_height %>" class="mb-3"></div>
 
-<% unless hide_legend %>
-  <%= render 'static_pages/map_legend',
-             show_current: popup_tiles.any?,
-             featured_description: featured_description %>
-<% end %>
+<%
+displayed_tiles = []
+displayed_legends = []
+unallocated_tiles = tiles.uniq
+tile_legend.each do |legend|
+  legend_tiles = unallocated_tiles.select { |t| legend.fetch(:tiles).map(&:w3w).include?(t.w3w) }
+  if legend_tiles.any?
+    displayed_legends << legend
+  end
+  unallocated_tiles -= legend_tiles
+  legend_tiles = legend_tiles.map { |t| t.tap { |x| x.map_action == legend.fetch(:action, nil); x.map_colour = legend.fetch(:colour) } }
+  displayed_tiles.concat(legend_tiles)
+end
+other_tiles = unallocated_tiles.map { |t| t.tap { |x| x.map_colour = 'grey' } }
+displayed_tiles.concat(other_tiles)
+%>
 
-<% tiles = tiles.each { |t| t.map_popup = popup_tiles.include?(t) ? :w3w : non_focussed_modal_type } %>
+<% unless hide_legend %>
+  <%= render 'static_pages/map_legend', tile_legend: displayed_legends %>
+<% end %>
 
 <script>
   function onEachFeature(feature, layer) {
@@ -36,13 +51,10 @@
   function tileStyle(feature) {
     const base = { color: 'black', weight: 2 }
     // Style docs: https://leafletjs.com/reference.html#path-option
-    if (feature.geometry.properties && feature.geometry.properties.focussed) {
-      return {...base, ...{ opacity: 0.65, fill: true, fillOpacity: 0.5, fillColor: 'var(--landgrab-color-green-light, limegreen)' }};
-    } else if (feature.geometry.properties && feature.geometry.properties.available) {
-      return {...base, ...{ fillColor: 'var(--landgrab-color-blue, blue)', fillOpacity: 0.3 }};
-    } else {
-      return {...base, ...{ fillColor: 'var(--landgrab-color-red-dark, darkred)', fillOpacity: 0.3 }};
+    if (feature.geometry.properties && feature.geometry.properties.colour) {
+      return {...base, ...{ opacity: 0.65, fill: true, fillOpacity: 0.8, fillColor: feature.geometry.properties.colour }};
     }
+    return {...base, ...{ fillColor: 'var(--landgrab-color-red-grey, grey)', fillOpacity: 0.5 }};
   };
 
   var map = L.map('map', { gestureHandling: true });
@@ -50,7 +62,7 @@
   addFullscreenButton(map);
   addAllLayers(map);
 
-  var allTilesGeoJson = [<%= tiles.map(&:to_geojson).join(', ').html_safe %>];
+  var allTilesGeoJson = [<%= displayed_tiles.map(&:to_geojson).join(', ').html_safe %>];
   var tiles = L.geoJSON(allTilesGeoJson, { onEachFeature: onEachFeature, style: tileStyle }).addTo(map);
 
   <% if plot.present? %>

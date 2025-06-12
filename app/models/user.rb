@@ -32,21 +32,31 @@ class User < ApplicationRecord
   end
 
   def subscription_for_project(project)
-    return if project.nil?
+    subscriptions_for_project(project).first
+  end
+
+  def subscriptions_for_project(project)
+    return [] if project.nil?
 
     associated_subscriptions
       .joins(:tile)
       .where(tiles: { plot_id: project.plots.ids })
       .order(id: :desc)
-      .first # assume latest is most likely to be active
+      .select(&:usable_stripe_status?)
   end
 
   def subscription_for_plot(plot)
+    subscriptions_for_plot(plot).first
+  end
+
+  def subscriptions_for_plot(plot)
+    return [] if plot.nil?
+
     associated_subscriptions
       .joins(:tile)
       .where(tiles: { plot_id: plot.id })
       .order(id: :desc)
-      .first # assume latest is most likely to be active
+      .select(&:usable_stripe_status?)
   end
 
   def associated_subscriptions

@@ -15,11 +15,13 @@
       maxZoom: 20
     });
 
+// <% if ENV.key?('HERE_MAPS_API_KEY') %>
     const layer_here = L.tileLayer('https://3.aerial.maps.ls.hereapi.com/maptile/2.1/maptile/newest/satellite.day/{z}/{x}/{y}/256/png?apiKey=<%= ENV.fetch('HERE_MAPS_API_KEY') %>', {
       attribution: '&copy; <a href="https://developer.here.com/" target="_blank">HERE</a>',
       maxNativeZoom: 19,
       maxZoom: 20
     });
+// <% end %>
 
     const layer_google = L.tileLayer('https://www.google.cn/maps/vt?lyrs=s@189&gl=cn&x={x}&y={y}&z={z}', {
       attribution: '&copy; Google',
@@ -31,7 +33,9 @@
 
     var baseMaps = {
       'Google': layer_google,
+      // <% if ENV.key?('HERE_MAPS_API_KEY') %>
       'HERE Maps': layer_here,
+      // <% end %>
       'OpenStreetMap': layer_osm
     };
 
