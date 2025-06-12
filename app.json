@@ -9,12 +9,20 @@
   ],
   "env": {
     "DEVISE_SECRET_KEY": "devise-secret-key",
-    "HASHIDS_SALT": "some-hashids-salt",
-    "RAILS_ENV": "test",
-    "WHAT3WORDS_API_KEY": "some-what3words-api-key"
+    "HASHID_SALT": "some-hashids-salt",
+    "HERE_MAPS_API_KEY": "some-here-maps-api-key",
+    "WHAT3WORDS_API_KEY": "some-what3words-api-key",
+    "SITE_TITLE": "Landgrab Dummy Env",
+    "STRIPE_PUBLISHABLE_KEY": "pk_test_abc123",
+    "STRIPE_SECRET_KEY": "sk_test_abc123",
+    "STRIPE_WEBHOOK_SIGNING_SECRET": "whsec_abc123",
+    "STRIPE_DASHBOARD_URL": "https://dashboard.stripe.com/test"
   },
   "environments": {
     "test": {
+      "env": {
+        "RAILS_ENV": "test"
+      },
       "addons": [
         "heroku-postgresql:in-dyno"
       ],
