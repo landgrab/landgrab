@@ -1,11 +1,9 @@
 <%
-popup_tiles ||= []
 tiles ||= []
 plot ||= nil
 hide_legend ||= false
 map_height ||= '500px'
 tile_legend ||= []
-non_focussed_modal_type ||= nil
 %>
 
 <script src="https://assets.what3words.com/sdk/v3/what3words.js?key=<%= ENV.fetch('WHAT3WORDS_API_KEY') %>"></script>
@@ -26,7 +24,7 @@ tile_legend.each do |legend|
     displayed_legends << legend
   end
   unallocated_tiles -= legend_tiles
-  legend_tiles = legend_tiles.map { |t| t.tap { |x| x.map_action == legend.fetch(:action, nil); x.map_colour = legend.fetch(:colour) } }
+  legend_tiles = legend_tiles.map { |t| t.tap { |x| x.map_action = legend.fetch(:action, nil); x.map_colour = legend.fetch(:colour) } }
   displayed_tiles.concat(legend_tiles)
 end
 other_tiles = unallocated_tiles.map { |t| t.tap { |x| x.map_colour = 'grey' } }

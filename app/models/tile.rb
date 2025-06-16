@@ -39,7 +39,7 @@ class Tile < ApplicationRecord
     geojson['properties']['available'] = available?
     geojson['properties']['w3w'] = w3w
     geojson['properties']['popupContent'] = popup_content
-    geojson['properties']['action'] = (map_action == :w3w)
+    geojson['properties']['action'] = map_action
     geojson['properties']['colour'] = map_colour || 'pink'
     geojson['properties']['link'] = Rails.application.routes.url_helpers.tile_path(self)
 
@@ -61,7 +61,7 @@ class Tile < ApplicationRecord
   end
 
   def popup_content
-    return if map_action.blank?
+    return if map_action.nil?
 
     return "///#{w3w}" if map_action == :w3w
 
