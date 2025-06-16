@@ -36,18 +36,13 @@ class CheckoutController < ApplicationController
   def success
     log_event_mixpanel('Checkout: Success')
 
+    subscription_id = nil
     5.times do
-      session = Stripe::Checkout::Session.retrieve(params[:session_id])
+      session = retrieve_authorised_checkout_session
 
-      status = session.status
-      unless status == 'complete'
+      unless session.status == 'complete'
         return redirect_to checkout_checkout_path,
                           flash: { danger: 'Something went wrong; please try again or contact us for help.' }
-      end
-
-      customer_id = session.customer
-      unless current_user.stripe_customer_id == customer_id
-        raise "Stripe Customer ID mismatch: current user '#{current_user.id}' has Stripe ID '#{current_user.stripe_customer_id}' but completed checkout had '#{customer_id}' (session '#{session.id}')"
       end
 
       subscription_id = session.subscription
@@ -139,6 +134,14 @@ class CheckoutController < ApplicationController
 
   def set_promo_code
     @promo_code = PromoCode.find_by!(code: params[:code]) if params[:code].present?
+  end
+
+  def retrieve_authorised_checkout_session
+    session = Stripe::Checkout::Session.retrieve(params[:session_id]).tap do |session|
+      unless current_user.stripe_customer_id == session.customer
+        raise "Stripe Customer ID mismatch: current user '#{current_user.id}' has Stripe ID '#{current_user.stripe_customer_id}' but completed checkout had '#{session.customer}' (session '#{session.id}')"
+      end
+    end
   end
 
   def after_subscription_success_location
