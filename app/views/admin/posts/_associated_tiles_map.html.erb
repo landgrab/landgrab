@@ -21,7 +21,7 @@
   </div>
 </div>
 
-<% tiles = tiles.each { |t| t.map_popup = associated_tiles.include?(t) ? :w3w : nil } %>
+<% tiles = tiles.each { |t| t.map_action = associated_tiles.include?(t) ? :w3w : nil } %>
 <script>
   const styleBase = { color: 'black', weight: 2 }
   const styleAssociated = {...styleBase, ...{ opacity: 0.65, fill: true, fillOpacity: 0.5, fillColor: 'blue' }};
@@ -45,7 +45,7 @@
     el.value = Array.from(w3wList).join(',\n');
   };
 
-  // <% tiles.filter { |t| t.map_popup == :w3w }.each do |tile| %>
+  // <% tiles.filter { |t| t.map_action == :w3w }.each do |tile| %>
   w3wList.add('<%= tile.w3w %>');
   // <% end %>
   updateW3WList();
