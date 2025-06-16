@@ -36,21 +36,30 @@ class CheckoutController < ApplicationController
   def success
     log_event_mixpanel('Checkout: Success')
 
-    session = Stripe::Checkout::Session.retrieve(params[:session_id])
+    5.times do
+      session = Stripe::Checkout::Session.retrieve(params[:session_id])
 
-    status = session.status
-    unless status == 'complete'
-      return redirect_to checkout_checkout_path,
-                         flash: { danger: 'Something went wrong; please try again or contact us for help.' }
+      status = session.status
+      unless status == 'complete'
+        return redirect_to checkout_checkout_path,
+                          flash: { danger: 'Something went wrong; please try again or contact us for help.' }
+      end
+
+      customer_id = session.customer
+      unless current_user.stripe_customer_id == customer_id
+        raise "Stripe Customer ID mismatch: current user '#{current_user.id}' has Stripe ID '#{current_user.stripe_customer_id}' but completed checkout had '#{customer_id}' (session '#{session.id}')"
+      end
+
+      subscription_id = session.subscription
+      # Sometimes the subscription ID is not immediately available...
+      break if subscription_id.present?
+
+      sleep 1
     end
 
-    customer_id = session.customer
-    unless current_user.stripe_customer_id == customer_id
-      raise "Stripe Customer ID mismatch: current user '#{current_user.id}' has Stripe ID '#{current_user.stripe_customer_id}' but completed checkout had '#{customer_id}' (session '#{session.id}')"
+    if subscription_id.nil?
+      raise "Stripe session '#{session.id}' has no subscription ID (after 5 attempts)"
     end
-
-    subscription_id = session.subscription
-    raise "Stripe session '#{session.id}' has no subscription ID" if subscription_id.nil?
 
     @subscription = StripeSubscriptionCreateOrRefreshJob.perform_now(subscription_id)
 
