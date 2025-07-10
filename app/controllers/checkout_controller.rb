@@ -69,7 +69,7 @@ class CheckoutController < ApplicationController
         price: @price.stripe_id,
         quantity: 1
       }],
-      subscription_data: stripe_checkout_payload_subscription_data,
+      subscription_data: { metadata: stripe_checkout_payload_subscription_metadata },
       mode: 'subscription',
       ui_mode: 'embedded',
       return_url: build_success_url
@@ -82,14 +82,12 @@ class CheckoutController < ApplicationController
     x
   end
 
-  def stripe_checkout_payload_subscription_data
+  def stripe_checkout_payload_subscription_metadata
     # Data to be stored with the subscription: https://docs.stripe.com/api/checkout/sessions/create#create_checkout_session-subscription_data-metadata
     {
-      metadata: {
-        project: @project.hashid,
-        tile: @tile&.hashid,
-        CheckoutService::REDEMPTION_MODE_KEY => @redemption_mode
-      }
+      project: @project.hashid,
+      tile: @tile&.hashid,
+      CheckoutService::REDEMPTION_MODE_KEY => @redemption_mode
     }
   end
 
