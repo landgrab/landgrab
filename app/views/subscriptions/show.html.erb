@@ -31,12 +31,30 @@
 <% elsif @subscription.usable_stripe_status? %>
   <p>
     This subscription has not yet been linked to a tile.
-    <% if @subscription.redeemed_by?(current_user) %>
-      You can find any tile and use the button to claim it using this subscription.
-    <% else %>
-      Only the person who redeems the subscription can do this.
-    <% end %>
   </p>
+  <% if @subscription.redeemed_by?(current_user) %>
+    <p>
+      You can find any tile and use the button to claim it using this subscription.
+    </p>
+    <p>
+      You can either
+      <%= link_to 'search for a tile', find_tile_project_path(@subscription.project), class: 'btn btn-primary' %>
+      or pick one of the plots below to choose one from the map.
+    </p>
+    <% if @subscription.project&.plots&.any? %>
+      <div class="row">
+        <% @subscription.project.plots.order(id: :desc).limit(2).each do |plot| %>
+          <div class="col-xs-12 col-sm-6 col-lg-4 col-xl-3 mb-4">
+            <%= render 'plots/card', plot: plot, featured: true %>
+          </div>
+        <% end %>
+      </div>
+    <% end %>
+  <% else %>
+    <p>
+      Only the person who redeems the subscription can do this.
+    </p>
+  <% end %>
 <% end %>
 
 <% unless @subscription.stripe_status_canceled? %>
