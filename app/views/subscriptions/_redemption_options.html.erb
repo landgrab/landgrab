@@ -69,5 +69,11 @@
     simply leave the email address blank.
   </p>
 
+  <p>
+    We can create a customised certificate for you to share, if you'd like.
+    Just get in touch via
+    <%= mail_to ENV.fetch('EMAIL_FROM_ADDRESS'), ENV.fetch('EMAIL_FROM_ADDRESS'), subject: 'Custom Certificate Request' %>.
+  </p>
+
   <%= render 'redemption_invites/form', redemption_invite: @subscription.redemption_invites.new %>
 <% end %>
