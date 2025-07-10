@@ -22,6 +22,12 @@
     by sharing the following link.
   </p>
 
+  <p>
+    Alternatively, we can create a customised certificate for you to share.
+    Just ask us via
+    <%= mail_to LandgrabService.email_from_address, subject: 'Custom Certificate Request' %>.
+  </p>
+
   <%= bootstrap_alert 'Warning: Anyone with this link can redeem this subscription. Send it only to the intended recipient.', 'warning' %>
 
   <% share_url = redeem_redemption_invite_url(ri, token: ri.token) %>
@@ -72,7 +78,7 @@
   <p>
     We can create a customised certificate for you to share, if you'd like.
     Just get in touch via
-    <%= mail_to ENV.fetch('EMAIL_FROM_ADDRESS'), ENV.fetch('EMAIL_FROM_ADDRESS'), subject: 'Custom Certificate Request' %>.
+    <%= mail_to LandgrabService.email_from_address, subject: 'Custom Certificate Request' %>.
   </p>
 
   <%= render 'redemption_invites/form', redemption_invite: @subscription.redemption_invites.new %>

@@ -7,6 +7,6 @@
 <h3>Email</h3>
 <p>
   Send an email to
-  <%= ENV.fetch('EMAIL_FROM_ADDRESS', 'landgrab@example.com') %>
+  <%= mail_to LandgrabService.email_from_address %>
   and we'll try to help!
 </p>

@@ -10,4 +10,8 @@ class LandgrabService
   def self.active_storage_service_provider
     ENV.fetch('ACTIVE_STORAGE_SERVICE_PROVIDER', nil)&.downcase&.to_sym
   end
+
+  def self.email_from_address
+    ENV.fetch('EMAIL_FROM_ADDRESS', 'landgrab@example.com')
+  end
 end

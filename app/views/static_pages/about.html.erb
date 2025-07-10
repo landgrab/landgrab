@@ -12,6 +12,6 @@
     Get in touch with
     <%= ENV.fetch('SITE_TITLE', 'us') %>
     by emailing
-    <%= mail_to ENV.fetch('EMAIL_FROM_ADDRESS') %>.
+    <%= mail_to LandgrabService.email_from_address %>.
   </p>
 <% end %>
