@@ -37,29 +37,22 @@ class CheckoutController < ApplicationController
     log_event_mixpanel('Checkout: Success')
 
     subscription_id = nil
-    5.times do
+    5.times do # allow for delay in the subscription being linked to session
       session = retrieve_authorised_checkout_session
 
-      unless session.status == 'complete'
-        return redirect_to checkout_checkout_path,
-                          flash: { danger: 'Something went wrong; please try again or contact us for help.' }
-      end
+      return redirect_to checkout_checkout_path, flash: { danger: 'Subscription not completed.' } unless session.status == 'complete'
 
       subscription_id = session.subscription
-      # Sometimes the subscription ID is not immediately available...
       break if subscription_id.present?
 
       sleep 1
     end
 
-    if subscription_id.nil?
-      raise "Stripe session '#{session.id}' has no subscription ID (after 5 attempts)"
-    end
+    raise "Stripe session '#{session.id}' has no sub ID (after 5 attempts)" if subscription_id.nil?
 
     @subscription = StripeSubscriptionCreateOrRefreshJob.perform_now(subscription_id)
 
-    redirect_to after_subscription_success_location,
-                flash: { success: 'Your subscription has been successfully set up!' }
+    redirect_to after_subscription_success_location, flash: { success: 'Subscription created successfully!' }
   end
 
   private
