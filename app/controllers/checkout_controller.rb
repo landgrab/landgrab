@@ -64,7 +64,6 @@ class CheckoutController < ApplicationController
 
   def stripe_checkout_payload
     x = {
-      # Stripe will create new customer if not supplied
       customer: current_user.stripe_customer_id,
       line_items: [{
         price: @price.stripe_id,
@@ -84,8 +83,7 @@ class CheckoutController < ApplicationController
   end
 
   def stripe_checkout_payload_subscription_data
-    # Data to be stored with the subscription
-    # https://docs.stripe.com/api/checkout/sessions/create#create_checkout_session-subscription_data-metadata
+    # Data to be stored with the subscription: https://docs.stripe.com/api/checkout/sessions/create#create_checkout_session-subscription_data-metadata
     {
       metadata: {
         project: @project.hashid,
@@ -130,9 +128,9 @@ class CheckoutController < ApplicationController
   end
 
   def retrieve_authorised_checkout_session
-    session = Stripe::Checkout::Session.retrieve(params[:session_id]).tap do |session|
+    Stripe::Checkout::Session.retrieve(params[:session_id]).tap do |session|
       unless current_user.stripe_customer_id == session.customer
-        raise "Stripe Customer ID mismatch: current user '#{current_user.id}' has Stripe ID '#{current_user.stripe_customer_id}' but completed checkout had '#{session.customer}' (session '#{session.id}')"
+        raise "Customer mismatch for User##{current_user.hashid}; user_cust=#{current_user.stripe_customer_id}; session_cust=#{session.customer} (session_id=#{session.id})"
       end
     end
   end
