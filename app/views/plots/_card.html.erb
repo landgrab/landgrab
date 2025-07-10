@@ -9,7 +9,7 @@
   <% end %>
   <div class="card-body">
     <h5 class="card-title"><%= plot.title %></h5>
-
+    <p><%= plot.description %></p>
     <p class="card-text">
       <% non_subscribed_tiles_count = plot.non_subscribed_tiles.size %>
       <% if non_subscribed_tiles_count.zero? %>
