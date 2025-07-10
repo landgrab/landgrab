@@ -68,7 +68,7 @@ RSpec.describe CheckoutController do
         do_get
 
         expect(response).to redirect_to(checkout_checkout_url)
-        expect(flash[:danger]).to include('try again')
+        expect(flash[:danger]).to include('not completed')
       end
     end
 
@@ -81,7 +81,7 @@ RSpec.describe CheckoutController do
         do_get
 
         expect(response).to redirect_to(project_path(project))
-        expect(flash[:success]).to include('Your subscription has been successfully set up!')
+        expect(flash[:success]).to include('Subscription created successfully!')
       end
 
       it 'redirects to tile if set' do
@@ -90,7 +90,7 @@ RSpec.describe CheckoutController do
         do_get
 
         expect(response).to redirect_to(tile_path(tile))
-        expect(flash[:success]).to include('Your subscription has been successfully set up!')
+        expect(flash[:success]).to include('Subscription created successfully!')
       end
     end
   end

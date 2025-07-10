@@ -36,26 +36,23 @@ class CheckoutController < ApplicationController
   def success
     log_event_mixpanel('Checkout: Success')
 
-    session = Stripe::Checkout::Session.retrieve(params[:session_id])
+    subscription_id = nil
+    5.times do # allow for delay in the subscription being linked to session
+      session = retrieve_authorised_checkout_session
 
-    status = session.status
-    unless status == 'complete'
-      return redirect_to checkout_checkout_path,
-                         flash: { danger: 'Something went wrong; please try again or contact us for help.' }
+      return redirect_to checkout_checkout_path, flash: { danger: 'Subscription not completed.' } unless session.status == 'complete'
+
+      subscription_id = session.subscription
+      break if subscription_id.present?
+
+      sleep 1
     end
 
-    customer_id = session.customer
-    unless current_user.stripe_customer_id == customer_id
-      raise "Stripe Customer ID mismatch: current user '#{current_user.id}' has Stripe ID '#{current_user.stripe_customer_id}' but completed checkout had '#{customer_id}' (session '#{session.id}')"
-    end
-
-    subscription_id = session.subscription
-    raise "Stripe session '#{session.id}' has no subscription ID" if subscription_id.nil?
+    raise "Stripe session '#{session.id}' has no sub ID (after 5 attempts)" if subscription_id.nil?
 
     @subscription = StripeSubscriptionCreateOrRefreshJob.perform_now(subscription_id)
 
-    redirect_to after_subscription_success_location,
-                flash: { success: 'Your subscription has been successfully set up!' }
+    redirect_to after_subscription_success_location, flash: { success: 'Subscription created successfully!' }
   end
 
   private
@@ -67,13 +64,12 @@ class CheckoutController < ApplicationController
 
   def stripe_checkout_payload
     x = {
-      # Stripe will create new customer if not supplied
       customer: current_user.stripe_customer_id,
       line_items: [{
         price: @price.stripe_id,
         quantity: 1
       }],
-      subscription_data: stripe_checkout_payload_subscription_data,
+      subscription_data: { metadata: stripe_checkout_payload_subscription_metadata },
       mode: 'subscription',
       ui_mode: 'embedded',
       return_url: build_success_url
@@ -86,15 +82,12 @@ class CheckoutController < ApplicationController
     x
   end
 
-  def stripe_checkout_payload_subscription_data
-    # Data to be stored with the subscription
-    # https://docs.stripe.com/api/checkout/sessions/create#create_checkout_session-subscription_data-metadata
+  def stripe_checkout_payload_subscription_metadata
+    # Data to be stored with the subscription: https://docs.stripe.com/api/checkout/sessions/create#create_checkout_session-subscription_data-metadata
     {
-      metadata: {
-        project: @project.hashid,
-        tile: @tile&.hashid,
-        CheckoutService::REDEMPTION_MODE_KEY => @redemption_mode
-      }
+      project: @project.hashid,
+      tile: @tile&.hashid,
+      CheckoutService::REDEMPTION_MODE_KEY => @redemption_mode
     }
   end
 
@@ -130,6 +123,14 @@ class CheckoutController < ApplicationController
 
   def set_promo_code
     @promo_code = PromoCode.find_by!(code: params[:code]) if params[:code].present?
+  end
+
+  def retrieve_authorised_checkout_session
+    Stripe::Checkout::Session.retrieve(params[:session_id]).tap do |session|
+      unless current_user.stripe_customer_id == session.customer
+        raise "Customer mismatch for User##{current_user.hashid}; user_cust=#{current_user.stripe_customer_id}; session_cust=#{session.customer} (session_id=#{session.id})"
+      end
+    end
   end
 
   def after_subscription_success_location
