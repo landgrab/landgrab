@@ -56,8 +56,19 @@
       { key: :this, title: 'This Tile', tiles: [@tile], colour: 'green' }
     ] %>
 
-<%= render 'posts/list_group',
-            posts: @tile.relevant_posts,
+<div class="row">
+  <div class="col-md-6">
+    <h2>Specific Tile Updates</h2>
+    <%= render 'posts/list_group',
+            posts: @tile.posts.published.order(published_at: :desc).first(11),
             show_preview: true,
+            limit: 10 %>
+  </div>
+  <div class="col-md-6">
+    <h2>Latest Project Updates</h2>
+    <%= render 'posts/list_group',
+            posts: @tile.relevant_posts,
             view_all_link: posts_tile_path(@tile),
             limit: 10 %>
+  </div>
+</div>
