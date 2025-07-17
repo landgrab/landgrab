@@ -4,14 +4,14 @@ RSpec.describe Admin::PostsController do
   let(:admin) { create(:user, admin: true) }
 
   describe 'POST create with mentioned tiles' do
-    let(:tile1) { create(:tile, w3w: 'delta.echo.foxtrot') }
-    let(:tile2) { create(:tile, w3w: 'golf.hotel.india') }
+    let(:delta_tile) { create(:tile, w3w: 'delta.echo.foxtrot') }
+    let(:golf_tile) { create(:tile, w3w: 'golf.hotel.india') }
 
     before do
       sign_in(admin, scope: :user)
       # Make sure the tiles exist in the database
-      tile1
-      tile2
+      delta_tile
+      golf_tile
     end
 
     it 'associates mentioned tiles when creating a new post' do
@@ -26,8 +26,8 @@ RSpec.describe Admin::PostsController do
       }.to change(Post, :count).by(1)
 
       new_post = Post.last
-      expect(new_post.associated_tiles).to include(tile1)
-      expect(new_post.associated_tiles).to include(tile2)
+      expect(new_post.associated_tiles).to include(delta_tile)
+      expect(new_post.associated_tiles).to include(golf_tile)
     end
   end
 end
