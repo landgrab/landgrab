@@ -2,6 +2,13 @@
 
 RSpec.describe Admin::PostsController do
   let(:admin) { create(:user, admin: true) }
+  let(:post_params) do
+    {
+      title: 'New Post With Mentions',
+      body: 'Check these locations: ///delta.echo.foxtrot and ///golf.hotel.india',
+      publish_immediately: 'true'
+    }
+  end
 
   describe 'POST create with mentioned tiles' do
     let(:delta_tile) { create(:tile, w3w: 'delta.echo.foxtrot') }
@@ -9,25 +16,20 @@ RSpec.describe Admin::PostsController do
 
     before do
       sign_in(admin, scope: :user)
-      # Make sure the tiles exist in the database
       delta_tile
       golf_tile
     end
 
-    it 'associates mentioned tiles when creating a new post' do
-      expect {
-        post :create, params: {
-          post: {
-            title: 'New Post With Mentions',
-            body: 'Check these locations: ///delta.echo.foxtrot and ///golf.hotel.india',
-            publish_immediately: 'true'
-          }
-        }
-      }.to change(Post, :count).by(1)
+    it 'creates a new post' do
+      expect do
+        post :create, params: { post: post_params }
+      end.to change(Post, :count).by(1)
+    end
 
+    it 'associates tiles mentioned in post body' do
+      post :create, params: { post: post_params }
       new_post = Post.last
-      expect(new_post.associated_tiles).to include(delta_tile)
-      expect(new_post.associated_tiles).to include(golf_tile)
+      expect(new_post.associated_tiles).to include(delta_tile, golf_tile)
     end
   end
 end
