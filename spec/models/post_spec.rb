@@ -10,13 +10,13 @@ RSpec.describe Post do
   end
 
   describe '#mentioned_tiles' do
-    let(:tile1) { create(:tile) }
-    let(:body) { "Tile 1 is ///#{tile1.w3w} thanks" }
+    let(:tile) { create(:tile) }
+    let(:body) { "Tile is ///#{tile.w3w} thanks" }
 
     before { post.body = body }
 
     it 'extracts tiles from w3w strings in body' do
-      expect(post.mentioned_tiles.map(&:id)).to contain_exactly(tile1.id)
+      expect(post.mentioned_tiles.map(&:id)).to contain_exactly(tile.id)
     end
   end
 end

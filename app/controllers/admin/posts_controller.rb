@@ -39,6 +39,7 @@ module Admin
 
       if @post.save
         inject_image_tags
+        associate_mentioned_tiles
         @post.update!(published_at: @post.created_at) if @post.publish_immediately == 'true'
         redirect_to admin_post_path(@post), notice: 'Post was successfully created.'
       else
@@ -49,6 +50,7 @@ module Admin
     def update
       if @post.update(post_params_for_update)
         inject_image_tags
+        associate_mentioned_tiles if @post.saved_change_to_attribute?(:body)
         redirect_to admin_post_path(@post), notice: 'Post was successfully updated.'
       else
         render :edit
@@ -92,6 +94,20 @@ module Admin
         @post.body = "![#{image.filename}](#{image_url})\n\n#{@post.body}" if @post.body.exclude?(image_url)
       end
       @post.save!
+    end
+
+    def associate_mentioned_tiles
+      # Get tiles mentioned in the body
+      mentioned_tiles = @post.mentioned_tiles
+      return if mentioned_tiles.empty?
+
+      # Find new tiles to add (avoiding existing tiles)
+      tiles_to_add = mentioned_tiles - @post.associated_tiles
+
+      # Associate new tiles with the post
+      tiles_to_add.each do |tile|
+        @post.post_associations.create(postable: tile)
+      end
     end
 
     def post_params_for_create
