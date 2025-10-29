@@ -57,6 +57,16 @@ RSpec.describe RedemptionInvitesController do
 
         expect(flash[:notice]).to eq('Invitation updated, links reset and new invitation email sent.')
       end
+
+      it 'rejects a change made too quickly' do
+        redemption_invite.update!(recipient_email: 'other-changed-email@example.com')
+
+        do_patch
+
+        expect(response).to have_http_status(:redirect)
+        expect(flash[:error]).to be_present
+        expect(flash[:error]).to include('Please wait')
+      end
     end
 
     context 'when recipient_email is changed to blank' do
@@ -73,7 +83,7 @@ RSpec.describe RedemptionInvitesController do
         expect { do_patch }.to change { redemption_invite.reload.token }.from(original_token)
       end
 
-      it 'does not queue email' do
+      it 'does not send an email' do
         allow(RedemptionInviteMailer).to receive(:invite)
 
         do_patch

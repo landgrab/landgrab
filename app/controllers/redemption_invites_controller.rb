@@ -25,9 +25,15 @@ class RedemptionInvitesController < ApplicationController
 
   def update
     validate_user_ownership!
-    # TODO: validate_frequent_email_changes!
 
-    if @redemption_invite.update(redemption_invite_params_for_update)
+    @redemption_invite.assign_attributes(redemption_invite_params_for_update)
+
+    if attempting_frequent_email_change?
+      return redirect_back fallback_location: subscription_path(@redemption_invite.subscription),
+                           flash: { error: 'Please wait at least 2 hours before sending to a new email address.' }
+    end
+
+    if @redemption_invite.save
       notice_message = reset_token_and_send_email_if_changed
 
       redirect_to subscription_path(@redemption_invite.subscription),
@@ -109,14 +115,16 @@ class RedemptionInvitesController < ApplicationController
     "#{notice_message} and new invitation email sent."
   end
 
-  # def validate_frequent_email_changes!
-  #   # It's fine to update quickly after initial creation
-  #   return if @redemption_invite.created_at == @redemption_invite.updated_at
+  def attempting_frequent_email_change?
+    # It's fine to update once after initial creation
+    return false if @redemption_invite.created_at == @redemption_invite.updated_at
 
-  #   # It's fine to update again after some time has passed
-  #   return if @redemption_invite.updated_at < 12.hours.ago
+    # It's fine to update again after some time has passed
+    return false if @redemption_invite.updated_at < 2.hours.ago
 
-  #   redirect_back fallback_location: subscription_path(@redemption_invite.subscription),
-  #                 flash: { error: 'Please wait a while before updating the invite again.' }
-  # end
+    # It's also fine to update if the email is being wiped
+    return false if @redemption_invite.recipient_email.nil?
+
+    true
+  end
 end
