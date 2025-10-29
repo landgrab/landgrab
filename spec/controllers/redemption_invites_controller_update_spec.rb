@@ -67,6 +67,14 @@ RSpec.describe RedemptionInvitesController do
         expect(flash[:error]).to be_present
         expect(flash[:error]).to include('Please wait')
       end
+
+      it 'allows a quick change if wiping email' do
+        redemption_invite.update!(recipient_email: 'other-changed-email@example.com')
+
+        update_params[:recipient_email] = ''
+
+        expect { do_patch }.to change { redemption_invite.reload.recipient_email }.to(nil)
+      end
     end
 
     context 'when recipient_email is changed to blank' do

@@ -123,7 +123,7 @@ class RedemptionInvitesController < ApplicationController
     return false if @redemption_invite.updated_at < 2.hours.ago
 
     # It's also fine to update if the email is being wiped (or was already blank)
-    return false if @redemption_invite.recipient_email.nil?
+    return false if @redemption_invite.recipient_email.blank?
 
     true
   end
