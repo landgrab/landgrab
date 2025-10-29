@@ -16,7 +16,7 @@ class User < ApplicationRecord
 
   validates :first_name, :last_name, length: { maximum: 255 }
   validates :stripe_customer_id, allow_blank: true,
-                                 format: { with: /\Acus_[0-9a-zA-Z]+\z/ },
+                                 format: { with: /\Acus_[0-9a-zA-Z]+\z/, message: 'must start with cus_' },
                                  uniqueness: true
 
   before_create :titleize_lowercased_names

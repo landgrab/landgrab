@@ -9,7 +9,7 @@ class Subscription < ApplicationRecord
   has_many :redemption_invites, dependent: :restrict_with_exception
 
   validates :stripe_id,
-            format: { with: /\Asub_[0-9a-zA-Z]+\z/ },
+            format: { with: /\Asub_[0-9a-zA-Z]+\z/, message: 'must start with sub_' },
             uniqueness: true
   validates :stripe_status, presence: true
 
