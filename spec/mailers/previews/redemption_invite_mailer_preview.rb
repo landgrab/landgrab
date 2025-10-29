@@ -6,6 +6,7 @@ class RedemptionInviteMailerPreview < ActionMailer::Preview
     redemption_invite = RedemptionInvite.new(
       id: 999_999_999,
       token: SecureRandom.base36,
+      recipient_name: 'Dwayne',
       recipient_email: 'recipient@example.com',
       subscription: Subscription.new(
         id: 999_999_998,

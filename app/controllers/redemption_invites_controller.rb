@@ -17,6 +17,8 @@ class RedemptionInvitesController < ApplicationController
 
     @redemption_invite.save!
 
+    queue_redemption_invite_email if @redemption_invite.recipient_email.present?
+
     redirect_to subscription_path(@redemption_invite.subscription),
                 notice: 'Invite successfully created.'
   end
