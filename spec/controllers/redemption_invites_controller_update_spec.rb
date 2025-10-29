@@ -84,7 +84,7 @@ RSpec.describe RedemptionInvitesController do
       it 'shows success notice without email notification' do
         do_patch
 
-        expect(flash[:notice]).to eq('Invitation updated, links reset (but no email sent as recipient email was wiped).')
+        expect(flash[:notice]).to eq('Invitation updated, links reset (but no email sent as email was wiped).')
       end
     end
 
@@ -154,14 +154,7 @@ RSpec.describe RedemptionInvitesController do
       end
 
       it 'does not update the redemption invite' do
-        original_name = redemption_invite.recipient_name
-        original_email = redemption_invite.recipient_email
-
-        do_patch
-
-        redemption_invite.reload
-        expect(redemption_invite.recipient_name).to eq(original_name)
-        expect(redemption_invite.recipient_email).to eq(original_email)
+        expect { do_patch }.not_to(change { redemption_invite.reload.attributes })
       end
 
       it 'redirects back with error flash' do
