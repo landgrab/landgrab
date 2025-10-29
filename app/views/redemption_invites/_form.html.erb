@@ -1,5 +1,5 @@
 <% admin ||= false %>
-<% model_param = admin ? [:admin, redemption_invite] : redemption_invite%>
+<% model_param = admin ? [:admin, redemption_invite] : redemption_invite %>
 <%= form_with(model: model_param, local: true) do |form| %>
   <%= render 'layouts/form_errors', errors: redemption_invite.errors %>
 
@@ -26,12 +26,16 @@
     </div>
     <div class="col-sm-7">
       <span id="recipientEmailHelp" class="form-text">
-        Enter the email of the gift recipient (we won't send the gift to this address until you ask us to).
+        <% if form.object.recipient_email.present? %>
+          The invite has already been sent; changing it will invalidate the previous link and send a new email.
+        <% else %>
+          Enter the email of the gift recipient; we'll send the gift invitation here.
+        <% end %>
       </span>
     </div>
   </div>
 
   <%= form.hidden_field :subscription_id, { value: form.object.subscription.hashid } %>
 
-  <%= form.submit 'Create Gift', class: 'btn btn-primary' %>
+  <%= form.submit form.object.persisted? ? 'Update / Resend Invitation' : 'Create / Send Invitation', class: 'btn btn-primary' %>
 <% end %>

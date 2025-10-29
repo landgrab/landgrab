@@ -1,0 +1,33 @@
+<p>
+    Hi <%= @redemption_invite.recipient_name || 'there' %>,
+</p>
+
+<p>
+    Thanks to
+    <%= @redemption_invite.subscription.subscriber.display_name %>,
+    you are now part of the
+    <%= link_to @redemption_invite.subscription.project.title,
+                project_url(@redemption_invite.subscription.project) %>
+    project on <%= ENV.fetch('SITE_TITLE', 'LandGrab') %>!
+</p>
+
+<p>
+    <%= @redemption_invite.subscription.subscriber.display_name %>
+    (copied into this email) has gifted you a subscription
+    to a tile (small square of land) in this project.
+</p>
+
+<p>
+    Simply connect to <%= ENV.fetch('SITE_TITLE', 'LandGrab') %> to choose or view your tile.
+</p>
+
+<p><%= markdown(@redemption_invite.subscription.project.subscriber_benefits) %></p>
+
+<p>
+    <%= link_to 'Connect to your gift',
+                redeem_redemption_invite_url(@redemption_invite, token: @redemption_invite.token) %>
+</p>
+
+<p>
+    <%= ENV.fetch('SITE_TITLE', 'LandGrab') %>
+</p>

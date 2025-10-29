@@ -17,13 +17,15 @@
   </p>
 
   <p>
-    You can send the gift directly
-    (e.g. via WhatsApp)
-    by sharing the following link.
+    You can send the gift directly (e.g. via WhatsApp) by sharing the link below.
+    Alternatively, set (or update) the recipient's email address
+    and we'll send it to them on your behalf.
   </p>
 
+  <%= render 'redemption_invites/form', redemption_invite: ri %>
+
   <p>
-    Alternatively, we can create a customised certificate for you to share.
+    We can create a customised certificate for you to share.
     Just ask us via
     <%= mail_to LandgrabService.email_from_address, subject: 'Custom Certificate Request' %>.
   </p>
@@ -34,7 +36,7 @@
   <% share_subject = "Subscription to #{ENV.fetch('SITE_TITLE', 'Landgrab')}" %>
   <% share_body = "I've bought you a subscription on #{ENV.fetch('SITE_TITLE', 'Landgrab')}; register here and find your tile! #{share_url}" %>
   <p>
-    <%= render 'layouts/copy_to_clipboard', copytext: share_url, copycta: 'Copy Link' %>
+    <%= render 'layouts/copy_to_clipboard', copytext: share_body, copycta: 'Copy Message' %>
   </p>
   <%= render 'layouts/share_links/whatsapp', text: share_body %>
   <%= render 'layouts/share_links/email', subject: share_subject, body: share_body %>
@@ -57,27 +59,29 @@
 
   <h2>Use for myself</h2>
   <p>
-    Just click
+    Just click...
 
     <%= button_to 'I want this for myself!',
                 redeem_own_subscription_path(@subscription),
-                class: 'btn btn-primary' %>
+                class: 'btn btn-primary btn-inline' %>
   </p>
 
   <h2>Send as a gift</h2>
 
-  <p>We'll send the email now (when you click the button)</p>
+  <p>
+    To gift this to someone else instead, please fill in their details here.
+  </p>
 
-  <p>We'll send a copy of the email to your email address too, for visibility.</p>
+  <p>If you provide an email address, we'll send the email immediately (copying you in as well).</p>
 
   <p>
     If you'd rather share the gift yourself (eg. via WhatsApp etc),
-    simply leave the email address blank.
+    or don't want to send it just yet, leave the email address blank for now.
   </p>
 
   <p>
-    We can create a customised certificate for you to share, if you'd like.
-    Just get in touch via
+    We can also create a customised certificate for you to share, if you'd like;
+    get in touch via
     <%= mail_to LandgrabService.email_from_address, subject: 'Custom Certificate Request' %>.
   </p>
 
