@@ -8,15 +8,17 @@
   </p>
 
   <p>
-    Change your mind?
-    You can
-    <%= button_to 'redeem the subscription yourself',
-                  redeem_own_subscription_path(@subscription),
-                  class: 'btn btn-primary' %>
-    any time before the recipient redeems it.
+    Changed your mind?
+    You can redeem the subscription for yourself
+    any time (before the recipient redeems it),
+    or else update the invitation details below.
   </p>
 
-  <p>
+  <%= button_to 'Redeem for myself',
+              redeem_own_subscription_path(@subscription),
+              class: 'btn btn-secondary' %>
+
+  <p class="mt-4">
     You can send the gift directly (e.g. via WhatsApp) by sharing the link below.
     Alternatively, set (or update) the recipient's email address
     and we'll send it to them on your behalf.
@@ -24,8 +26,8 @@
 
   <%= render 'redemption_invites/form', redemption_invite: ri %>
 
-  <p>
-    We can create a customised certificate for you to share.
+  <p class="mt-4">
+    We can also create a customised certificate for you to share.
     Just ask us via
     <%= mail_to LandgrabService.email_from_address, subject: 'Custom Certificate Request' %>.
   </p>
@@ -37,6 +39,7 @@
   <% share_body = "I've bought you a subscription on #{ENV.fetch('SITE_TITLE', 'Landgrab')}; register here and find your tile! #{share_url}" %>
   <p>
     <%= render 'layouts/copy_to_clipboard', copytext: share_body, copycta: 'Copy Message' %>
+    <%= render 'layouts/copy_to_clipboard', copytext: share_url, copycta: 'Copy Link Only' %>
   </p>
   <%= render 'layouts/share_links/whatsapp', text: share_body %>
   <%= render 'layouts/share_links/email', subject: share_subject, body: share_body %>
