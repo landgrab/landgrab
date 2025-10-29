@@ -29,7 +29,7 @@
     <%= link_to 'view this tile', tile_path(@subscription.tile) %>
   </p>
 <% elsif @subscription.usable_stripe_status? %>
-  <p>
+  <p class="mt-4">
     This subscription has not yet been linked to a tile.
   </p>
   <% if @subscription.redeemed_by?(current_user) %>

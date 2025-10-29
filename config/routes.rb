@@ -39,7 +39,7 @@ Rails.application.routes.draw do
     get :welcome, on: :member
   end
 
-  resources :redemption_invites, path: 'invites', only: %i[create] do
+  resources :redemption_invites, path: 'invites', only: %i[create update] do
     get 'redeem/:token', on: :member, action: :redeem, as: :redeem
   end
 

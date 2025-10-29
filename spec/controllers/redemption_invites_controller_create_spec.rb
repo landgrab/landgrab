@@ -17,6 +17,8 @@ RSpec.describe RedemptionInvitesController do
     let(:user) { create(:user) }
     let(:subscription) { create(:subscription, subscriber: user) }
 
+    let(:mailer_double) { instance_double(ActionMailer::MessageDelivery, deliver_later: true) }
+
     before do
       sign_in(user)
     end
@@ -34,6 +36,14 @@ RSpec.describe RedemptionInvitesController do
       do_post
 
       expect(response).to redirect_to(subscription_path(subscription))
+    end
+
+    it 'sends an email' do
+      allow(RedemptionInviteMailer).to receive(:invite).and_return(mailer_double)
+
+      do_post
+
+      expect(RedemptionInviteMailer).to have_received(:invite)
     end
 
     context 'when logged out' do

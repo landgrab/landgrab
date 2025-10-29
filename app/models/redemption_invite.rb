@@ -15,7 +15,11 @@ class RedemptionInvite < ApplicationRecord
   before_validation :populate_token
 
   def populate_token
-    self.token ||= SecureRandom.base36
+    reset_token if token.nil?
+  end
+
+  def reset_token
+    self.token = SecureRandom.base36
   end
 
   def verify_token(provided_token)
