@@ -27,13 +27,19 @@ class RedemptionInvitesController < ApplicationController
 
     if @redemption_invite.update(redemption_invite_params_for_update)
       notice_message = 'Invitation updated'
-      if @redemption_invite.previous_changes.key?(:recipient_email) && @redemption_invite.recipient_email.present?
-        notice_message += ', links reset and new invitation email sent.'
+      if @redemption_invite.previous_changes.key?(:recipient_email)
+        notice_message += ', links reset'
         @redemption_invite.reset_token
         @redemption_invite.save!
-        queue_redemption_invite_email
+
+        if @redemption_invite.recipient_email.present?
+          notice_message += ' and new invitation email sent.'
+          queue_redemption_invite_email
+        else
+          notice_message += ' (but no email sent as recipient email was wiped).'
+        end
       else
-        notice_message += ' (but no email sent).'
+        notice_message += ' (but no email sent as email was not updated).'
       end
 
       redirect_to subscription_path(@redemption_invite.subscription),
