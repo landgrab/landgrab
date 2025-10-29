@@ -163,6 +163,7 @@ RSpec.describe RedemptionInvitesController do
         expect(response).to have_http_status(:redirect)
         expect(flash[:error]).to be_present
         expect(flash[:error]).to include('name is too long')
+        expect(flash[:error]).to include('email must be a valid email address')
       end
     end
 
