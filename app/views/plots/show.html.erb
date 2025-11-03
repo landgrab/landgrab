@@ -24,12 +24,8 @@
 
     <%= render 'details', plot: @plot %>
 
-    <% if current_sub.present? && current_sub.stripe_status_active? %>
-      <%= bootstrap_alert safe_join([
-        "You're already subscribed to a tile in this #{current_sub.tile.plot == @plot ? 'plot' : 'project'} - ",
-        link_to(render_w3w_code(current_sub.tile), tile_path(current_sub.tile), class: 'alert-link'),
-        '.'
-      ], ''), :success %>
+    <% if current_sub.present? %>
+      <%= render 'tiles/already_subscribed_alert', subscribed_tile: current_sub.tile, plot: @plot %>
     <% elsif user_signed_in? %>
       <p>
         Click an available tile (small blue square) on the map to subscribe or view details.

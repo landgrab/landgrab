@@ -1,0 +1,10 @@
+<%= bootstrap_alert safe_join([
+  "You're already subscribed to a tile in this #{subscribed_tile.plot == plot ? 'plot' : 'project'} - ",
+  link_to(render_w3w_code(subscribed_tile), tile_path(subscribed_tile), class: 'alert-link'),
+  '.',
+  content_tag(:br),
+  'Go to ',
+  link_to('subscriptions', subscriptions_path, class: 'alert-link'),
+  ' to manage this or buy again as a gift.'
+], ''), :success %>
+

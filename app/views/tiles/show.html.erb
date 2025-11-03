@@ -28,12 +28,9 @@
     <%= render 'details', tile: @tile %>
   </div>
   <div class="col-md-6">
-    <% if current_sub.present? && current_sub&.stripe_status_active? && current_sub.tile != @tile %>
-      <%= bootstrap_alert safe_join([
-        "You're already subscribed to a tile in this #{current_sub.tile.plot == @plot ? 'plot' : 'project'} - ",
-        link_to(render_w3w_code(current_sub.tile), tile_path(current_sub.tile), class: 'alert-link'),
-        '.'
-      ], ''), :success %>
+    <% if current_sub.present? && current_sub.tile != @tile %>
+      <%= render 'tiles/already_subscribed_alert', subscribed_tile: current_sub.tile, plot: @plot %>
+
       Your tile - <%= current_sub.tile.w3w %> - is
       <%= content_tag(:b, TileService.distance_between_tile_midpoints_human(current_sub.tile, @tile)) %>
       away from this one!

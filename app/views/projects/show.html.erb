@@ -1,4 +1,5 @@
 <% ready_to_link = user_signed_in? && current_user.linkable_subscriptions.any? %>
+<% current_sub = current_user.presence && current_user.subscription_for_project(@project) %>
 
 <h1><%= title "Project: #{@project.title}" %></h1>
 
@@ -44,6 +45,9 @@
           </div>
         <% end %>
       </div>
+    <% end %>
+    <% if current_sub.present? %>
+      <%= render 'tiles/already_subscribed_alert', subscribed_tile: current_sub.tile, plot: nil %>
     <% end %>
     <h2>Project Updates</h2>
     <%= render 'posts/list_group',
