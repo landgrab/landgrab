@@ -1,4 +1,4 @@
-<% prices = tile.project&.prices&.to_a || [] %>
+<% prices = tile.project&.prices.to_a || [] %>
 <% if prices.any? %>
   <%= render 'checkout/checkout_options_form', prices: prices, tile: tile %>
 <% end %>
