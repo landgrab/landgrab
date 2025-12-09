@@ -1,4 +1,8 @@
 {
+  "name": "Landgrab",
+  "description": "Fundraise land, one tile at a time!",
+  "repository": "https://github.com/landgrab/landgrab",
+  "stack": "heroku-22",
   "buildpacks": [
     {
       "url": "https://github.com/heroku/heroku-geo-buildpack"
