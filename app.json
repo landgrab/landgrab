@@ -12,20 +12,39 @@
     }
   ],
   "env": {
-    "DEVISE_SECRET_KEY": "devise-secret-key",
-    "HASHID_SALT": "some-hashids-salt",
-    "HERE_MAPS_API_KEY": "some-here-maps-api-key",
-    "WHAT3WORDS_API_KEY": "some-what3words-api-key",
-    "SITE_TITLE": "Landgrab Dummy Env",
-    "STRIPE_PUBLISHABLE_KEY": "pk_test_abc123",
-    "STRIPE_SECRET_KEY": "sk_test_abc123",
-    "STRIPE_WEBHOOK_SIGNING_SECRET": "whsec_abc123",
-    "STRIPE_DASHBOARD_URL": "https://dashboard.stripe.com/test"
+    "DEVISE_SECRET_KEY": {
+      "description": "A secret key for verifying the integrity of signed cookies.",
+      "generator": "secret"
+    },
+    "HASHID_SALT": {
+      "description": "A salt used to generate Hashids for obfuscating database IDs.",
+      "generator": "secret"
+    },
+    "HERE_MAPS_API_KEY": {
+      "description": "API key for HERE Maps (if provided, here maps layer is included in maps) - see https://platform.here.com/",
+      "required": false
+    },
+    "SITE_TITLE": {
+      "description": "The title of the site, displayed in the browser title bar and headers etc.",
+      "value": "Landgrab"
+    },
+    "WHAT3WORDS_API_KEY": {
+      "description": "What3Words.com API key for converting coords to 3 word addresses (e.g. to generate tiles for a plot)"
+    }
   },
   "environments": {
     "test": {
       "env": {
-        "RAILS_ENV": "test"
+        "DEVISE_SECRET_KEY": "devise-secret-key",
+        "HASHID_SALT": "some-hashids-salt",
+        "HERE_MAPS_API_KEY": "some-here-maps-api-key",
+        "RAILS_ENV": "test",
+        "SITE_TITLE": "Landgrab Dummy Env",
+        "STRIPE_DASHBOARD_URL": "https://dashboard.stripe.com/test",
+        "STRIPE_PUBLISHABLE_KEY": "pk_test_abc123",
+        "STRIPE_SECRET_KEY": "sk_test_abc123",
+        "STRIPE_WEBHOOK_SIGNING_SECRET": "whsec_abc123",
+        "WHAT3WORDS_API_KEY": "some-what3words-api-key"
       },
       "addons": ["heroku-postgresql:in-dyno"],
       "formation": {
