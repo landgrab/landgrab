@@ -58,8 +58,8 @@
 
   </div>
   <div class="col-md-6">
-    <% available, unavailable, combined_tiles = @plot.tiles_for_map(include_tile: current_sub&.tile) %>
     <% current_tile_in_plot = current_sub&.tile if current_sub&.tile&.plot == @plot %>
+    <% available, unavailable, combined_tiles = @plot.tiles_for_map(include_tile: current_tile_in_plot) %>
     <%= render 'static_pages/w3w_map',
                 tiles: combined_tiles,
                 tile_legend: [
