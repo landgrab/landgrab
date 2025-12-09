@@ -17,18 +17,16 @@
     "STRIPE_SECRET_KEY": "sk_test_abc123",
     "STRIPE_WEBHOOK_SIGNING_SECRET": "whsec_abc123",
     "STRIPE_DASHBOARD_URL": "https://dashboard.stripe.com/test",
-    "GDAL_VERSION": "3.5.0",
+    "GDAL_VERSION": "3.6.4",
     "GEOS_VERSION": "3.10.2",
-    "PROJ_VERSION": " 8.2.1"
+    "PROJ_VERSION": "8.2.1"
   },
   "environments": {
     "test": {
       "env": {
         "RAILS_ENV": "test"
       },
-      "addons": [
-        "heroku-postgresql:in-dyno"
-      ],
+      "addons": ["heroku-postgresql:in-dyno"],
       "formation": {
         "test": {
           "quantity": 1,
