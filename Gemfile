@@ -6,7 +6,7 @@ source 'https://rubygems.org'
 # - .ruby-version file (`rbenv local X.Y.Z`)
 # - RuboCop's TargetRubyVersion
 # - Dockerfile FROM image definition
-ruby '3.4.7'
+ruby '3.3.7'
 
 # IMPORTANT: When upgrading Rails, follow all instructions!
 # Eg. run `app:update` script, action `new_framework_defaults_*.rb`, update `config.load_defaults`

@@ -1,4 +1,4 @@
-FROM ruby:3.4.7-slim
+FROM ruby:3.3.7-slim
 ENV RAILS_ENV=${RAILS_ENV}
 RUN apt-get update -qq
 # Install dependencies for Rails, PostgreSQL and PostGIS
