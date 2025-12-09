@@ -30,7 +30,10 @@
     },
     "WHAT3WORDS_API_KEY": {
       "description": "What3Words.com API key for converting coords to 3 word addresses (e.g. to generate tiles for a plot)"
-    }
+    },
+    "GDAL_VERSION": "3.9.0",
+    "GEOS_VERSION": "3.12.1",
+    "PROJ_VERSION": "9.4.0"
   },
   "environments": {
     "test": {
