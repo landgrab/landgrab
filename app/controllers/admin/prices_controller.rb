@@ -46,6 +46,7 @@ module Admin
       params
         .expect(
           price: %i[title
+                    description
                     amount_display
                     project_id
                     stripe_id]

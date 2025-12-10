@@ -69,5 +69,22 @@
     </div>
   </div>
 
+  <div class="row mb-3 g-3 align-items-center">
+    <div class="col-sm-2">
+      <%= form.label :description, class: 'col-form-label' %>
+    </div>
+    <div class="col-sm-5">
+      <%= form.text_area :description,
+                          placeholder: 'Additional details about this price...',
+                          class: 'form-control',
+                          rows: 3,
+                          aria: { describedby: 'descriptionHelp' } %>
+    </div>
+    <div class="col-sm-5">
+      <span id="descriptionHelp" class="form-text">
+        Optional further detail (displayed below the price option).
+      </span>
+    </div>
+  </div>
   <%= form.submit class: 'btn btn-primary' %>
 <% end %>

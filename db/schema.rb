@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_03_31_183605) do
+ActiveRecord::Schema[8.0].define(version: 2025_12_09_234000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "postgis"
@@ -56,7 +56,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_03_31_183605) do
 
   create_table "plots", force: :cascade do |t|
     t.string "title", null: false
-    t.geometry "polygon", limit: {:srid=>0, :type=>"st_polygon"}, null: false
+    t.geometry "polygon", limit: {srid: 0, type: "st_polygon"}, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "project_id"
@@ -105,6 +105,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_03_31_183605) do
     t.string "stripe_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.text "description"
     t.index ["project_id"], name: "index_prices_on_project_id"
   end
 
@@ -172,8 +173,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_03_31_183605) do
   end
 
   create_table "tiles", force: :cascade do |t|
-    t.geometry "southwest", limit: {:srid=>0, :type=>"st_point"}, null: false
-    t.geometry "northeast", limit: {:srid=>0, :type=>"st_point"}, null: false
+    t.geometry "southwest", limit: {srid: 0, type: "st_point"}, null: false
+    t.geometry "northeast", limit: {srid: 0, type: "st_point"}, null: false
     t.string "w3w", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false

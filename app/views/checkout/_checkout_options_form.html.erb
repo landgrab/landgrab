@@ -12,9 +12,14 @@
     <fieldset>
       <legend>I choose to subscribe for:</legend>
       <% prices.each_with_index do |price, idx| %>
-        <div class="form-check">
+        <div class="form-check mb-3">
           <%= radio_button_tag 'price', price.hashid, idx.zero?, class: 'form-check-input', required: true %>
-          <%= label_tag "price_#{price.hashid}", price.amount_display, class: 'form-check-label' %>
+          <%= label_tag "price_#{price.hashid}", class: 'form-check-label' do %>
+            <%= "#{price.title}: #{price.amount_display}" %>
+            <% if price.description.present? %>
+              <div class="form-text"><%= price.description %></div>
+            <% end %>
+          <% end %>
         </div>
       <% end %>
     </fieldset>
@@ -22,11 +27,13 @@
       <legend>The subscription will be for:</legend>
       <div class="form-check">
         <%= radio_button_tag 'redemption_mode', 'self', true, class: 'form-check-input', required: true %>
-        <%= label_tag 'redemption_mode_self', 'myself (redeemed against my own account)', class: 'form-check-label' %>
+        <%= label_tag 'redemption_mode_self', 'myself', class: 'form-check-label' %>
+        <span class="form-text">(redeemed against my own account)</span>
       </div>
       <div class="form-check">
         <%= radio_button_tag 'redemption_mode', 'gift', false, class: 'form-check-input', required: true %>
-        <%= label_tag 'redemption_mode_gift', 'someone else (to be sent as a gift after payment)', class: 'form-check-label' %>
+        <%= label_tag 'redemption_mode_gift', 'someone else', class: 'form-check-label' %>
+        <span class="form-text">(to be sent as a gift after payment)</span>
       </div>
     </fieldset>
     <%= form.submit 'Pay & Subscribe', class: 'btn btn-primary mt-2', name: nil %>
