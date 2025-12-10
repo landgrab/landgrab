@@ -11,6 +11,11 @@
     </tr>
 
     <tr>
+      <th>Description</th>
+      <td><%= price.description.presence || '—' %></td>
+    </tr>
+
+    <tr>
       <th>Stripe ID</th>
       <td>
         <%= link_to price.stripe_id,
