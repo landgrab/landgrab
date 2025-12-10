@@ -15,7 +15,7 @@
         <div class="form-check mb-3">
           <%= radio_button_tag 'price', price.hashid, idx.zero?, class: 'form-check-input', required: true %>
           <%= label_tag "price_#{price.hashid}", class: 'form-check-label' do %>
-            <%= "#{price.title}: #{price.amount_display}" %>
+            <%= price.amount_display %>
             <% if price.description.present? %>
               <div class="form-text"><%= price.description %></div>
             <% end %>
