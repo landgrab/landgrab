@@ -82,7 +82,7 @@ displayed_tiles.concat(other_tiles)
       var ne = map.getBounds().getNorthEast();
       var sw = map.getBounds().getSouthWest();
 
-      // Call the what3words Grid API to obtain the grid squares within the current visble bounding box
+      // Call the what3words Grid API to obtain the grid squares within the current visible bounding box
       what3words.api
         .gridSectionGeoJson({
           southwest: {
