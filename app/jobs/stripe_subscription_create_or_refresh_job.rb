@@ -15,7 +15,7 @@ class StripeSubscriptionCreateOrRefreshJob < ApplicationJob
       @subscription.subscriber = subscriber_user
       @subscription.redeemer ||= subscriber_user if metadata_redemption_mode_self?
 
-      @subscription.project ||= metadata_project
+      @subscription.project ||= metadata_project || Project.first
       @subscription.tile ||= metadata_tile
 
       @subscription.update!(
