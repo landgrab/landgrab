@@ -3,12 +3,19 @@
 require 'rails_helper'
 
 RSpec.describe User do
-  describe '#titleize_lowercased_names' do
-    it 'titleizes entirely lowercased first and last names' do
+  describe '#normalize_names' do
+    it 'normalizes entirely lowercased first and last names' do
       simon = create(:user, first_name: 'simon', last_name: 'lópez')
 
       expect(simon.first_name).to eq 'Simon'
       expect(simon.last_name).to eq 'López'
+    end
+
+    it 'normalizes entirely uppercased first and last names' do
+      john = create(:user, first_name: 'JOHN', last_name: 'SMITH')
+
+      expect(john.first_name).to eq 'John'
+      expect(john.last_name).to eq 'Smith'
     end
 
     it 'does not modify any already-capitalized first and last names' do
