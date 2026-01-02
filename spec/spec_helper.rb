@@ -19,13 +19,6 @@ require 'webmock/rspec'
 #
 # See http://rubydoc.info/gems/rspec-core/RSpec/Core/Configuration
 RSpec.configure do |config|
-  # Fix issue since Rails 8 where first test raises an exception
-  # when trying to use Warden before any strategies have been set up.
-  # See: https://github.com/heartcombo/devise/issues/5771#issuecomment-2752689527
-  config.before(:suite) do
-    Devise.configure_warden!
-  end
-
   # rspec-expectations config goes here. You can use an alternate
   # assertion/expectation library such as wrong or the stdlib/minitest
   # assertions if you prefer.
