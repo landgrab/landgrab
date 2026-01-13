@@ -11,19 +11,16 @@ module Admin
       @post = @post_association.post
 
       if @post_association.save
-        redirect_back fallback_location: admin_post_path(@post),
-                      notice: 'Post association was successfully created.'
+        redirect_back_or_to(admin_post_path(@post), notice: 'Post association was successfully created.')
       else
-        redirect_back fallback_location: @post.present? ? admin_post_path(@post) : admin_posts_path,
-                      alert: "Failed to associate: #{@post_association.errors.full_messages.to_sentence}"
+        redirect_back_or_to(@post.present? ? admin_post_path(@post) : admin_posts_path, alert: "Failed to associate: #{@post_association.errors.full_messages.to_sentence}")
       end
     end
 
     def destroy
       @post_association.destroy
 
-      redirect_back fallback_location: admin_post_path(@post_association.post),
-                    notice: 'Association was deleted.'
+      redirect_back_or_to(admin_post_path(@post_association.post), notice: 'Association was deleted.')
     end
 
     private
