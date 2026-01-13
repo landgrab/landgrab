@@ -34,7 +34,7 @@ class SubscriptionsController < ApplicationController
     @tile = Tile.find_by_hashid!(params[:tile_hashid])
 
     flash = redeem_tile
-    redirect_back fallback_location: tile_path(@tile), flash:
+    redirect_back_or_to(tile_path(@tile), flash:)
   end
 
   def manage_billing

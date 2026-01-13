@@ -8,8 +8,7 @@ class RedemptionInvitesController < ApplicationController
     @redemption_invite = RedemptionInvite.new(redemption_invite_params_for_create)
 
     if @redemption_invite.invalid?
-      redirect_back fallback_location: subscriptions_path,
-                    flash: { error: @redemption_invite.errors.full_messages.join(', ') }
+      redirect_back_or_to(subscriptions_path, flash: { error: @redemption_invite.errors.full_messages.join(', ') })
       return
     end
 
@@ -29,8 +28,8 @@ class RedemptionInvitesController < ApplicationController
     @redemption_invite.assign_attributes(redemption_invite_params_for_update)
 
     if attempting_frequent_email_change?
-      return redirect_back fallback_location: subscription_path(@redemption_invite.subscription),
-                           flash: { error: 'Please wait at least 2 hours before sending to a new email address. You can set it as blank for now if needed.' }
+      return redirect_back_or_to(subscription_path(@redemption_invite.subscription),
+                                 flash: { error: 'Please wait at least 2 hours before sending to a new email address. You can set it as blank for now if needed.' })
     end
 
     if @redemption_invite.save
@@ -39,8 +38,7 @@ class RedemptionInvitesController < ApplicationController
       redirect_to subscription_path(@redemption_invite.subscription),
                   notice: notice_message
     else
-      redirect_back fallback_location: subscription_path(@redemption_invite.subscription),
-                    flash: { error: @redemption_invite.errors.full_messages.join(', ') }
+      redirect_back_or_to(subscription_path(@redemption_invite.subscription), flash: { error: @redemption_invite.errors.full_messages.join(', ') })
     end
   end
 
