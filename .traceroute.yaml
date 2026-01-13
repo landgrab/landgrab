@@ -20,5 +20,9 @@ ignore_unreachable_actions:
 - devise#_prefixes
 - active_storage/blobs/proxy#send_stream
 - active_storage/representations/proxy#send_stream
+- active_storage/blobs/proxy#live_streaming_excluded_keys=
+- active_storage/blobs/proxy#live_streaming_excluded_keys
+- active_storage/representations/proxy#live_streaming_excluded_keys=
+- active_storage/representations/proxy#live_streaming_excluded_keys
 
 ignore_unused_routes:
