@@ -149,6 +149,8 @@ GEM
     drb (2.2.3)
     erb (6.0.1)
     erubi (1.13.1)
+    et-orbi (1.4.0)
+      tzinfo
     factory_bot (6.5.5)
       activesupport (>= 6.1.0)
     factory_bot_rails (6.5.1)
@@ -170,6 +172,9 @@ GEM
     ffi-geos (2.5.0)
       ffi (>= 1.0.0)
     formatador (1.1.0)
+    fugit (1.12.1)
+      et-orbi (~> 1.4)
+      raabro (~> 1.4)
     globalid (1.3.0)
       activesupport (>= 6.1)
     guard (2.19.1)
@@ -323,6 +328,7 @@ GEM
     public_suffix (6.0.1)
     puma (7.1.0)
       nio4r (~> 2.0)
+    raabro (1.4.0)
     racc (1.8.1)
     rack (3.0.18)
     rack-session (2.1.1)
@@ -486,6 +492,13 @@ GEM
       yard (~> 0.9, >= 0.9.24)
       yard-activesupport-concern (~> 0.0)
       yard-solargraph (~> 0.1)
+    solid_queue (1.3.0)
+      activejob (>= 7.1)
+      activerecord (>= 7.1)
+      concurrent-ruby (>= 1.3.1)
+      fugit (~> 1.11)
+      railties (>= 7.1)
+      thor (>= 1.3.1)
     stringio (3.2.0)
     stripe (18.1.0)
     thor (1.5.0)
@@ -575,6 +588,7 @@ DEPENDENCIES
   sentry-rails
   sentry-ruby
   solargraph
+  solid_queue
   stripe
   traceroute
   web-console

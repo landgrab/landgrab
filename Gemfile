@@ -125,6 +125,9 @@ gem 'sentry-ruby'
 # Language Server for IDE enhancement / 'Intellisense'
 gem 'solargraph', group: :development
 
+# Background job processing
+gem 'solid_queue'
+
 # Payments
 gem 'stripe'
 
