@@ -104,7 +104,7 @@ GEM
       aws-eventstream (~> 1, >= 1.0.2)
     backport (1.2.0)
     base64 (0.3.0)
-    bcrypt (3.1.20)
+    bcrypt (3.1.21)
     benchmark (0.5.0)
     bigdecimal (4.0.1)
     bindex (0.8.1)
@@ -135,10 +135,10 @@ GEM
     crass (1.0.6)
     csv (3.3.5)
     date (3.5.1)
-    devise (4.9.4)
+    devise (5.0.0.rc)
       bcrypt (~> 3.0)
       orm_adapter (~> 0.1)
-      railties (>= 4.1.0)
+      railties (>= 7.0)
       responders
       warden (~> 1.2.3)
     diff-lcs (1.6.2)
@@ -377,9 +377,9 @@ GEM
     regexp_parser (2.11.3)
     reline (0.6.3)
       io-console (~> 0.5)
-    responders (3.1.1)
-      actionpack (>= 5.2)
-      railties (>= 5.2)
+    responders (3.2.0)
+      actionpack (>= 7.0)
+      railties (>= 7.0)
     reverse_markdown (3.0.1)
       nokogiri
     rexml (3.4.4)
@@ -542,7 +542,7 @@ DEPENDENCIES
   byebug
   cloudinary
   csv
-  devise
+  devise (= 5.0.0.rc)
   dotenv-rails
   factory_bot_rails
   ffi-geos
