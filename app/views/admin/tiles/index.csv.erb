@@ -1,0 +1,21 @@
+<%- headers = [
+  'Tile ID',
+  'What3Words',
+  'Southwest',
+  'Northeast',
+  'Plot',
+  'Subscriber Email',
+  'Created At'
+] -%>
+<%= CSV.generate_line headers -%>
+<%- @tiles.each do |tile| -%>
+<%= CSV.generate_line([
+    tile.hashid,
+    tile.w3w,
+    tile.southwest.to_s,
+    tile.northeast.to_s,
+    tile.plot&.title,
+    tile.latest_subscription&.subscriber&.email,
+    tile.created_at
+  ]) -%>
+<%- end -%>

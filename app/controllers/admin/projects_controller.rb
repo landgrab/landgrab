@@ -6,7 +6,15 @@ module Admin
     before_action :set_project, only: %i[show edit update]
 
     def index
-      @projects = Project.order(id: :desc).page(params[:page])
+      @projects = Project.all
+
+      respond_to do |format|
+        format.html do
+          @projects = @projects.order(id: :desc).page(params[:page])
+          render :index
+        end
+        format.csv { render_csv('projects') }
+      end
     end
 
     def show; end

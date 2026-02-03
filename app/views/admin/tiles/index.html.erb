@@ -14,6 +14,8 @@
   <% if filtered?(:plot) %>
     matching selected filters.
   <% end %>
+  -
+  <%= link_to 'download csv', admin_tiles_path(format: :csv, params: request.query_parameters) %>
 </p>
 
 <%= render 'table' %>

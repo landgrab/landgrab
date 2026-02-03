@@ -23,7 +23,14 @@ module Admin
       when 'false'
         @tiles = @tiles.where.missing(:latest_subscription)
       end
-      @tiles = @tiles.order(id: :desc).includes(latest_subscription: :subscriber).page(params[:page])
+
+      respond_to do |format|
+        format.html do
+          @tiles = @tiles.order(id: :desc).includes(latest_subscription: :subscriber).page(params[:page])
+          render :index
+        end
+        format.csv { render_csv('tiles') }
+      end
     end
 
     def show; end

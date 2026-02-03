@@ -1,0 +1,25 @@
+<%- headers = [
+  'Plot ID',
+  'Title',
+  'Project',
+  'Created At',
+  'Polygon Points',
+  'Tiles Count',
+  'Area',
+  'Description',
+  'Hero Image URL'
+] -%>
+<%= CSV.generate_line headers -%>
+<%- @plots.each do |plot| -%>
+<%= CSV.generate_line([
+    plot.hashid,
+    plot.title,
+    plot.project&.title,
+    plot.created_at,
+    plot.polygon.coordinates[0].length,
+    plot.tiles.count,
+    plot.area_formatted_unsquared,
+    plot.description,
+    plot.hero_image_url
+  ]) -%>
+<%- end -%>

@@ -8,7 +8,14 @@ module Admin
     def index
       @project = Project.find_by_hashid!(params[:project]) if params[:project].present?
       @plots = @project.present? ? @project.plots : Plot.includes(:project)
-      @plots = @plots.order(id: :desc).page(params[:page])
+
+      respond_to do |format|
+        format.html do
+          @plots = @plots.order(id: :desc).page(params[:page])
+          render :index
+        end
+        format.csv { render_csv('plots') }
+      end
     end
 
     def show; end

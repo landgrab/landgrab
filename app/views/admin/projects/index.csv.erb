@@ -1,0 +1,21 @@
+<%- headers = [
+  'Project ID',
+  'Title',
+  'Public',
+  'Website',
+  'Logo URL',
+  'Hero Image URL',
+  'Created At'
+] -%>
+<%= CSV.generate_line headers -%>
+<%- @projects.each do |project| -%>
+<%= CSV.generate_line([
+    project.hashid,
+    project.title,
+    project.public,
+    project.website,
+    project.logo_url,
+    project.hero_image_url,
+    project.created_at
+  ]) -%>
+<%- end -%>

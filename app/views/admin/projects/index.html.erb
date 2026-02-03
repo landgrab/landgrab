@@ -9,6 +9,8 @@
 <%= link_to 'New Project', new_admin_project_path %>
 
 <%= page_entries_info @projects %>
+-
+<%= link_to 'download csv', admin_projects_path(format: :csv, params: request.query_parameters) %>
 
 <%= render 'table' %>
 
