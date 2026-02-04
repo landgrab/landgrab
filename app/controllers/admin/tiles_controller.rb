@@ -6,23 +6,9 @@ module Admin
     before_action :set_tile, only: %i[show]
 
     def index
-      if params[:plot].present?
-        if params[:plot] == 'BLANK'
-          @tiles = Tile.where(plot: nil)
-        else
-          @plot = Plot.find_by_hashid!(params[:plot])
-          @tiles = @plot.tiles
-        end
-      else
-        @tiles = Tile.includes(:plot)
-      end
-      @tiles = @tiles.where('tiles.w3w LIKE ?', "%#{params[:w3w]}%") if params[:w3w]
-      case params[:subscribed]
-      when 'true'
-        @tiles = @tiles.joins(:latest_subscription)
-      when 'false'
-        @tiles = @tiles.where.missing(:latest_subscription)
-      end
+      @tiles = filter_by_plot
+      @tiles = filter_by_w3w(@tiles) if params[:w3w]
+      @tiles = filter_by_subscription(@tiles)
 
       respond_to do |format|
         format.html do
@@ -59,6 +45,34 @@ module Admin
 
     def tile_params
       params.expect(tile: %i[southwest northeast w3w])
+    end
+
+    def filter_by_plot
+      if params[:plot].present?
+        if params[:plot] == 'BLANK'
+          Tile.where(plot: nil)
+        else
+          @plot = Plot.find_by_hashid!(params[:plot])
+          @plot.tiles
+        end
+      else
+        Tile.includes(:plot)
+      end
+    end
+
+    def filter_by_w3w(tiles)
+      tiles.where('tiles.w3w LIKE ?', "%#{params[:w3w]}%")
+    end
+
+    def filter_by_subscription(tiles)
+      case params[:subscribed]
+      when 'true'
+        tiles.joins(:latest_subscription)
+      when 'false'
+        tiles.where.missing(:latest_subscription)
+      else
+        tiles
+      end
     end
   end
 end
