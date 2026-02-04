@@ -85,15 +85,32 @@ module Admin
       @subscription.errors.add(:tile, 'is unavailable; unlink other subscriptions from it first')
     end
 
-    # rubocop:disable Metrics/AbcSize
     def filtered_subscriptions
       subs = Subscription.all
+      subs = filter_by_stripe_status(subs)
+      subs = filter_by_stripe_id(subs)
+      subs = filter_by_subscriber(subs)
+      filter_by_redeemer(subs)
+    end
+
+    def filter_by_stripe_status(subs)
       subs = subs.where(stripe_status: params[:stripe_status].compact_blank.map { |x| x == 'BLANK' ? nil : Subscription.stripe_statuses.fetch(x) }) if params[:stripe_status]
+      subs
+    end
+
+    def filter_by_stripe_id(subs)
       subs = subs.where('stripe_id LIKE ?', "%#{params[:stripe_id]}%") if params[:stripe_id].present?
+      subs
+    end
+
+    def filter_by_subscriber(subs)
       subs = subs.joins(:subscriber).where(users: { id: User.decode_id(params[:subscriber_id]) }) if params[:subscriber_id].present?
+      subs
+    end
+
+    def filter_by_redeemer(subs)
       subs = subs.joins(:redeemer).where(users: { id: User.decode_id(params[:redeemer_id]) }) if params[:redeemer_id].present?
       subs
     end
-    # rubocop:enable Metrics/AbcSize
   end
 end

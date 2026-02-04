@@ -6,9 +6,7 @@ module Admin
     before_action :set_tile, only: %i[show]
 
     def index
-      @tiles = filter_by_plot
-      @tiles = filter_by_w3w(@tiles) if params[:w3w]
-      @tiles = filter_by_subscription(@tiles)
+      @tiles = filtered_tiles
 
       respond_to do |format|
         format.html do
@@ -45,6 +43,12 @@ module Admin
 
     def tile_params
       params.expect(tile: %i[southwest northeast w3w])
+    end
+
+    def filtered_tiles
+      tiles = filter_by_plot
+      tiles = filter_by_w3w(tiles) if params[:w3w]
+      filter_by_subscription(tiles)
     end
 
     def filter_by_plot
