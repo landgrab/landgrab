@@ -7,13 +7,6 @@ module Admin
 
     def index
       @users = filtered_users.includes(:team)
-      if params[:redeemed_subscription_to_plot].present?
-        plot_ids = params[:redeemed_subscription_to_plot].map { |x| Plot.decode_id(x) }
-        @users = @users.joins(subscriptions_redeemed: { tile: :plot })
-                       .where(subscriptions_redeemed: { stripe_status: %i[active trialing] })
-                       .where(plots: { id: plot_ids })
-                       .distinct
-      end
 
       respond_to do |format|
         format.html do
@@ -47,17 +40,44 @@ module Admin
       params.expect(user: %i[first_name last_name team_id])
     end
 
-    # rubocop:disable Metrics/AbcSize
     def filtered_users
       users = User.all
+      users = filter_by_name(users)
+      users = filter_by_email(users)
+      users = filter_by_stripe_id(users)
+      users = filter_by_team(users)
+      filter_by_redeemed_subscription_to_plot(users)
+    end
+
+    def filter_by_name(users)
       users = users.where('users.first_name ILIKE ?', "%#{params[:first_name]}%") if params[:first_name].present?
       users = users.where('users.last_name ILIKE ?', "%#{params[:last_name]}%") if params[:last_name].present?
-      users = users.where('users.email ILIKE ?', "%#{params[:email]}%") if params[:email].present?
-      users = users.where(users: { stripe_customer_id: params[:stripe_customer_id] }) if params[:stripe_customer_id].present?
-      users = users.where(team_id: Team.find_by_hashid!(params[:team]).id) if params[:team].present?
-
       users
     end
-    # rubocop:enable Metrics/AbcSize
+
+    def filter_by_email(users)
+      users = users.where('users.email ILIKE ?', "%#{params[:email]}%") if params[:email].present?
+      users
+    end
+
+    def filter_by_stripe_id(users)
+      users = users.where(users: { stripe_customer_id: params[:stripe_customer_id] }) if params[:stripe_customer_id].present?
+      users
+    end
+
+    def filter_by_team(users)
+      users = users.where(team_id: Team.find_by_hashid!(params[:team]).id) if params[:team].present?
+      users
+    end
+
+    def filter_by_redeemed_subscription_to_plot(users)
+      return if params[:redeemed_subscription_to_plot].nil?
+
+      plot_ids = params[:redeemed_subscription_to_plot].map { |x| Plot.decode_id(x) }
+      users.joins(subscriptions_redeemed: { tile: :plot })
+           .where(subscriptions_redeemed: { stripe_status: %i[active trialing] })
+           .where(plots: { id: plot_ids })
+           .distinct
+    end
   end
 end
