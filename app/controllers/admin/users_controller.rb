@@ -71,7 +71,7 @@ module Admin
     end
 
     def filter_by_redeemed_subscription_to_plot(users)
-      return if params[:redeemed_subscription_to_plot].nil?
+      return users if params[:redeemed_subscription_to_plot].nil?
 
       plot_ids = params[:redeemed_subscription_to_plot].map { |x| Plot.decode_id(x) }
       users.joins(subscriptions_redeemed: { tile: :plot })
