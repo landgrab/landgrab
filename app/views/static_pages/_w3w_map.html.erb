@@ -4,6 +4,7 @@ plot ||= nil
 hide_legend ||= false
 map_height ||= '500px'
 tile_legend ||= []
+embed_mode ||= false
 %>
 
 <script src="https://assets.what3words.com/sdk/v3/what3words.js?key=<%= ENV.fetch('WHAT3WORDS_API_KEY') %>"></script>
@@ -37,13 +38,19 @@ displayed_tiles.concat(other_tiles)
 
 <script>
   function onEachFeature(feature, layer) {
-    if (feature.properties && feature.properties.popupContent) {
-      layer.bindPopup(feature.properties.popupContent);
-    } else if (feature.properties && feature.properties.link) {
-      layer.on({
-        click: () => { location = feature.properties.link; }
-      });
-    }
+    <% if embed_mode %>
+      if (feature.properties && feature.properties.w3w) {
+        layer.bindPopup('///' + feature.properties.w3w + '<br><a href="' + feature.properties.link + '" target="_blank">View tile</a>');
+      }
+    <% else %>
+      if (feature.properties && feature.properties.popupContent) {
+        layer.bindPopup(feature.properties.popupContent);
+      } else if (feature.properties && feature.properties.link) {
+        layer.on({
+          click: () => { location = feature.properties.link; }
+        });
+      }
+    <% end %>
   }
 
   function tileStyle(feature) {
