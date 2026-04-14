@@ -16,6 +16,7 @@ Rails.application.routes.draw do
   resources :comments, only: %i[create update destroy]
 
   resources :teams, only: %i[show] do
+    get :embed, on: :member
     get :posts, on: :member
   end
 

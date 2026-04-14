@@ -1,12 +1,21 @@
 # frozen_string_literal: true
 
 class TeamsController < ApplicationController
-  before_action :set_team, only: %i[show posts]
+  before_action :set_team, only: %i[show embed posts]
 
-  skip_before_action :authenticate_user!, only: %i[show]
+  skip_before_action :authenticate_user!, only: %i[show embed]
+  skip_before_action :store_location, only: %i[embed]
 
   def show
     log_event_mixpanel('Teams: Show', { authed: user_signed_in?, team: @team.slug })
+  end
+
+  def embed
+    @tiles = @team.subscribed_tiles
+
+    response.headers['Content-Security-Policy'] = "frame-ancestors #{ENV.fetch('EMBED_CSP_DOMAINS', 'http://example.com')}"
+
+    render layout: false
   end
 
   def posts; end
