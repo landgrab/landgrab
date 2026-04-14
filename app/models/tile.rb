@@ -73,7 +73,7 @@ class Tile < ApplicationRecord
   end
 
   def popup_content_new_tab
-    "///#{w3w}<br><a href=\"#{Rails.application.routes.url_helpers.tile_path(self)}\" target=\"_blank\">View tile</a>"
+    "///#{w3w}<br><a href=\"#{Rails.application.routes.url_helpers.tile_path(self)}\" target=\"_top\">View tile</a>"
   end
 
   def popup_content_details
