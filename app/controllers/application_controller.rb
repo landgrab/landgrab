@@ -70,6 +70,13 @@ class ApplicationController < ActionController::Base
     current_user.reload
   end
 
+  def render_embed
+    # Set CSP policy header to allow embedding this in specified external domains
+    # https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy/frame-ancestors
+    response.headers['Content-Security-Policy'] = "frame-ancestors #{ENV.fetch('EMBED_CSP_DOMAINS', 'http://example.com')}"
+    render layout: false
+  end
+
   def render_csv(filename_prefix)
     filename = "#{filename_prefix}-#{Time.zone.now.strftime('%Y-%m-%dT%H-%M-%S')}.csv"
     response.headers['Content-Type'] = 'text/csv'

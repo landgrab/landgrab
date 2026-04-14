@@ -1,11 +1,13 @@
 <html>
 <% _available, _unavailable, combined_tiles = @tile.plot&.tiles_for_map(include_tile: @tile) %>
+<% all_tiles = combined_tiles || [@tile] %>
 <%= render 'static_pages/w3w_map',
-    tiles: combined_tiles || [@tile],
+    tiles: all_tiles,
     plot: @tile.plot,
     hide_legend: true,
     tile_legend: [
-      { key: 'highlighted', title: 'N/A', tiles: [@tile], colour: 'gold', action: :view_details_or_unavailable }
+      { key: 'highlighted', title: 'N/A', tiles: [@tile], colour: 'gold', action: :view_details },
+      { key: 'other', title: 'N/A', tiles: all_tiles - [@tile], colour: 'grey', action: :view_details }
     ],
     map_height: '100%' %>
 </html>

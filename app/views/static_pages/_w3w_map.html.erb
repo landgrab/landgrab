@@ -29,6 +29,7 @@ tile_legend.each do |legend|
 end
 other_tiles = unallocated_tiles.map { |t| t.tap { |x| x.map_colour = 'grey' } }
 displayed_tiles.concat(other_tiles)
+
 %>
 
 <% unless hide_legend %>

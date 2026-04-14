@@ -65,23 +65,13 @@ class Tile < ApplicationRecord
 
     return "///#{w3w}" if map_action == :w3w
 
-    return popup_content_details if map_action == :view_details_or_unavailable
+    return popup_content_details if map_action == :view_details
 
     raise "Unexpected map_action type: '#{map_action}'"
   end
 
   def popup_content_details
-    lines = ["///#{w3w}"]
-    lines << if available?
-               # NOTE: target="_top" forces ejection from iFrame
-               "<a href=\"#{Rails.application.routes.url_helpers.tile_path(self)}\"
-                   target=\"_top\"
-                   class=\"btn btn-default\">View & Subscribe</a>"
-             else
-               'Already taken, sorry!'
-             end
-
-    lines.join('<br>')
+    "///#{w3w}<br><a href=\"#{Rails.application.routes.url_helpers.tile_path(self)}\" target=\"_top\">View tile</a>"
   end
 
   def w3w_url

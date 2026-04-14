@@ -20,6 +20,11 @@ class Team < ApplicationRecord
     logo_url.presence || "https://placehold.co/800x400?text=#{title}"
   end
 
+  def redeemed_tiles
+    Tile.joins(:latest_subscription)
+        .where(subscriptions: { redeemer_id: users.select(:id) })
+  end
+
   def relevant_posts
     posts.published.order(published_at: :desc)
   end
