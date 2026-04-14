@@ -6,8 +6,8 @@
     plot: @tile.plot,
     hide_legend: true,
     tile_legend: [
-      { key: 'highlighted', title: 'N/A', tiles: [@tile], colour: 'gold', action: :view_details_new_tab },
-      { key: 'other', title: 'N/A', tiles: all_tiles - [@tile], colour: 'grey', action: :view_details_new_tab }
+      { key: 'highlighted', title: 'N/A', tiles: [@tile], colour: 'gold', action: :view_details },
+      { key: 'other', title: 'N/A', tiles: all_tiles - [@tile], colour: 'grey', action: :view_details }
     ],
     map_height: '100%' %>
 </html>
