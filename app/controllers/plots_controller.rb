@@ -11,11 +11,7 @@ class PlotsController < ApplicationController
   def posts; end
 
   def embed
-    # Set CSP policy header to allow embedding this in specified external domains
-    # https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy/frame-ancestors
-    response.headers['Content-Security-Policy'] = "frame-ancestors #{ENV.fetch('EMBED_CSP_DOMAINS', 'http://example.com')}"
-
-    render layout: false
+    render_embed
   end
 
   private

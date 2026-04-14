@@ -13,9 +13,7 @@ class TeamsController < ApplicationController
   def embed
     @tiles = @team.subscribed_tiles
 
-    response.headers['Content-Security-Policy'] = "frame-ancestors #{ENV.fetch('EMBED_CSP_DOMAINS', 'http://example.com')}"
-
-    render layout: false
+    render_embed
   end
 
   def posts; end
