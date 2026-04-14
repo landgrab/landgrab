@@ -11,7 +11,7 @@ class TeamsController < ApplicationController
   end
 
   def embed
-    @tiles = @team.subscribed_tiles
+    @tiles = @team.redeemed_tiles
 
     render_embed
   end
