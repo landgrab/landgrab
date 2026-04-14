@@ -65,9 +65,15 @@ class Tile < ApplicationRecord
 
     return "///#{w3w}" if map_action == :w3w
 
+    return popup_content_new_tab if map_action == :view_details_new_tab
+
     return popup_content_details if map_action == :view_details_or_unavailable
 
     raise "Unexpected map_action type: '#{map_action}'"
+  end
+
+  def popup_content_new_tab
+    "///#{w3w}<br><a href=\"#{Rails.application.routes.url_helpers.tile_path(self)}\" target=\"_blank\">View tile</a>"
   end
 
   def popup_content_details

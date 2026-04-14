@@ -30,6 +30,10 @@ tile_legend.each do |legend|
 end
 other_tiles = unallocated_tiles.map { |t| t.tap { |x| x.map_colour = 'grey' } }
 displayed_tiles.concat(other_tiles)
+
+if embed_mode
+  displayed_tiles.each { |t| t.map_action = :view_details_new_tab }
+end
 %>
 
 <% unless hide_legend %>
@@ -38,19 +42,13 @@ displayed_tiles.concat(other_tiles)
 
 <script>
   function onEachFeature(feature, layer) {
-    <% if embed_mode %>
-      if (feature.properties && feature.properties.w3w) {
-        layer.bindPopup('///' + feature.properties.w3w + '<br><a href="' + feature.properties.link + '" target="_blank">View tile</a>');
-      }
-    <% else %>
-      if (feature.properties && feature.properties.popupContent) {
-        layer.bindPopup(feature.properties.popupContent);
-      } else if (feature.properties && feature.properties.link) {
-        layer.on({
-          click: () => { location = feature.properties.link; }
-        });
-      }
-    <% end %>
+    if (feature.properties && feature.properties.popupContent) {
+      layer.bindPopup(feature.properties.popupContent);
+    } else if (feature.properties && feature.properties.link) {
+      layer.on({
+        click: () => { location = feature.properties.link; }
+      });
+    }
   }
 
   function tileStyle(feature) {
