@@ -2,6 +2,8 @@
 <%= render 'static_pages/w3w_map',
     tiles: @tiles,
     hide_legend: true,
-    embed_mode: true,
+    tile_legend: [
+      { key: 'all', title: 'N/A', tiles: @tiles, colour: 'grey', action: :view_details_new_tab }
+    ],
     map_height: '100%' %>
 </html>

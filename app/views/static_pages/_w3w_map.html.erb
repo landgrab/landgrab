@@ -4,7 +4,6 @@ plot ||= nil
 hide_legend ||= false
 map_height ||= '500px'
 tile_legend ||= []
-embed_mode ||= false
 %>
 
 <script src="https://assets.what3words.com/sdk/v3/what3words.js?key=<%= ENV.fetch('WHAT3WORDS_API_KEY') %>"></script>
@@ -31,9 +30,6 @@ end
 other_tiles = unallocated_tiles.map { |t| t.tap { |x| x.map_colour = 'grey' } }
 displayed_tiles.concat(other_tiles)
 
-if embed_mode
-  displayed_tiles.each { |t| t.map_action = :view_details_new_tab }
-end
 %>
 
 <% unless hide_legend %>
