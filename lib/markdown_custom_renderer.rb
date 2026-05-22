@@ -31,7 +31,7 @@ class MarkdownCustomRenderer < Redcarpet::Render::HTML
   end
 
   def youtube_embed(slug)
-    <<-HTML.squish
+    <<~HTML.squish
       <div class="ratio ratio-16x9">
         <iframe width="560" height="315"
                 src="https://www.youtube.com/embed/#{slug}"
