@@ -103,16 +103,16 @@ class CheckoutController < ApplicationController
 
   def set_project
     # TODO: Stop relying on `Project.first` fallback
-    @project = params[:project].present? ? Project.find_by_hashid!(params[:project]&.upcase) : Project.first
+    @project = params[:project].present? ? Project.find_by_hashid!(params.expect(:project)&.upcase) : Project.first
   end
 
   def set_tile
     # TODO: Look only in the project's tiles (to prevent mismatched tile<>project)
-    @tile = Tile.find_by_hashid!(params[:tile].upcase) if params[:tile].present?
+    @tile = Tile.find_by_hashid!(params.expect(:tile).upcase) if params[:tile].present?
   end
 
   def set_price
-    @price = Price.find_by_hashid!(params[:price].upcase) if params[:price].present?
+    @price = Price.find_by_hashid!(params.expect(:price).upcase) if params[:price].present?
   end
 
   def set_redemption_mode
@@ -122,7 +122,7 @@ class CheckoutController < ApplicationController
   end
 
   def set_promo_code
-    @promo_code = PromoCode.find_by!(code: params[:code]) if params[:code].present?
+    @promo_code = PromoCode.find_by!(code: params.expect(:code)) if params[:code].present?
   end
 
   def retrieve_authorised_checkout_session

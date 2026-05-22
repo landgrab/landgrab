@@ -21,6 +21,6 @@ class TeamsController < ApplicationController
   private
 
   def set_team
-    @team = Team.find_by!(slug: params[:id]&.downcase)
+    @team = Team.find_by!(slug: params.expect(:id)&.downcase)
   end
 end
