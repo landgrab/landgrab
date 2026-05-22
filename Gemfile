@@ -44,7 +44,7 @@ gem 'cloudinary'
 gem 'csv'
 
 # User authentication
-gem 'devise', '5.0.0.rc'
+gem 'devise'
 
 # Shim to load environment variables from .env into ENV in development.
 gem 'dotenv-rails', groups: %i[development test]
