@@ -62,7 +62,7 @@ module Admin
     end
 
     def bulk_association_update
-      w3w_list = params[:w3w_list].split(',').map(&:squish)
+      w3w_list = params.expect(:w3w_list).split(',').map(&:squish)
       # TODO: Is there a Rails way to update (add/remove) these in a neater/performant way?
       required_tiles = Tile.where(w3w: w3w_list)
       existing_tiles = @post.associated_tiles
