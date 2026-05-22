@@ -26,7 +26,7 @@ module Admin
       if @subscription.save
         redirect_to admin_subscription_url(@subscription), notice: 'Subscription was successfully created.'
       else
-        render :new, status: :unprocessable_entity
+        render :new, status: :unprocessable_content
       end
     end
 
@@ -47,7 +47,7 @@ module Admin
 
         redirect_to admin_subscription_path(@subscription), notice: 'Subscription was successfully updated.'
       else
-        render :edit, status: :unprocessable_entity
+        render :edit, status: :unprocessable_content
       end
     end
 
