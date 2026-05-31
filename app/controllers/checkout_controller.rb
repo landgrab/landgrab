@@ -71,7 +71,7 @@ class CheckoutController < ApplicationController
       }],
       subscription_data: { metadata: stripe_checkout_payload_subscription_metadata },
       mode: 'subscription',
-      ui_mode: 'embedded',
+      ui_mode: 'embedded_page',
       return_url: build_success_url
     }
     if @promo_code.nil?
