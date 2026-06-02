@@ -35,8 +35,8 @@ jobs:
     - name: Run Brakeman
       run: bin/brakeman
 
-    - name: Install RGEO dependencies
-      run: sudo apt-get install libgeos-dev -y
+    - name: Install system dependencies
+      run: sudo apt-get install -y libgeos-dev libvips-dev
 
     - name: Run Traceroute (detect unused actions/routes)
       env:
