@@ -18,10 +18,14 @@ class User < ApplicationRecord
   validates :stripe_customer_id, allow_blank: true,
                                  format: { with: /\Acus_[0-9a-zA-Z]+\z/, message: 'must start with cus_' },
                                  uniqueness: true
+  validates :username, allow_blank: true,
+                       uniqueness: { case_sensitive: false },
+                       length: { minimum: 3, maximum: 30 },
+                       format: { with: /\A[a-zA-Z0-9_]+\z/, message: 'can only contain letters, numbers, and underscores' }
 
   before_create :normalize_names
 
-  auto_strip_attributes :first_name, :last_name, squish: true
+  auto_strip_attributes :first_name, :last_name, :username, squish: true
 
   def full_name
     [first_name, last_name].join(' ')

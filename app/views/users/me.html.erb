@@ -1,0 +1,9 @@
+<h1><%= title 'My Profile' %></h1>
+
+<%= bootstrap_alert safe_join([
+  'Your profile is not public. ',
+  link_to('Set a username', edit_profile_path, class: 'alert-link'),
+  ' to make it visible to others, or view it privately below.'
+]), :info %>
+
+<%= render 'profile', profile_user: @profile_user, tiles_by_plot: @tiles_by_plot %>

@@ -13,6 +13,9 @@ Rails.application.routes.draw do
 
   root to: 'static_pages#homepage'
 
+  get '/users/me', to: 'users#me', as: :my_profile
+  get '/users/:username', to: 'users#profile', as: :user_profile
+
   resources :comments, only: %i[create update destroy]
 
   resources :teams, only: %i[show] do
