@@ -45,6 +45,34 @@
 
   <div class="row mb-3 g-3 align-items-center">
     <div class="col-sm-2">
+      <%= form.label :website_url, class: 'col-form-label' %>
+    </div>
+    <div class="col-sm-3">
+      <%= form.url_field :website_url, class: 'form-control', aria: { describedby: 'websiteUrlHelp' } %>
+    </div>
+    <div class="col-sm-7">
+      <span id="websiteUrlHelp" class="form-text">
+        Optional personal website URL (must start with http:// or https://).
+      </span>
+    </div>
+  </div>
+
+  <div class="row mb-3 g-3 align-items-center">
+    <div class="col-sm-2">
+      <%= form.label :website_title, class: 'col-form-label' %>
+    </div>
+    <div class="col-sm-3">
+      <%= form.text_field :website_title, class: 'form-control', aria: { describedby: 'websiteTitleHelp' } %>
+    </div>
+    <div class="col-sm-7">
+      <span id="websiteTitleHelp" class="form-text">
+        Optional. Link text displayed on the profile (defaults to "Personal website").
+      </span>
+    </div>
+  </div>
+
+  <div class="row mb-3 g-3 align-items-center">
+    <div class="col-sm-2">
       <%= form.label :team_id, class: 'col-form-label' %>
     </div>
     <div class="col-sm-3">

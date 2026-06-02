@@ -2,6 +2,10 @@
 
 <p class="text-muted">Part of <%= ENV.fetch('SITE_TITLE', 'Landgrab') %> since <%= profile_user.created_at.strftime('%B %Y') %></p>
 
+<% if profile_user.website_url.present? %>
+  <p><%= link_to profile_user.website_link_title, profile_user.website_url %></p>
+<% end %>
+
 <% if profile_user.team.present? %>
   <p class="text-muted">
     <%= profile_user.first_name %> is a member of <%= link_to profile_user.team.title, team_path(profile_user.team) %>

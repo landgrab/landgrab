@@ -17,6 +17,8 @@
 
   <%= render 'users/form_username', form: f %>
 
+  <%= render 'users/form_website', form: f %>
+
   <% if devise_mapping.confirmable? && resource.pending_reconfirmation? %>
     <div>Currently waiting confirmation for: <%= resource.unconfirmed_email %></div>
   <% end %>

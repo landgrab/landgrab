@@ -1,0 +1,11 @@
+<div class="mb-3">
+  <%= form.label :website_url, 'Personal website URL', class: 'form-label' %>
+  <%= form.url_field :website_url, autocomplete: 'url', class: 'form-control', placeholder: 'https://example.com' %>
+  <div class="form-text">Optional. Must start with http:// or https://</div>
+</div>
+
+<div class="mb-3">
+  <%= form.label :website_title, 'Personal website title', class: 'form-label' %>
+  <%= form.text_field :website_title, class: 'form-control', placeholder: 'Personal website' %>
+  <div class="form-text">Optional. Displayed as the link text (defaults to "Personal website").</div>
+</div>

@@ -23,6 +23,15 @@
 </p>
 
 <p>
+  <strong>Personal Website:</strong>
+  <% if user.website_url.present? %>
+    <%= link_to user.website_link_title, user.website_url %>
+  <% else %>
+    -
+  <% end %>
+</p>
+
+<p>
   <strong>Stripe Customer ID:</strong>
   <% if user.stripe_customer_id.present? %>
     <%= link_to user.stripe_customer_id,

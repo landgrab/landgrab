@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_06_02_194454) do
+ActiveRecord::Schema[8.1].define(version: 2026_06_02_200000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "postgis"
@@ -319,6 +319,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_02_194454) do
     t.bigint "team_id"
     t.datetime "updated_at", null: false
     t.string "username"
+    t.string "website_title"
+    t.string "website_url"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
     t.index ["stripe_customer_id"], name: "index_users_on_stripe_customer_id", unique: true

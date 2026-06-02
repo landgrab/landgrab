@@ -37,7 +37,7 @@ module Admin
     end
 
     def user_params_for_update
-      params.expect(user: %i[first_name last_name username team_id])
+      params.expect(user: %i[first_name last_name username website_url website_title team_id])
     end
 
     def filtered_users

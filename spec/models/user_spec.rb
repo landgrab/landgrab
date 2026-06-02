@@ -36,4 +36,44 @@ RSpec.describe User do
       expect(user.last_name).to eq 'Spacey'
     end
   end
+
+  describe '#website_link_title' do
+    it 'returns the website title when set' do
+      user = build(:user, website_title: 'My Blog')
+      expect(user.website_link_title).to eq 'My Blog'
+    end
+
+    it 'defaults to "Personal website" when blank' do
+      user = build(:user, website_title: '')
+      expect(user.website_link_title).to eq 'Personal website'
+    end
+  end
+
+  describe 'website validations' do
+    it 'accepts a valid https URL' do
+      user = build(:user, website_url: 'https://example.com')
+      expect(user).to be_valid
+    end
+
+    it 'accepts a valid http URL' do
+      user = build(:user, website_url: 'http://example.com')
+      expect(user).to be_valid
+    end
+
+    it 'rejects a URL without a scheme' do
+      user = build(:user, website_url: 'example.com')
+      expect(user).not_to be_valid
+      expect(user.errors[:website_url]).to be_present
+    end
+
+    it 'accepts a blank website URL' do
+      user = build(:user, website_url: '')
+      expect(user).to be_valid
+    end
+
+    it 'accepts a blank website title' do
+      user = build(:user, website_title: '')
+      expect(user).to be_valid
+    end
+  end
 end
