@@ -1,5 +1,7 @@
 <h1><%= profile_user.first_name %></h1>
 
+<p class="text-muted">Part of <%= ENV.fetch('SITE_TITLE', 'Landgrab') %> since <%= profile_user.created_at.strftime('%B %Y') %></p>
+
 <% if profile_user.team.present? %>
   <p class="text-muted">
     <%= profile_user.first_name %> is a member of <%= link_to profile_user.team.title, team_path(profile_user.team) %>
