@@ -46,8 +46,8 @@ jobs:
       with: # uses version defined in `.ruby-version` file
         bundler-cache: true # runs 'bundle install' and caches installed gems automatically
 
-    - name: Install RGEO dependencies
-      run: sudo apt-get install libgeos-dev -y
+    - name: Install system dependencies
+      run: sudo apt-get install -y libgeos-dev libvips-dev
 
     - name: Create database
       # Environment variable used to create a new PostgreSQL client.
