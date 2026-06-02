@@ -22,8 +22,7 @@ class User < ApplicationRecord
                        uniqueness: { case_sensitive: false },
                        length: { minimum: 3, maximum: 30 },
                        format: { with: /\A[a-zA-Z0-9_]+\z/, message: 'can only contain letters, numbers, and underscores' }
-  validates :website_url, allow_blank: true,
-                          format: { with: %r{\Ahttps?://.+}, message: 'must be a valid URL starting with http:// or https://' }
+  validates :website_url, allow_blank: true, url: true
   validates :website_title, length: { maximum: 255 }
 
   before_create :normalize_names
