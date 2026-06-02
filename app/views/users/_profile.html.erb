@@ -1,0 +1,22 @@
+<h1><%= profile_user.first_name %></h1>
+
+<% if profile_user.team.present? %>
+  <p class="text-muted">
+    <%= profile_user.first_name %> is a member of <%= link_to profile_user.team.title, team_path(profile_user.team) %>
+  </p>
+<% end %>
+
+<% if tiles_by_plot.empty? %>
+  <p>No redeemed tiles yet.</p>
+<% else %>
+  <% tiles_by_plot.each do |plot, tiles| %>
+    <h2 class="mt-4"><%= "#{profile_user.first_name} has #{tiles.one? ? 'a tile' : "#{tiles.count} tiles"} in #{plot.title.presence || plot.id}" %></h2>
+    <%= render 'static_pages/w3w_map',
+        tiles: tiles,
+        plot: plot,
+        hide_legend: true,
+        tile_legend: [
+          { key: :owned, title: 'Tile', tiles: tiles, colour: 'gold' }
+        ] %>
+  <% end %>
+<% end %>

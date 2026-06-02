@@ -14,6 +14,15 @@
 </p>
 
 <p>
+  <strong>Username:</strong>
+  <% if user.username.present? %>
+    <%= link_to user.username, user_profile_path(user.username) %>
+  <% else %>
+    -
+  <% end %>
+</p>
+
+<p>
   <strong>Stripe Customer ID:</strong>
   <% if user.stripe_customer_id.present? %>
     <%= link_to user.stripe_customer_id,

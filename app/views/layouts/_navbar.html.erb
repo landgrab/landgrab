@@ -28,7 +28,7 @@
         <% links << ['Explore', explore_path] %>
         <% links << ['Projects', projects_path] %>
         <% links << ['My Tile', my_tile_path] %>
-        <% links << ['My Team', team_path(current_user.team.slug)] if current_user&.team.present? %>
+        <% links << ['My Profile', current_user.username.present? ? user_profile_path(current_user.username) : '/users/me'] if user_signed_in? %>
         <% links << ['Subscriptions', subscriptions_path] if user_signed_in? %>
         <% links << ['About', about_path] %>
         <% links.each do |text, href| %>
