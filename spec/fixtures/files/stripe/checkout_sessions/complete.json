@@ -92,6 +92,6 @@
     "amount_shipping": 0,
     "amount_tax": 0
   },
-  "ui_mode": "embedded",
+  "ui_mode": "embedded_page",
   "url": null
 }
