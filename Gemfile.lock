@@ -458,9 +458,6 @@ GEM
       rubocop (~> 1.72, >= 1.72.1)
       rubocop-ast (>= 1.44.0, < 2.0)
     ruby-progressbar (1.13.0)
-    ruby-vips (2.3.0)
-      ffi (~> 1.12)
-      logger
     ruumba (0.1.17)
       rubocop
     securerandom (0.4.1)
@@ -588,7 +585,6 @@ DEPENDENCIES
   rubocop-rspec
   rubocop-rspec_rails
   rubocop-thread_safety
-  ruby-vips
   ruumba
   sentry-rails
   sentry-ruby

@@ -114,9 +114,6 @@ gem 'rubocop-rspec', groups: %i[development test]
 gem 'rubocop-rspec_rails', groups: %i[development test]
 gem 'rubocop-thread_safety', groups: %i[development test]
 
-# Image Processing
-gem 'ruby-vips'
-
 # RuboCop for view files
 gem 'ruumba', groups: %i[development test]
 
