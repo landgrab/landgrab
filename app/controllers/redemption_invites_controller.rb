@@ -69,6 +69,7 @@ class RedemptionInvitesController < ApplicationController
     log_event_mixpanel('Redemption Invite: Redeem')
 
     @subscription.update!(redeemer: current_user)
+    assign_referrer_from_subscriber
 
     redirect_to @subscription, flash: { notice: "Great; you've redeemed this subscription!" }
   end
@@ -111,6 +112,10 @@ class RedemptionInvitesController < ApplicationController
 
     queue_redemption_invite_email
     "#{notice_message} and new invitation email sent."
+  end
+
+  def assign_referrer_from_subscriber
+    current_user.update!(referrer: @subscription.subscriber) if current_user.referrer.nil?
   end
 
   def attempting_frequent_email_change?
