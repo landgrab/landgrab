@@ -3,6 +3,23 @@
 require 'rails_helper'
 
 RSpec.describe User do
+  describe '#generate_referral_token' do
+    it 'assigns a referral token on create' do
+      user = create(:user)
+
+      expect(user.referral_token).to be_present
+    end
+
+    it 'generates a unique token when there is a collision' do
+      existing = create(:user)
+      allow(SecureRandom).to receive(:base36).and_return(existing.referral_token, 'uniquetoken1')
+
+      new_user = create(:user)
+
+      expect(new_user.referral_token).to eq 'uniquetoken1'
+    end
+  end
+
   describe '#normalize_names' do
     it 'normalizes entirely lowercased first and last names' do
       simon = create(:user, first_name: 'simon', last_name: 'lópez')

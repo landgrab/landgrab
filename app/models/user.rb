@@ -87,7 +87,13 @@ class User < ApplicationRecord
   private
 
   def generate_referral_token
-    self.referral_token ||= SecureRandom.base36(12)
+    loop do
+      token = SecureRandom.base36(12)
+      unless User.exists?(referral_token: token)
+        self.referral_token = token
+        break
+      end
+    end
   end
 
   def normalize_names

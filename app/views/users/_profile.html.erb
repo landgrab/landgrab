@@ -12,9 +12,10 @@
   </p>
 <% end %>
 
-<% if profile_user.referees.any? %>
+<% referee_count = profile_user.referees.count %>
+<% if referee_count.positive? %>
   <p class="text-muted">
-    Has referred <%= pluralize(profile_user.referees.count, 'person') %> to <%= ENV.fetch('SITE_TITLE', 'Landgrab') %>
+    Has referred <%= pluralize(referee_count, 'person') %> to <%= ENV.fetch('SITE_TITLE', 'Landgrab') %>
   </p>
 <% end %>
 
