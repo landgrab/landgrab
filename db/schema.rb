@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_06_02_200000) do
+ActiveRecord::Schema[8.1].define(version: 2026_06_15_211853) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "postgis"
@@ -312,6 +312,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_02_200000) do
     t.string "encrypted_password", default: "", null: false
     t.string "first_name", limit: 255
     t.string "last_name", limit: 255
+    t.string "referral_token"
+    t.bigint "referrer_id"
     t.datetime "remember_created_at"
     t.datetime "reset_password_sent_at"
     t.string "reset_password_token"
@@ -322,6 +324,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_02_200000) do
     t.string "website_title"
     t.string "website_url"
     t.index ["email"], name: "index_users_on_email", unique: true
+    t.index ["referral_token"], name: "index_users_on_referral_token", unique: true
+    t.index ["referrer_id"], name: "index_users_on_referrer_id"
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
     t.index ["stripe_customer_id"], name: "index_users_on_stripe_customer_id", unique: true
     t.index ["team_id"], name: "index_users_on_team_id"
@@ -352,4 +356,5 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_02_200000) do
   add_foreign_key "tiles", "plots"
   add_foreign_key "tiles", "subscriptions", column: "latest_subscription_id"
   add_foreign_key "users", "teams"
+  add_foreign_key "users", "users", column: "referrer_id"
 end

@@ -7,6 +7,8 @@ class User < ApplicationRecord
          :recoverable, :rememberable, :validatable
 
   belongs_to :team, optional: true
+  belongs_to :referrer, class_name: 'User', optional: true
+  has_many :referees, class_name: 'User', foreign_key: 'referrer_id', inverse_of: :referrer, dependent: :nullify
 
   has_many :subscriptions_subscribed, class_name: 'Subscription', foreign_key: 'subscriber_id', inverse_of: :subscriber, dependent: :restrict_with_exception
   has_many :subscriptions_redeemed, class_name: 'Subscription', foreign_key: 'redeemer_id', inverse_of: :redeemer, dependent: :restrict_with_exception
@@ -26,6 +28,7 @@ class User < ApplicationRecord
   validates :website_title, length: { maximum: 255 }
 
   before_create :normalize_names
+  before_create :generate_referral_token
 
   auto_strip_attributes :first_name, :last_name, :username, :website_url, :website_title, squish: true
 
@@ -82,6 +85,10 @@ class User < ApplicationRecord
   end
 
   private
+
+  def generate_referral_token
+    self.referral_token ||= SecureRandom.base36(12)
+  end
 
   def normalize_names
     # Normalize names that are all lowercase or all uppercase (e.g., 'john' or 'JOHN' -> 'John')
