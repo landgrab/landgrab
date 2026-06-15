@@ -25,3 +25,13 @@
 
   <%= f.submit 'Update Profile', class: 'btn btn-primary' %>
 <% end %>
+
+<hr>
+
+<h3>Referral link</h3>
+<p class="text-muted">Share this link with friends. When they register using it, they'll be associated with your account.</p>
+<% if current_user.referral_token.present? %>
+  <%= render 'layouts/copy_to_clipboard',
+             copytext: referral_url(referral_token: current_user.referral_token),
+             copycta: 'Copy referral link' %>
+<% end %>

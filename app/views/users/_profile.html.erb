@@ -12,6 +12,13 @@
   </p>
 <% end %>
 
+<% referee_count = profile_user.referees.count %>
+<% if referee_count.positive? %>
+  <p class="text-muted">
+    Has referred <%= pluralize(referee_count, 'person') %> to <%= ENV.fetch('SITE_TITLE', 'Landgrab') %>
+  </p>
+<% end %>
+
 <% if tiles_by_plot.empty? %>
   <p>No redeemed tiles yet.</p>
 <% else %>

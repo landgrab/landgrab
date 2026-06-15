@@ -46,6 +46,23 @@ RSpec.describe RedemptionInvitesController do
       expect(subscription.reload.redeemer).to eq(user)
     end
 
+    it 'sets the subscriber as the referrer of the redeemer' do
+      do_get
+
+      expect(user.reload.referrer).to eq(subscriber)
+    end
+
+    context 'when the redeemer already has a referrer' do
+      let(:existing_referrer) { create(:user) }
+      let(:user) { create(:user, referrer: existing_referrer) }
+
+      it 'does not overwrite the existing referrer' do
+        do_get
+
+        expect(user.reload.referrer).to eq(existing_referrer)
+      end
+    end
+
     context 'with incorrect token' do
       before do
         params[:token] = 'garbage'
