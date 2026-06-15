@@ -5,11 +5,11 @@ require 'rails_helper'
 RSpec.describe RegistrationsController do
   before { request.env['devise.mapping'] = Devise.mappings[:user] }
 
-  describe 'GET registrations#referral' do
+  describe 'GET registrations#referral_by_token' do
     let(:referrer) { create(:user) }
 
     it 'stores the referral token in the session and redirects to sign up' do
-      get :referral, params: { referral_token: referrer.referral_token }
+      get :referral_by_token, params: { referral_token: referrer.referral_token }
 
       expect(session[:referral_token]).to eq referrer.referral_token
       expect(response).to redirect_to(new_user_registration_path)

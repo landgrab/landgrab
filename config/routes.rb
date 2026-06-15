@@ -16,7 +16,8 @@ Rails.application.routes.draw do
   get '/users/me', to: 'users#me', as: :my_profile
   get '/users/:username', to: 'users#profile', as: :user_profile
 
-  get '/refer/:referral_token', to: 'registrations#referral', as: :referral
+  get '/refer/:referral_token', to: 'registrations#referral_by_token', as: :referral_by_token
+  get '/r/:username', to: 'registrations#referral_by_username', as: :referral_by_username
 
   resources :comments, only: %i[create update destroy]
 

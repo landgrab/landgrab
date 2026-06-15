@@ -2,10 +2,16 @@
 
 # Extends https://github.com/heartcombo/devise/blob/main/app/controllers/devise/registrations_controller.rb
 class RegistrationsController < Devise::RegistrationsController
-  skip_before_action :authenticate_user!, only: %i[referral]
+  skip_before_action :authenticate_user!, only: %i[referral_by_token referral_by_username]
 
-  def referral
+  def referral_by_token
     session[:referral_token] = params[:referral_token]
+    redirect_to new_user_registration_path, flash: { notice: "You've been invited! Create an account to get started." }
+  end
+
+  def referral_by_username
+    user = User.find_by!(username: params.expect(:username))
+    session[:referral_token] = user.referral_token
     redirect_to new_user_registration_path, flash: { notice: "You've been invited! Create an account to get started." }
   end
 

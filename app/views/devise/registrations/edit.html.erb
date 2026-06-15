@@ -31,7 +31,8 @@
 <h3>Referral link</h3>
 <p class="text-muted">Share this link with friends. When they register using it, they'll be associated with your account.</p>
 <% if current_user.referral_token.present? %>
+  <% referral_link = current_user.username.present? ? referral_by_username_url(username: current_user.username) : referral_by_token_url(referral_token: current_user.referral_token) %>
   <%= render 'layouts/copy_to_clipboard',
-             copytext: referral_url(referral_token: current_user.referral_token),
+             copytext: referral_link,
              copycta: 'Copy referral link' %>
 <% end %>
