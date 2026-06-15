@@ -19,7 +19,7 @@ class RegistrationsController < Devise::RegistrationsController
     super do |user|
       if user.persisted? && session[:referral_token].present?
         referrer = User.find_by(referral_token: session.delete(:referral_token))
-        user.update_column(:referrer_id, referrer.id) if referrer && referrer != user
+        user.update!(referrer: referrer) if referrer && referrer != user
       end
     end
   end

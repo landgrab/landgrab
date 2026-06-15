@@ -3,7 +3,7 @@
 require 'rails_helper'
 
 RSpec.describe RegistrationsController do
-  before { @request.env['devise.mapping'] = Devise.mappings[:user] }
+  before { request.env['devise.mapping'] = Devise.mappings[:user] }
 
   describe 'GET registrations#referral' do
     let(:referrer) { create(:user) }
