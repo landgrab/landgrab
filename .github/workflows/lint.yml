@@ -36,7 +36,7 @@ jobs:
       run: bin/brakeman
 
     - name: Install system dependencies
-      run: sudo apt-get install -y libgeos-dev libvips-dev
+      run: sudo apt-get update && sudo apt-get install -y libgeos-dev libvips-dev
 
     - name: Run Traceroute (detect unused actions/routes)
       env:
