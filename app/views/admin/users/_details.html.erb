@@ -72,6 +72,8 @@
 <p>
   <strong>Referrals made:</strong>
   <%= user.referees.size %>
+  -
+  <%= link_to 'view', admin_users_path(referrer: user.hashid) %>
 </p>
 
 <p>

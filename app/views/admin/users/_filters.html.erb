@@ -16,5 +16,7 @@
                           { include_blank: '[ Any/no team ]', class: 'form-select' } %>
   </div>
 
+  <%= render_filter_text(:referrer, 'Referrer User ID', col: 2) %>
+
   <%= render_filter_submit %>
 <% end %>
