@@ -9,14 +9,13 @@ Rails.application.routes.draw do
   as :user do
     get '/settings/profile' => 'registrations#edit', as: 'edit_profile'
     get '/settings/password' => 'registrations#edit_password', as: 'custom_edit_password'
+    get '/refer/:referral_token', to: 'registrations#referral', as: :referral
   end
 
   root to: 'static_pages#homepage'
 
   get '/users/me', to: 'users#me', as: :my_profile
   get '/users/:username', to: 'users#profile', as: :user_profile
-
-  get '/refer/:referral_token', to: 'registrations#referral', as: :referral
 
   resources :comments, only: %i[create update destroy]
 
