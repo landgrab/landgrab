@@ -4,6 +4,7 @@ plot ||= nil
 hide_legend ||= false
 map_height ||= '500px'
 tile_legend ||= []
+map_id = "map-#{SecureRandom.hex(4)}"
 %>
 
 <script src="https://assets.what3words.com/sdk/v3/what3words.js?key=<%= ENV.fetch('WHAT3WORDS_API_KEY') %>"></script>
@@ -12,7 +13,7 @@ tile_legend ||= []
 
 <%= render 'layouts/leaflet_helpers' %>
 
-<div id="map" style="width: 100%; height: <%= map_height %>" class="mb-3"></div>
+<div id="<%= map_id %>" style="width: 100%; height: <%= map_height %>" class="mb-3"></div>
 
 <%
 displayed_tiles = []
@@ -37,88 +38,91 @@ displayed_tiles.concat(other_tiles)
 <% end %>
 
 <script>
-  function onEachFeature(feature, layer) {
-    if (feature.properties && feature.properties.popupContent) {
-      layer.bindPopup(feature.properties.popupContent);
-    } else if (feature.properties && feature.properties.link) {
-      layer.on({
-        click: () => { location = feature.properties.link; }
-      });
-    }
-  }
-
-  function tileStyle(feature) {
-    const base = { color: 'black', weight: 2 }
-    // Style docs: https://leafletjs.com/reference.html#path-option
-    if (feature.geometry.properties && feature.geometry.properties.colour) {
-      return {...base, ...{ opacity: 0.65, fill: true, fillOpacity: 0.8, fillColor: feature.geometry.properties.colour }};
-    }
-    return {...base, ...{ fillColor: 'var(--landgrab-color-red-grey, grey)', fillOpacity: 0.5 }};
-  };
-
-  var map = L.map('map', { gestureHandling: true });
-
-  addFullscreenButton(map);
-  addAllLayers(map);
-
-  var allTilesGeoJson = [<%= displayed_tiles.map(&:to_geojson).join(', ').html_safe %>];
-  var tiles = L.geoJSON(allTilesGeoJson, { onEachFeature: onEachFeature, style: tileStyle }).addTo(map);
-
-  <% if plot.present? %>
-    // Fit map to plot bounds
-    var latlngs = <%= plot.polygon.coordinates[0][0...-1].map(&:reverse) %>;
-    var polygon = L.polygon(latlngs); // Note: not adding to map
-    // fitMapToPolygon(map, polygon);
-    map.fitBounds(polygon.getBounds());
-  <% else %>
-    // Fit map to tile bounds
-    map.fitBounds(tiles.getBounds());
-  <% end %>
-
-  function drawGrid() {
-    const zoom = map.getZoom();
-    const loadFeatures = zoom > 17;
-
-    if (loadFeatures) { // Zoom level is high enough
-      var ne = map.getBounds().getNorthEast();
-      var sw = map.getBounds().getSouthWest();
-
-      // Call the what3words Grid API to obtain the grid squares within the current visible bounding box
-      what3words.api
-        .gridSectionGeoJson({
-          southwest: {
-            lat: sw.lat,
-            lng: sw.lng
-          },
-          northeast: {
-            lat: ne.lat,
-            lng: ne.lng
-          }
-        }).then(function(data) {
-          // If the grid layer is already present, remove it as it will need to be replaced by the new grid section
-          if (typeof grid_layer !== 'undefined') {
-            map.removeLayer(grid_layer);
-          }
-
-          // Create a new GeoJSON layer, based on the GeoJSON returned from the what3words API
-          grid_layer = L.geoJSON(data, {
-            style: function() {
-              return {
-                color: '#777',
-                stroke: true,
-                weight: 0.5
-              };
-            }
-          }).addTo(map);
-        }).catch(console.error);
-    } else {
-      // If the grid layer already exists, remove it as the zoom level no longer requires the grid to be displayed
-      if (typeof grid_layer !== 'undefined') {
-        map.removeLayer(grid_layer);
+  (function() {
+    function onEachFeature(feature, layer) {
+      if (feature.properties && feature.properties.popupContent) {
+        layer.bindPopup(feature.properties.popupContent);
+      } else if (feature.properties && feature.properties.link) {
+        layer.on({
+          click: () => { location = feature.properties.link; }
+        });
       }
     }
-  }
 
-  map.whenReady(drawGrid);
-  map.on('move', drawGrid);
+    function tileStyle(feature) {
+      const base = { color: 'black', weight: 2 }
+      // Style docs: https://leafletjs.com/reference.html#path-option
+      if (feature.geometry.properties && feature.geometry.properties.colour) {
+        return {...base, ...{ opacity: 0.65, fill: true, fillOpacity: 0.8, fillColor: feature.geometry.properties.colour }};
+      }
+      return {...base, ...{ fillColor: 'var(--landgrab-color-red-grey, grey)', fillOpacity: 0.5 }};
+    };
+
+    var map = L.map('<%= map_id %>', { gestureHandling: true });
+
+    addFullscreenButton(map);
+    addAllLayers(map);
+
+    var allTilesGeoJson = [<%= displayed_tiles.map(&:to_geojson).join(', ').html_safe %>];
+    var tiles = L.geoJSON(allTilesGeoJson, { onEachFeature: onEachFeature, style: tileStyle }).addTo(map);
+
+    <% if plot.present? %>
+      // Fit map to plot bounds
+      var latlngs = <%= plot.polygon.coordinates[0][0...-1].map(&:reverse) %>;
+      var polygon = L.polygon(latlngs); // Note: not adding to map
+      map.fitBounds(polygon.getBounds());
+    <% else %>
+      // Fit map to tile bounds
+      map.fitBounds(tiles.getBounds());
+    <% end %>
+
+    var grid_layer;
+
+    function drawGrid() {
+      const zoom = map.getZoom();
+      const loadFeatures = zoom > 17;
+
+      if (loadFeatures) { // Zoom level is high enough
+        var ne = map.getBounds().getNorthEast();
+        var sw = map.getBounds().getSouthWest();
+
+        // Call the what3words Grid API to obtain the grid squares within the current visible bounding box
+        what3words.api
+          .gridSectionGeoJson({
+            southwest: {
+              lat: sw.lat,
+              lng: sw.lng
+            },
+            northeast: {
+              lat: ne.lat,
+              lng: ne.lng
+            }
+          }).then(function(data) {
+            // If the grid layer is already present, remove it as it will need to be replaced by the new grid section
+            if (typeof grid_layer !== 'undefined') {
+              map.removeLayer(grid_layer);
+            }
+
+            // Create a new GeoJSON layer, based on the GeoJSON returned from the what3words API
+            grid_layer = L.geoJSON(data, {
+              style: function() {
+                return {
+                  color: '#777',
+                  stroke: true,
+                  weight: 0.5
+                };
+              }
+            }).addTo(map);
+          }).catch(console.error);
+      } else {
+        // If the grid layer already exists, remove it as the zoom level no longer requires the grid to be displayed
+        if (typeof grid_layer !== 'undefined') {
+          map.removeLayer(grid_layer);
+        }
+      }
+    }
+
+    map.whenReady(drawGrid);
+    map.on('move', drawGrid);
+  })();
 </script>
