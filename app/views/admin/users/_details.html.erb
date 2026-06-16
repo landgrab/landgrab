@@ -61,6 +61,20 @@
 </p>
 
 <p>
+  <strong>Referred by:</strong>
+  <% if user.referrer.present? %>
+    <%= link_to user.referrer.email, admin_user_path(user.referrer) %>
+  <% else %>
+    -
+  <% end %>
+</p>
+
+<p>
+  <strong>Referrals made:</strong>
+  <%= user.referees.size %>
+</p>
+
+<p>
   <strong>Subscriptions:</strong>
   <%= link_to "#{user.subscriptions_subscribed.size} subscribed", admin_subscriptions_path(subscriber_id: user.hashid) %>,
 

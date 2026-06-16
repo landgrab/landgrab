@@ -23,7 +23,8 @@ module Admin
     def edit; end
 
     def update
-      if @user.update(user_params_for_update)
+      assign_referrer
+      if @user.errors.none? && @user.update(user_params_for_update)
         redirect_to admin_user_path(@user), notice: 'User was successfully updated.'
       else
         render :edit
@@ -38,6 +39,25 @@ module Admin
 
     def user_params_for_update
       params.expect(user: %i[first_name last_name username website_url website_title team_id])
+    end
+
+    def assign_referrer
+      return unless params[:user].key?(:referrer_id)
+
+      referrer_hashid = params[:user][:referrer_id].strip
+
+      if referrer_hashid.blank?
+        @user.referrer = nil
+      else
+        referrer = User.find_by_hashid(referrer_hashid)
+        if referrer.nil?
+          @user.errors.add(:base, "Referrer not found: #{referrer_hashid}")
+        elsif referrer == @user
+          @user.errors.add(:base, 'A user cannot be their own referrer')
+        else
+          @user.referrer = referrer
+        end
+      end
     end
 
     def filtered_users
