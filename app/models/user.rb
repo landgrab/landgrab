@@ -52,7 +52,7 @@ class User < ApplicationRecord
     return [] if project.nil?
 
     associated_subscriptions
-      .joins(:tile)
+      .joins(:tile).includes(tile: :plot)
       .where(tiles: { plot_id: project.plots.ids })
       .order(id: :desc)
       .select(&:usable_stripe_status?)
@@ -66,7 +66,7 @@ class User < ApplicationRecord
     return [] if plot.nil?
 
     associated_subscriptions
-      .joins(:tile)
+      .joins(:tile).includes(tile: :plot)
       .where(tiles: { plot_id: plot.id })
       .order(id: :desc)
       .select(&:usable_stripe_status?)

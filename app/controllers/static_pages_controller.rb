@@ -57,7 +57,7 @@ class StaticPagesController < ApplicationController
 
     @available_limit = 200
     @available_tiles = @plot.tiles.available.includes(:latest_subscription).sample(@available_limit)
-    @unavailable_tiles = @plot.tiles.unavailable.distinct.sample(250 - @available_tiles.size)
+    @unavailable_tiles = @plot.tiles.unavailable.includes(:latest_subscription).distinct.sample(250 - @available_tiles.size)
   end
 
   def debug; end
