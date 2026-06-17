@@ -23,7 +23,7 @@
   <% end %>
 </p>
 
-<% sample_plot = Plot.joins(:tiles).distinct.sample %>
+<% sample_plot = Plot.joins(:tiles).order('RANDOM()').first %>
 <% if sample_plot.present? %>
   <% current_sub = current_user.presence && (current_user.subscription_for_plot(sample_plot) || current_user.subscription_for_project(sample_plot.project)) %>
   <% current_tile_in_plot = current_sub&.tile if current_sub&.tile&.plot == sample_plot %>
