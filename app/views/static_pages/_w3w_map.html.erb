@@ -7,11 +7,12 @@ tile_legend ||= []
 map_id = "map-#{SecureRandom.hex(4)}"
 %>
 
-<script src="https://assets.what3words.com/sdk/v3/what3words.js?key=<%= ENV.fetch('WHAT3WORDS_API_KEY') %>"></script>
-
-<%= render 'layouts/leaflet_imports' %>
-
-<%= render 'layouts/leaflet_helpers' %>
+<% unless @w3w_map_scripts_loaded %>
+  <% @w3w_map_scripts_loaded = true %>
+  <script src="https://assets.what3words.com/sdk/v3/what3words.js?key=<%= ENV.fetch('WHAT3WORDS_API_KEY') %>"></script>
+  <%= render 'layouts/leaflet_imports' %>
+  <%= render 'layouts/leaflet_helpers' %>
+<% end %>
 
 <div id="<%= map_id %>" style="width: 100%; height: <%= map_height %>" class="mb-3"></div>
 
