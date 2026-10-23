@@ -23,7 +23,7 @@ module SubscriptionsHelper
     case subscription.stripe_status
     when 'active'
       'success'
-    when 'incomplete', 'incomplete_expired', 'trialing'
+    when 'incomplete', 'incomplete_expired', 'trialing', 'paused'
       'warning'
     when 'past_due', 'unpaid', 'canceled'
       'danger'
