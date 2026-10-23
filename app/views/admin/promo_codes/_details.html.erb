@@ -1,0 +1,35 @@
+<table class="table">
+  <tbody>
+    <tr>
+      <th>Code</th>
+      <td><%= content_tag(:code, promo_code.code) %></td>
+    </tr>
+
+    <tr>
+      <th>Type</th>
+      <td><%= promo_code.free_trial? ? "Free trial (#{pluralize(promo_code.free_trial_days, 'day')})" : 'Stripe discount' %></td>
+    </tr>
+
+    <tr>
+      <th>Stripe ID</th>
+      <td>
+        <% if promo_code.stripe_id.present? %>
+          <%= link_to promo_code.stripe_id,
+                      "#{ENV.fetch('STRIPE_DASHBOARD_URL')}/promotion_codes/#{promo_code.stripe_id}" %>
+        <% else %>
+          —
+        <% end %>
+      </td>
+    </tr>
+
+    <tr>
+      <th>Created</th>
+      <td>
+        <%= promo_code.created_at.strftime('%e %b %Y %H:%M:%S') %>
+        <% if promo_code.created_at != promo_code.updated_at %>
+          (updated <%= promo_code.updated_at.strftime('%e %b %Y %H:%M:%S') %>)
+        <% end %>
+      </td>
+    </tr>
+  </tbody>
+</table>

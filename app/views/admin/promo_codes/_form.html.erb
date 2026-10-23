@@ -1,0 +1,59 @@
+<%= form_with(model: [:admin, promo_code], local: true) do |form| %>
+  <%= render 'layouts/form_errors', errors: promo_code.errors %>
+
+  <div class="row mb-3 g-3 align-items-center">
+    <div class="col-sm-2">
+      <%= form.label :code, class: 'col-form-label' %>
+    </div>
+    <div class="col-sm-5">
+      <%= form.text_field :code,
+                          required: true,
+                          placeholder: 'BONUS1000',
+                          class: 'form-control',
+                          aria: { describedby: 'codeHelp' } %>
+    </div>
+    <div class="col-sm-5">
+      <span id="codeHelp" class="form-text">
+        The code customers enter at checkout.
+      </span>
+    </div>
+  </div>
+
+  <div class="row mb-3 g-3 align-items-center">
+    <div class="col-sm-2">
+      <%= form.label :stripe_id, 'Stripe ID', class: 'col-form-label' %>
+    </div>
+    <div class="col-sm-5">
+      <%= form.text_field :stripe_id,
+                          placeholder: 'promo_abc123',
+                          class: 'form-control',
+                          aria: { describedby: 'stripeIdHelp' } %>
+    </div>
+    <div class="col-sm-5">
+      <span id="stripeIdHelp" class="form-text">
+        The Stripe promotion code ID, starting with 'promo_'. Leave blank for free-trial codes.
+      </span>
+    </div>
+  </div>
+
+  <div class="row mb-3 g-3 align-items-center">
+    <div class="col-sm-2">
+      <%= form.label :free_trial_days, class: 'col-form-label' %>
+    </div>
+    <div class="col-sm-5">
+      <%= form.number_field :free_trial_days,
+                            min: 1,
+                            step: 1,
+                            placeholder: '14',
+                            class: 'form-control',
+                            aria: { describedby: 'freeTrialDaysHelp' } %>
+    </div>
+    <div class="col-sm-5">
+      <span id="freeTrialDaysHelp" class="form-text">
+        Set to make this a card-free trial of this many days (no Stripe ID needed). Leave blank for a Stripe discount code.
+      </span>
+    </div>
+  </div>
+
+  <%= form.submit class: 'btn btn-primary' %>
+<% end %>
