@@ -15,7 +15,7 @@ class Subscription < ApplicationRecord
 
   # https://stripe.com/docs/api/subscriptions/object#subscription_object-status
   enum :stripe_status,
-       { active: 0, past_due: 1, unpaid: 2, canceled: 3, incomplete: 4, incomplete_expired: 5, trialing: 6 },
+       { active: 0, past_due: 1, unpaid: 2, canceled: 3, incomplete: 4, incomplete_expired: 5, trialing: 6, paused: 7 },
        prefix: :stripe_status
 
   enum :recurring_interval, { month: 0, year: 1 }, prefix: :recurring_interval

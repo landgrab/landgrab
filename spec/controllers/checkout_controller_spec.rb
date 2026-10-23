@@ -80,6 +80,38 @@ RSpec.describe CheckoutController do
       expect(Stripe::Checkout::Session).to have_received(:create).with(hash_including(discounts: [{ promotion_code: promo_code.stripe_id }]))
     end
 
+    context 'with a free trial promo code' do
+      let(:promo_code) { create(:promo_code, :free_trial, code: 'FREETRIAL') }
+
+      it 'starts a trial that pauses if no payment method is added' do
+        get :checkout, params: { price: price.hashid, code: promo_code.code }
+
+        expect(Stripe::Checkout::Session).to have_received(:create).with(
+          hash_including(subscription_data: hash_including(trial_period_days: 14, trial_settings: { end_behavior: { missing_payment_method: 'pause' } }))
+        )
+      end
+
+      it 'does not require a payment method' do
+        get :checkout, params: { price: price.hashid, code: promo_code.code }
+
+        expect(Stripe::Checkout::Session).to have_received(:create).with(hash_including(payment_method_collection: 'if_required'))
+      end
+
+      it 'does not apply a Stripe discount' do
+        get :checkout, params: { price: price.hashid, code: promo_code.code }
+
+        expect(Stripe::Checkout::Session).to have_received(:create).with(hash_not_including(:discounts))
+      end
+    end
+
+    it 'does not start a trial for ordinary promo codes' do
+      get :checkout, params: { price: price.hashid, code: promo_code.code }
+
+      expect(Stripe::Checkout::Session).to have_received(:create).with(
+        hash_including(subscription_data: { metadata: anything })
+      )
+    end
+
     it 'creates a checkout session with tile subscription metadata' do
       tile = create(:tile)
 

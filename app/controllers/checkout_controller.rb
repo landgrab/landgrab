@@ -69,17 +69,16 @@ class CheckoutController < ApplicationController
         price: @price.stripe_id,
         quantity: 1
       }],
-      subscription_data: { metadata: stripe_checkout_payload_subscription_metadata },
+      subscription_data: stripe_checkout_payload_subscription_data,
       mode: 'subscription',
       ui_mode: 'embedded_page',
       return_url: build_success_url
     }
-    if @promo_code.nil?
-      x[:allow_promotion_codes] = true
-    else
-      x[:discounts] = [{ promotion_code: @promo_code&.stripe_id }]
-    end
-    x
+    x.merge(@promo_code&.stripe_checkout_options || { allow_promotion_codes: true })
+  end
+
+  def stripe_checkout_payload_subscription_data
+    { metadata: stripe_checkout_payload_subscription_metadata }.merge(@promo_code&.stripe_trial_data || {})
   end
 
   def stripe_checkout_payload_subscription_metadata

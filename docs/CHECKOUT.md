@@ -25,3 +25,17 @@ They will subsequently be prompted to claim the chosen tile,
 or any other within the project.
 
 Payment failure simply results in returning the user to checkout to retry.
+
+## Free trials without a card
+
+A `PromoCode` with `free_trial_days` set (and no `stripe_id`) turns the checkout
+link into a card-free trial: `/checkout/checkout?price=<price>&code=<code>`.
+
+The checkout session is created with `payment_method_collection: 'if_required'`,
+`subscription_data.trial_period_days`, and
+`trial_settings.end_behavior.missing_payment_method: 'pause'`, so the customer
+isn't asked for card details and the subscription is paused (Stripe status
+`paused`) if no payment method has been added when the trial ends.
+See the [Stripe docs](https://docs.stripe.com/payments/checkout/free-trials#free-trials-without-payment-method).
+
+Create one from the Rails console: `PromoCode.create!(code: 'FREETRIAL', free_trial_days: 14)`.
