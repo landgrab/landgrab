@@ -4,6 +4,8 @@
   Promo codes provide discounts when applied during purchase of a subscription.
 </p>
 
+<%= link_to 'New Promo Code', new_admin_promo_code_path %>
+
 <%= page_entries_info @promo_codes %>
 
 <%= render 'table', promo_codes: @promo_codes %>

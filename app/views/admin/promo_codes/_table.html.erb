@@ -4,7 +4,9 @@
       <th>Promo Code ID</th>
       <th>Code</th>
       <th>Stripe ID</th>
+      <th>Free Trial</th>
       <th>Created</th>
+      <th></th>
     </tr>
   </thead>
 
@@ -16,10 +18,19 @@
           <%= content_tag(:code, promo_code.code) %>
         </td>
         <td>
-          <%= link_to promo_code.stripe_id,
+          <% if promo_code.stripe_id.present? %>
+            <%= link_to promo_code.stripe_id,
                         "#{ENV.fetch('STRIPE_DASHBOARD_URL')}/promotion_codes/#{promo_code.stripe_id}" %>
+          <% else %>
+            —
+          <% end %>
         </td>
+        <td><%= promo_code.free_trial? ? pluralize(promo_code.free_trial_days, 'day') : '—' %></td>
         <td><%= promo_code.created_at.strftime('%e %b %Y %H:%M:%S') %></td>
+        <td>
+          <%= link_to 'View', admin_promo_code_path(promo_code) %> |
+          <%= link_to 'Edit', edit_admin_promo_code_path(promo_code) %>
+        </td>
       </tr>
     <% end %>
   </tbody>
