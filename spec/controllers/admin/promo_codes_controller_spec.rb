@@ -5,7 +5,12 @@ RSpec.describe Admin::PromoCodesController do
 
   let(:admin) { create(:user, admin: true) }
 
-  before { sign_in(admin, scope: :user) }
+  before do
+    allow(ENV).to receive(:fetch).and_call_original
+    allow(ENV).to receive(:fetch).with('STRIPE_DASHBOARD_URL').and_return('https://dashboard.stripe.com/test')
+
+    sign_in(admin, scope: :user)
+  end
 
   describe 'GET index' do
     it 'lists promo codes including free-trial codes' do
