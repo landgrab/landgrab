@@ -77,7 +77,7 @@ class User < ApplicationRecord
   end
 
   def linkable_subscriptions
-    subscriptions_redeemed.stripe_status_active.where.missing(:tile)
+    subscriptions_redeemed.usable.where.missing(:tile)
   end
 
   def viewed_post_ids

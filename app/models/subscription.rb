@@ -20,6 +20,9 @@ class Subscription < ApplicationRecord
 
   enum :recurring_interval, { month: 0, year: 1 }, prefix: :recurring_interval
 
+  # Entitles the holder to a tile (see #usable_stripe_status?)
+  scope :usable, -> { where(stripe_status: %i[active trialing]) }
+
   # TODO: Migrate to prices table (subscription.price.amount_display)
   monetize :price_pence, as: :price, numericality: { greater_than: 0 }, allow_nil: true
 

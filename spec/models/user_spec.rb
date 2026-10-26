@@ -3,6 +3,30 @@
 require 'rails_helper'
 
 RSpec.describe User do
+  describe '#linkable_subscriptions' do
+    let(:user) { create(:user) }
+
+    it 'includes active and trialing redeemed subscriptions without a tile' do
+      active = create(:subscription, redeemer: user, stripe_status: 'active')
+      trialing = create(:subscription, redeemer: user, stripe_status: 'trialing')
+
+      expect(user.linkable_subscriptions).to contain_exactly(active, trialing)
+    end
+
+    it 'excludes paused and cancelled subscriptions' do
+      create(:subscription, redeemer: user, stripe_status: 'paused')
+      create(:subscription, redeemer: user, stripe_status: 'canceled')
+
+      expect(user.linkable_subscriptions).to be_empty
+    end
+
+    it 'excludes subscriptions already linked to a tile' do
+      create(:subscription, redeemer: user, tile: create(:tile))
+
+      expect(user.linkable_subscriptions).to be_empty
+    end
+  end
+
   describe '#generate_referral_token' do
     it 'assigns a referral token on create' do
       user = create(:user)
