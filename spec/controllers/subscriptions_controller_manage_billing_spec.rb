@@ -49,5 +49,23 @@ RSpec.describe SubscriptionsController do
         hash_including(flow_data: hash_including(type: :payment_method_update))
       )
     end
+
+    context 'with a subscription_id' do
+      let(:subscription) { create(:subscription, subscriber: user) }
+
+      it 'returns to that subscription afterwards' do
+        post :manage_billing, params: { subscription_id: subscription.hashid }
+
+        expect(Stripe::BillingPortal::Session).to have_received(:create).with(
+          hash_including(return_url: subscription_url(subscription))
+        )
+      end
+
+      it 'returns not found for another user\'s subscription' do
+        post :manage_billing, params: { subscription_id: create(:subscription, subscriber: create(:user)).hashid }
+
+        expect(response).to have_http_status(:not_found)
+      end
+    end
   end
 end
