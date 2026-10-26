@@ -57,6 +57,28 @@
   <% end %>
 <% end %>
 
+<% if @subscription.subscribed_by?(current_user) && (@subscription.stripe_status_trialing? || @subscription.stripe_status_paused?) %>
+  <% if @subscription.stripe_status_paused? %>
+    <p>
+      Your free trial has ended. Add a payment method, then resume your subscription.
+    </p>
+  <% else %>
+    <p>
+      Add a payment method before your free trial ends to keep your subscription going.
+    </p>
+  <% end %>
+  <div class="d-flex gap-2 mb-3">
+    <%= button_to 'Add payment details',
+                  manage_billing_subscriptions_path(subscription_id: @subscription.hashid),
+                  class: 'btn btn-primary' %>
+    <% if @subscription.stripe_status_paused? %>
+      <%= button_to 'Resume subscription',
+                    resume_subscription_path(@subscription),
+                    class: 'btn btn-success' %>
+    <% end %>
+  </div>
+<% end %>
+
 <% unless @subscription.stripe_status_canceled? %>
   <p>
     <%= button_to 'Cancel Subscription',
