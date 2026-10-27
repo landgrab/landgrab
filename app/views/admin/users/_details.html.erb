@@ -61,6 +61,24 @@
 </p>
 
 <p>
+  <strong>Referral Code:</strong>
+  <% if user.referral_token.present? %>
+    <%= user.referral_token %>
+  <% else %>
+    -
+  <% end %>
+</p>
+
+<p>
+  <strong>Referral URL:</strong>
+  <% if user.referral_token.present? %>
+    <%= link_to referral_url(referral_token: user.referral_token), referral_url(referral_token: user.referral_token) %>
+  <% else %>
+    -
+  <% end %>
+</p>
+
+<p>
   <strong>Referred by:</strong>
   <% if user.referrer.present? %>
     <%= link_to user.referrer.email, admin_user_path(user.referrer) %>
