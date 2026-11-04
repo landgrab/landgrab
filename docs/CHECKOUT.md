@@ -26,6 +26,28 @@ or any other within the project.
 
 Payment failure simply results in returning the user to checkout to retry.
 
+## Checkout links
+
+Links to checkout take the form:
+
+`/checkout/checkout?tile=<tile>&price=<price>`
+
+| Param | Required | Description |
+| --- | --- | --- |
+| `price` | Yes | Hashid of the `Price` to subscribe to |
+| `tile` | No | Hashid of the `Tile` to associate with the subscription |
+| `project` | No | Hashid of the `Project` (falls back to `Project.first`) |
+| `code` | No | `PromoCode` code to apply |
+| `redemption_mode` | No | `self` or `gift` |
+
+The chosen tile (and project) is stored in the Stripe subscription's metadata.
+Once checkout completes, `StripeSubscriptionCreateOrRefreshJob` links the tile
+to the subscription, unless the tile has been linked to another subscription
+in the meantime (in which case the subscription is created without a tile).
+
+Users who aren't signed in are redirected to registration first; the query
+string is not currently preserved across that redirect.
+
 ## Free trials without a card
 
 A `PromoCode` with `free_trial_days` set (and no `stripe_id`) turns the checkout
