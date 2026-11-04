@@ -11,6 +11,12 @@
       "url": "heroku/ruby"
     }
   ],
+  "addons": [
+    {
+      "plan": "heroku-postgresql:essential-0",
+      "as": "DATABASE"
+    }
+  ],
   "env": {
     "DEVISE_SECRET_KEY": {
       "description": "A secret key for verifying the integrity of signed cookies.",
