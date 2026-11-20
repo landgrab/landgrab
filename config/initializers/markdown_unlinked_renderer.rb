@@ -3,7 +3,7 @@
 # https://stackoverflow.com/a/68098687/1323144
 class MarkdownUnlinkedRenderer
   def self.markdown_unlinked
-    # rubocop:disable Style/ClassVars
+    # rubocop:disable-next Style/ClassVars
     @@markdown ||= Redcarpet::Markdown.new(
       renderer_unlinked,
       # NOTE: Autolink still required for handling YouTube embeds
@@ -13,7 +13,6 @@ class MarkdownUnlinkedRenderer
       space_after_headers: true,
       tables: true
     )
-    # rubocop:enable Style/ClassVars
   end
 
   def self.renderer_unlinked
