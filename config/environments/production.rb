@@ -83,7 +83,7 @@ Rails.application.configure do
 
   config.action_mailer.delivery_method = :postmark
   config.action_mailer.postmark_settings = { api_token: ENV.fetch('POSTMARK_SERVER_API_TOKEN') }
-  config.action_mailer.default_url_options = { host: ENV.fetch('APP_DOMAIN'), protocol: 'https' }
+  config.action_mailer.default_url_options = { host: ENV.fetch('APP_DOMAIN') { "#{ENV.fetch('HEROKU_APP_NAME')}.herokuapp.com" }, protocol: 'https' }
 
   # Only use :id for inspections in production.
   config.active_record.attributes_for_inspect = [:id]
