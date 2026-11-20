@@ -2,7 +2,15 @@
 
 <p class="text-muted">Part of <%= ENV.fetch('SITE_TITLE', 'Landgrab') %> since <%= profile_user.created_at.strftime('%B %Y') %></p>
 
-<p><%= link_to "Join #{ENV.fetch('SITE_TITLE', 'Landgrab')} with #{profile_user.first_name}", referral_url(profile_user.referral_token) %></p>
+<% if user_signed_in? && current_user == profile_user %>
+  <p class="mb-1">Share your referral link</p>
+  <%= render 'layouts/copy_to_clipboard',
+             copytext: referral_url(profile_user.referral_token),
+             copycta: 'Copy referral link',
+             cta_width: '200px' %>
+<% else %>
+  <p><%= link_to "Join #{ENV.fetch('SITE_TITLE', 'Landgrab')} with #{profile_user.first_name}", referral_url(profile_user.referral_token) %></p>
+<% end %>
 
 <% if profile_user.website_url.present? %>
   <p><%= link_to profile_user.website_link_title, profile_user.website_url %></p>
