@@ -3,7 +3,7 @@
 # https://stackoverflow.com/a/68098687/1323144
 class MarkdownRenderer
   def self.markdown
-    # rubocop:disable Style/ClassVars
+    # rubocop:disable-next Style/ClassVars
     @@markdown ||= Redcarpet::Markdown.new(
       renderer,
       autolink: true,
@@ -12,7 +12,6 @@ class MarkdownRenderer
       space_after_headers: true,
       tables: true
     )
-    # rubocop:enable Style/ClassVars
   end
 
   def self.renderer

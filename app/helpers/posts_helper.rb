@@ -4,17 +4,15 @@ module PostsHelper
   def markdown(text)
     return nil if text.blank?
 
-    # rubocop:disable Rails/OutputSafety
+    # rubocop:disable-next Rails/OutputSafety
     MarkdownRenderer.render(text).html_safe
-    # rubocop:enable Rails/OutputSafety
   end
 
   def markdown_unlinked(text)
     return nil if text.blank?
 
-    # rubocop:disable Rails/OutputSafety
+    # rubocop:disable-next Rails/OutputSafety
     MarkdownUnlinkedRenderer.render_unlinked(text).html_safe
-    # rubocop:enable Rails/OutputSafety
   end
 
   def linkify_tiles(string)
