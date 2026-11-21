@@ -19,10 +19,10 @@
       <div class="col-xs-12 col-sm-4">
         <% if @project.website %>
           <%= link_to @project.website do %>
-            <%= image_tag @project.logo_url, class: 'img-fluid' %>
+            <%= image_tag @project.logo_url_fallback, class: 'img-fluid' %>
           <% end %>
         <% else %>
-          <%= image_tag @project.logo_url, class: 'img-fluid' %>
+          <%= image_tag @project.logo_url_fallback, class: 'img-fluid' %>
         <% end %>
       </div>
       <div class="col-xs-12 col-sm-8">

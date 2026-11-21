@@ -17,7 +17,7 @@ class Team < ApplicationRecord
   end
 
   def logo_url_fallback
-    logo_url.presence || "https://placehold.co/800x400?text=#{title}"
+    logo_url.presence || PlaceholderImageService.url(width: 400, height: 400, text: 'Logo')
   end
 
   def redeemed_tiles
