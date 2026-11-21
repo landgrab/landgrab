@@ -1,9 +1,7 @@
 <html>
 <%= render 'static_pages/w3w_map',
     tiles: @tiles,
+    tile_action: :view_details,
     hide_legend: true,
-    tile_legend: [
-      { key: 'all', title: 'N/A', tiles: @tiles, colour: 'grey', action: :view_details }
-    ],
     map_height: '100%' %>
 </html>

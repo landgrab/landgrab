@@ -46,6 +46,14 @@ _Avoid_: Recipient, giftee, holder, owner
 To become the redeemer of a subscription, either by redeeming your own or by accepting a redemption invite.
 _Avoid_: Claim, accept
 
+**Gifted tile**:
+A tile whose usable subscription a user pays for while someone else redeems it.
+_Avoid_: Given tile, present
+
+**Referred tile**:
+A tile whose usable subscription is paid for by one of a user's referees, whoever redeems it.
+_Avoid_: Referral tile, referee tile
+
 **Choose a tile**:
 The step where a redeemer picks an available tile for a usable subscription that has no tile yet.
 _Avoid_: Claim, link, assign, allocate
@@ -103,5 +111,9 @@ An organisation that groups users, with its own team page; posts can be attached
 _Avoid_: Organisation, group, company
 
 **Referrer**:
-A user whose referral link was used by another user to sign up.
+The user who brought another user to Landgrab, either through their referral link or by gifting them a subscription they redeemed.
 _Avoid_: Inviter, affiliate
+
+**Referee**:
+A user who has a referrer; each user has at most one, fixed when they first sign up via a referral link or redeem a gift.
+_Avoid_: Referral, invitee, recruit

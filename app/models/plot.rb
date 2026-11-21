@@ -116,12 +116,11 @@ class Plot < ApplicationRecord
     tiles.joins(latest_subscription: :subscriber).where(users: { id: user.id }).includes(:latest_subscription)
   end
 
-  def tiles_for_map(include_tile: nil)
-    # returns up to 250 tiles, sampling subscribed vs avaliable tiles
+  # Up to 250 tiles, sampling unavailable and available tiles
+  def tiles_for_map
     unavailable = tiles.includes(:latest_subscription).unavailable.sample(100)
     available = tiles.includes(:latest_subscription).available.sample(250 - unavailable.size)
-    combined = ([include_tile] + unavailable + available).compact.uniq.first(250)
-    [available, unavailable, combined]
+    unavailable + available
   end
 
   def hero_image_url_fallback

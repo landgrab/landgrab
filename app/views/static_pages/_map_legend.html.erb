@@ -1,8 +1,11 @@
-<% tile_legend ||= [] %>
+<% legend ||= [] %>
 
 <ul class="list-inline">
-  <% tile_legend.each do |legend| %>
-    <li class="list-inline-item"><span class="tile-legend tile-legend-<%= legend.fetch(:key) %>">&nbsp;</span> <%= legend.fetch(:title) %></li>
+  <% legend.each do |entry| %>
+    <li class="list-inline-item">
+      <span class="tile-legend" style="background-color: <%= entry.fetch(:fill) %>;<% if entry.fetch(:border) %> border: 4px solid <%= entry.fetch(:border) %>;<% end %>">&nbsp;</span>
+      <%= entry.fetch(:title) %>
+    </li>
   <% end %>
 </ul>
 
@@ -11,12 +14,8 @@
   height: 30px;
   width: 30px;
   border: 2px solid black;
+  outline: 1px solid black;
   display: inline-block;
-  opacity: 0.75;
+  opacity: 0.85;
 }
-<% tile_legend.each do |legend| %>
-  .tile-legend-<%= legend.fetch(:key) %> {
-    background-color: var(--landgrab-color-<%= legend.fetch(:colour) %>, <%= legend.fetch(:colour) %>);
-  }
-<% end %>
 </style>

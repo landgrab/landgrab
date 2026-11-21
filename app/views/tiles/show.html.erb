@@ -44,16 +44,10 @@
   <%= markdown(@tile.project&.subscriber_benefits) %>
 <% end %>
 
-<% available, unavailable, combined_tiles = @tile.plot.tiles_for_map(include_tile: @tile) if @tile.plot.present? %>
 <%= render 'static_pages/w3w_map',
-    tiles: combined_tiles || [@tile],
+    tiles: @tile.plot&.tiles_for_map || [],
     plot: @tile.plot,
-    tile_legend: [
-      { key: :your, title: 'Your Tile', tiles: [current_sub&.tile].compact, colour: 'gold' },
-      { key: :this, title: 'This Tile', tiles: [@tile], colour: 'green' },
-      { key: :available, title: 'Available', tiles: available, colour: 'blue' },
-      { key: :unavailable, title: 'Unavailable', tiles: unavailable, colour: 'darkred' }
-    ] %>
+    focus_tiles: [@tile] %>
 
 <div class="row">
   <div class="col-md-6">

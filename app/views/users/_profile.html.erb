@@ -29,17 +29,27 @@
   </p>
 <% end %>
 
-<% if tiles_by_plot.empty? %>
-  <p>No redeemed tiles yet.</p>
+<% own_profile = user_signed_in? && current_user == profile_user %>
+<% owner = own_profile ? 'My' : "#{profile_user.first_name}'s" %>
+
+<% if impact_plots.empty? %>
+  <p>No tiles yet.</p>
+  <% if own_profile %>
+    <p class="text-muted">Refer friends and their tiles show up here.</p>
+  <% end %>
 <% else %>
-  <% tiles_by_plot.each do |plot, tiles| %>
-    <h2 class="mt-4"><%= "#{profile_user.first_name} has #{tiles.one? ? 'a tile' : "#{tiles.count} tiles"} in #{plot.title.presence || plot.id}" %></h2>
-    <%= render 'static_pages/w3w_map',
-        tiles: tiles,
-        plot: plot,
-        hide_legend: true,
-        tile_legend: [
-          { key: :owned, title: 'Tile', tiles: tiles, colour: 'gold' }
-        ] %>
+  <% impact_summary = [
+       (pluralize(impact_counts[:mine], 'tile') if impact_counts[:mine]),
+       (pluralize(impact_counts[:gifted], 'gifted tile') if impact_counts[:gifted]),
+       (pluralize(impact_counts[:referred], 'referred tile') if impact_counts[:referred])
+     ].compact.to_sentence %>
+  <p class="lead">
+    <%= own_profile ? 'You have' : "#{profile_user.first_name} has" %>
+    <%= impact_summary %> across <%= pluralize(impact_plots.size, 'plot') %>.
+  </p>
+
+  <% impact_plots.each do |plot| %>
+    <h2 class="mt-4"><%= "#{owner} impact in #{plot.title.presence || plot.id}" %></h2>
+    <%= render 'static_pages/w3w_map', tiles: plot.tiles_for_map, plot:, subject: profile_user %>
   <% end %>
 <% end %>
