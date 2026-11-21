@@ -30,11 +30,11 @@
   </p>
 <% elsif @subscription.usable_stripe_status? %>
   <p class="mt-4">
-    This subscription has not yet been linked to a tile.
+    No tile has been chosen for this subscription yet.
   </p>
   <% if @subscription.redeemed_by?(current_user) %>
     <p>
-      You can find any tile and use the button to claim it using this subscription.
+      You can find any tile and use the button to choose it for this subscription.
     </p>
     <p>
       You can either

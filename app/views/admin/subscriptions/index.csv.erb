@@ -10,9 +10,7 @@
   'Stripe ID',
   'Stripe Status',
   'Price (pence)',
-  'Recurring Interval',
-  'Claim Email',
-  'Claim Hash'
+  'Recurring Interval'
 ] -%>
 <%= CSV.generate_line headers -%>
 <%- @subscriptions.each do |subscription| -%>
@@ -28,8 +26,6 @@
     subscription.stripe_id,
     subscription.stripe_status,
     subscription.price_pence,
-    subscription.recurring_interval,
-    subscription.claim_email,
-    subscription.claim_hash
+    subscription.recurring_interval
   ]) -%>
 <%- end -%>

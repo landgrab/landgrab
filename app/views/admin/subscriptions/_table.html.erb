@@ -23,8 +23,7 @@
             <br>
             <%= subscription.subscriber.email %>
           <% else %>
-            Unregistered; email from stripe is
-            <%= content_tag(:code, subscription.claim_email || 'NOT SET') %>
+            Unregistered
           <% end %>
         </td>
         <td>

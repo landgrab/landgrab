@@ -30,8 +30,7 @@ namespace :subscription do
       fake_id = Array.new(8) { rand(0..9) }.join
       Subscription.create!(
         stripe_id: "#{Subscription::EXTERNALLY_PAID_PREFIX}#{fake_id}",
-        stripe_status: :active,
-        claim_hash: SecureRandom.base36
+        stripe_status: :active
       )
     end
   end

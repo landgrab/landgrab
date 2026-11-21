@@ -56,7 +56,7 @@ Rails.application.routes.draw do
     post :manage_billing, on: :collection
 
     # TODO: Remove GET option once all links are updated to use POST
-    match 'link_tile/:tile_hashid', on: :member, action: :link_tile, as: :link_tile, via: %i[get post]
+    match 'choose_tile/:tile_hashid', on: :member, action: :choose_tile, as: :choose_tile, via: %i[get post]
   end
 
   get '/checkout/checkout'

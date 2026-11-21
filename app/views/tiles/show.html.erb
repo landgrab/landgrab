@@ -1,10 +1,10 @@
-<% linkable_subs = current_user&.linkable_subscriptions %>
-<% ready_to_link = user_signed_in? && linkable_subs.any? %>
+<% subs_without_tile = current_user&.subscriptions_without_tile %>
+<% ready_to_choose = user_signed_in? && subs_without_tile.any? %>
 <% current_sub = current_user.presence && @tile.plot.presence && (current_user.subscription_for_plot(@tile.plot) || current_user.subscription_for_project(@tile.plot.project)) %>
 
 <% if !user_signed_in? %>
   <%= render 'layouts/progress_bar', step: 1, journey: :register_first %>
-<% elsif ready_to_link && !current_sub %>
+<% elsif ready_to_choose && !current_sub %>
   <% if @tile.available? %>
     <%= render 'layouts/progress_bar', step: 4, journey: :pay_first %>
   <% else %>
@@ -16,12 +16,12 @@
 
 <div class="row">
   <div class="col-md-6">
-    <% if @tile.available? && ready_to_link %>
+    <% if @tile.available? && ready_to_choose %>
       <%= bootstrap_alert safe_join([
         'You can ',
-        link_to('link this tile', link_tile_subscription_path(linkable_subs.last, tile_hashid: @tile.hashid), class: 'alert-link', method: :post),
+        link_to('choose this tile', choose_tile_subscription_path(subs_without_tile.last, tile_hashid: @tile.hashid), class: 'alert-link', method: :post),
         ' to your existing ',
-        link_to('subscription', subscription_path(linkable_subs.last), class: 'alert-link'),
+        link_to('subscription', subscription_path(subs_without_tile.last), class: 'alert-link'),
         '.'
       ]), :info %>
     <% end %>
