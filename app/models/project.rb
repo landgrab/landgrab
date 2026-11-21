@@ -24,7 +24,11 @@ class Project < ApplicationRecord
   end
 
   def hero_image_url_fallback
-    hero_image_url.presence || "https://placehold.co/800x400?text=#{title}"
+    hero_image_url.presence || PlaceholderImageService.url(width: 800, height: 400, text: title)
+  end
+
+  def logo_url_fallback
+    logo_url.presence || PlaceholderImageService.url(width: 400, height: 400, text: 'Logo')
   end
 
   def relevant_posts

@@ -125,7 +125,7 @@ class Plot < ApplicationRecord
   end
 
   def hero_image_url_fallback
-    hero_image_url.presence || "https://placehold.co/800x400?text=#{title}"
+    hero_image_url.presence || PlaceholderImageService.url(width: 800, height: 400, text: title)
   end
 
   def relevant_posts
