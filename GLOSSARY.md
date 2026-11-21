@@ -24,6 +24,10 @@ _Avoid_: W3W code, location
 A tile with no current subscription, or whose latest subscription has been cancelled, so anyone can take it.
 _Avoid_: Free tile, unclaimed tile
 
+**Unavailable tile**:
+A tile whose latest subscription has not been cancelled, so no one else can take it.
+_Avoid_: Taken tile, claimed tile, redeemed tile
+
 ## Subscribing
 
 **Subscription**:

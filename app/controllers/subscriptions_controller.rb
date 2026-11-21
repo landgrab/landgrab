@@ -32,10 +32,10 @@ class SubscriptionsController < ApplicationController
   def choose_tile
     @subscription = Subscription.find_by_hashid!(params[:id])
 
-    log_event_mixpanel('Subscriptions: Redeem')
+    log_event_mixpanel('Subscriptions: Choose Tile')
     @tile = Tile.find_by_hashid!(params[:tile_hashid])
 
-    flash = redeem_tile
+    flash = apply_tile_choice
     redirect_back_or_to(tile_path(@tile), flash:)
   end
 
@@ -110,11 +110,11 @@ class SubscriptionsController < ApplicationController
                 allow_other_host: true
   end
 
-  def redeem_tile
+  def apply_tile_choice
     if @tile.unavailable?
-      return { notice: "All good; you're already connected to this tile!" } if @tile.redeemed_by?(current_user)
+      return { notice: "All good; you've already chosen this tile!" } if @tile.redeemed_by?(current_user)
 
-      return { danger: 'Sorry, this tile has already been redeemed by someone else' }
+      return { danger: 'Sorry, this tile is unavailable' }
     end
 
     return { danger: 'Sorry, you can only choose tiles for your own subscriptions' } unless @subscription.redeemed_by?(current_user)
@@ -122,6 +122,6 @@ class SubscriptionsController < ApplicationController
     return { danger: "A tile has already been chosen for this subscription: ///#{@subscription.tile.w3w}" } if @subscription.tile.present?
 
     @subscription.update!(tile: @tile)
-    { notice: "Congratulations! You've connected to this tile!" }
+    { notice: "Congratulations! You've chosen this tile!" }
   end
 end

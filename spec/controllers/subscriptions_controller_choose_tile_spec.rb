@@ -19,7 +19,7 @@ RSpec.describe SubscriptionsController do
     it 'sets successful flash message' do
       do_post
 
-      expect(flash['notice']).to include("You've connected to this tile")
+      expect(flash['notice']).to include("You've chosen this tile")
     end
 
     it 'sets the chosen tile on the subscription' do
@@ -71,7 +71,7 @@ RSpec.describe SubscriptionsController do
       it 'prevents redeeming' do
         expect { do_post }.not_to(change { subscription.reload.tile_id })
 
-        expect(flash[:danger]).to include('already been redeemed by someone else')
+        expect(flash[:danger]).to include('this tile is unavailable')
         expect(response).to redirect_to(tile_path(tile))
       end
     end

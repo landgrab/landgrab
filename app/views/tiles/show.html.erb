@@ -1,5 +1,5 @@
-<% choosable_subs = current_user&.choosable_subscriptions %>
-<% ready_to_choose = user_signed_in? && choosable_subs.any? %>
+<% subs_without_tile = current_user&.subscriptions_without_tile %>
+<% ready_to_choose = user_signed_in? && subs_without_tile.any? %>
 <% current_sub = current_user.presence && @tile.plot.presence && (current_user.subscription_for_plot(@tile.plot) || current_user.subscription_for_project(@tile.plot.project)) %>
 
 <% if !user_signed_in? %>
@@ -19,9 +19,9 @@
     <% if @tile.available? && ready_to_choose %>
       <%= bootstrap_alert safe_join([
         'You can ',
-        link_to('choose this tile', choose_tile_subscription_path(choosable_subs.last, tile_hashid: @tile.hashid), class: 'alert-link', method: :post),
+        link_to('choose this tile', choose_tile_subscription_path(subs_without_tile.last, tile_hashid: @tile.hashid), class: 'alert-link', method: :post),
         ' to your existing ',
-        link_to('subscription', subscription_path(choosable_subs.last), class: 'alert-link'),
+        link_to('subscription', subscription_path(subs_without_tile.last), class: 'alert-link'),
         '.'
       ]), :info %>
     <% end %>

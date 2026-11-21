@@ -1,4 +1,4 @@
-<% ready_to_choose = user_signed_in? && current_user.choosable_subscriptions.any? %>
+<% ready_to_choose = user_signed_in? && current_user.subscriptions_without_tile.any? %>
 <% current_sub = current_user.presence && (current_user.subscription_for_plot(@plot) || current_user.subscription_for_project(@plot.project)) %>
 <% random_tile = @plot.tiles.available.sample %>
 

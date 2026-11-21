@@ -21,9 +21,9 @@
       <% end %>
     <% end %>
   <% elsif user_signed_in? %>
-    <% choosable_subscription = current_user.choosable_subscriptions.first %>
-    <% if choosable_subscription.present? %>
-      <%= render 'tiles/choose_tile_form', tile: tile, subscription: choosable_subscription %>
+    <% subscription_without_tile = current_user.subscriptions_without_tile.first %>
+    <% if subscription_without_tile.present? %>
+      <%= render 'tiles/choose_tile_form', tile: tile, subscription: subscription_without_tile %>
     <% else %>
       <%= render 'tiles/subscription_checkout', tile: tile %>
     <% end %>
