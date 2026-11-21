@@ -19,7 +19,8 @@ tile_map = TileMap.new(tiles:, plot:, highlighter:, focus_tiles:, focus_title:)
   <%= render 'layouts/leaflet_helpers' %>
 <% end %>
 
-<div id="<%= map_id %>" style="width: 100%; height: <%= map_height %>" class="mb-3"></div>
+<% tiles_geojson = "[#{tile_map.tiles.map { |tile| tile.tap { tile.map_action = tile_action }.to_geojson }.join(', ')}]" %>
+<div id="<%= map_id %>" style="width: 100%; height: <%= map_height %>" class="mb-3" data-tiles="<%= tiles_geojson %>"></div>
 
 <% unless hide_legend %>
   <%= render 'static_pages/map_legend', legend: tile_map.legend %>
@@ -52,7 +53,7 @@ tile_map = TileMap.new(tiles:, plot:, highlighter:, focus_tiles:, focus_title:)
     addFullscreenButton(map);
     addAllLayers(map);
 
-    var allTilesGeoJson = [<%= tile_map.tiles.map { |tile| tile.tap { tile.map_action = tile_action }.to_geojson }.join(', ').html_safe %>];
+    var allTilesGeoJson = JSON.parse(document.getElementById('<%= map_id %>').dataset.tiles);
     var tiles = L.geoJSON(allTilesGeoJson, { onEachFeature: onEachFeature, style: tileStyle }).addTo(map);
 
     <% if plot.present? %>

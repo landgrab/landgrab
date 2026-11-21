@@ -95,7 +95,7 @@ RSpec.describe TileHighlightService do
     let!(:redeemed) { tile_subscribed(subscriber: stranger, redeemer: profile_user) }
     let!(:gifted) { tile_subscribed(subscriber: profile_user, redeemer: stranger) }
     let!(:referred) { tile_subscribed(subscriber: referee, redeemer: stranger) }
-    let!(:other_plot_tile) { tile_subscribed(subscriber: profile_user, redeemer: profile_user, tile_plot: create(:plot)) }
+    let!(:other_plot_tile) { tile_subscribed(subscriber: profile_user, redeemer: profile_user, tile_plot: create(:plot, polygon: 'POLYGON ((0.01 51.5, 0.011 51.5, 0.011 51.501, 0.01 51.5))')) }
 
     before do
       tile_subscribed(subscriber: stranger, redeemer: stranger)
