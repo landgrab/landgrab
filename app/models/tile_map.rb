@@ -76,7 +76,7 @@ class TileMap
   end
 
   def legend_fill(key)
-    key == :focus ? 'transparent' : FILLS.fetch(key)
+    FILLS[key] # nil for focus: it's an outline on whatever fill the tile has
   end
 
   def legend_border(key)
