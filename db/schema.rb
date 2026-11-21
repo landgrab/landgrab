@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_10_23_100000) do
+ActiveRecord::Schema[8.1].define(version: 2026_11_21_120000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "postgis"
@@ -264,8 +264,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_23_100000) do
   end
 
   create_table "subscriptions", force: :cascade do |t|
-    t.string "claim_email"
-    t.string "claim_hash"
     t.datetime "created_at", null: false
     t.integer "price_pence"
     t.bigint "project_id", null: false

@@ -29,7 +29,7 @@ class SubscriptionsController < ApplicationController
     redirect_to @subscription, flash: { notice: "Great; we've redeemed the subscription against your account." }
   end
 
-  def link_tile
+  def choose_tile
     @subscription = Subscription.find_by_hashid!(params[:id])
 
     log_event_mixpanel('Subscriptions: Redeem')
@@ -117,9 +117,9 @@ class SubscriptionsController < ApplicationController
       return { danger: 'Sorry, this tile has already been redeemed by someone else' }
     end
 
-    return { danger: 'Sorry, you can only link tiles to your own subscriptions' } unless @subscription.redeemed_by?(current_user)
+    return { danger: 'Sorry, you can only choose tiles for your own subscriptions' } unless @subscription.redeemed_by?(current_user)
 
-    return { danger: "This subscription was already linked to another tile: ///#{@subscription.tile.w3w}" } if @subscription.tile.present?
+    return { danger: "A tile has already been chosen for this subscription: ///#{@subscription.tile.w3w}" } if @subscription.tile.present?
 
     @subscription.update!(tile: @tile)
     { notice: "Congratulations! You've connected to this tile!" }

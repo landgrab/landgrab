@@ -74,7 +74,7 @@
       "status": "complete",
       "submit_type": null,
       "subscription": "sub_1MCsmJIUdRPXBaHSKXW64rWe",
-      "success_url": "https://test.example.com/checkout/claim",
+      "success_url": "https://test.example.com/checkout/success?session_id={CHECKOUT_SESSION_ID}",
       "total_details": {
         "amount_discount": 0,
         "amount_shipping": 0,

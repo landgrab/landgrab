@@ -3,9 +3,9 @@
 RSpec.describe SubscriptionsController do
   render_views
 
-  describe 'POST subscriptions#link_tile' do
+  describe 'POST subscriptions#choose_tile' do
     subject(:do_post) do
-      post :link_tile, params: { id: subscription.hashid, tile_hashid: tile.hashid }
+      post :choose_tile, params: { id: subscription.hashid, tile_hashid: tile.hashid }
     end
 
     let(:user) { create(:user) }
@@ -22,7 +22,7 @@ RSpec.describe SubscriptionsController do
       expect(flash['notice']).to include("You've connected to this tile")
     end
 
-    it 'links to tile to the subscription' do
+    it 'sets the chosen tile on the subscription' do
       expect { do_post }.to change { subscription.reload.tile_id }.to(tile.id)
     end
 
@@ -55,10 +55,10 @@ RSpec.describe SubscriptionsController do
         expect { do_post }.not_to change { subscription.reload.tile_id }.from(alt_tile.id)
       end
 
-      it 'returns an error showing which tile is linked already' do
+      it 'returns an error showing which tile was already chosen' do
         do_post
 
-        expect(flash[:danger]).to include("already linked to another tile: ///#{alt_tile.w3w}")
+        expect(flash[:danger]).to include("already been chosen for this subscription: ///#{alt_tile.w3w}")
       end
     end
 

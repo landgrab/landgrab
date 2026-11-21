@@ -9,7 +9,7 @@
       <%= link_to @tile.latest_subscription.subscriber.display_name,
                   admin_user_path(@tile.latest_subscription.subscriber) %>
     <% else %>
-      (but not claimed yet)
+      (but has no subscriber yet)
     <% end %>
     (since <%= @tile.latest_subscription.created_at.strftime('%e %b %Y %H:%M:%S') %>).
   <% else %>

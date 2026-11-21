@@ -41,7 +41,7 @@ RSpec.describe TilesController do
       end
     end
 
-    context 'with an unclaimed tile' do
+    context 'with an available tile' do
       it 'returns a 200 status code' do
         do_get
 
@@ -96,7 +96,7 @@ RSpec.describe TilesController do
         expect(response.body).to include(tile.w3w)
       end
 
-      it 'shows a message that the tile is already claimed' do
+      it 'shows a message that the tile is unavailable' do
         do_get
 
         expect(response.body).to include('Someone has already subscribed to this tile.')
@@ -120,7 +120,7 @@ RSpec.describe TilesController do
         expect(response.body).to include(tile.w3w)
       end
 
-      it 'shows a message that the tile is already claimed' do
+      it 'shows a message that the tile is unavailable' do
         do_get
 
         expect(response.body).to include('Someone has already subscribed to this tile.')

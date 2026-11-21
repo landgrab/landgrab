@@ -41,10 +41,6 @@ class Subscription < ApplicationRecord
     tile.update!(latest_subscription: nil)
   end
 
-  def verify_claims_hash(provided_hash)
-    provided_hash.present? && ActiveSupport::SecurityUtils.secure_compare(claim_hash, provided_hash)
-  end
-
   def redeemed?
     redeemer_id.present?
   end

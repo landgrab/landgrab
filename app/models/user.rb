@@ -76,7 +76,7 @@ class User < ApplicationRecord
     Subscription.where(subscriber_id: id).or(Subscription.where(redeemer_id: id))
   end
 
-  def linkable_subscriptions
+  def choosable_subscriptions
     subscriptions_redeemed.usable.where.missing(:tile)
   end
 
