@@ -26,9 +26,9 @@ RSpec.describe TeamsController do
     context 'when members redeem tiles' do
       before do
         member = create(:user, team:)
-        subscribe(redeemer: member, plot: create(:plot, polygon: square_polygon(0)))
-        subscribe(redeemer: member, plot: create(:plot, polygon: square_polygon(1)))
-        subscribe(redeemer: create(:user), plot: create(:plot, polygon: square_polygon(2)))
+        subscribe(redeemer: member, plot: create(:plot, title: 'Meadow', polygon: square_polygon(0)))
+        subscribe(redeemer: member, plot: create(:plot, title: 'Woodland', polygon: square_polygon(1)))
+        subscribe(redeemer: create(:user), plot: create(:plot, title: 'Elsewhere', polygon: square_polygon(2)))
       end
 
       it 'summarises the team tiles and shows them on a map with a legend' do
@@ -37,6 +37,13 @@ RSpec.describe TeamsController do
         expect(response.body).to include('Acme has 2 tiles across 2 plots.')
           .and include('Acme tiles')
           .and include('tile-legend')
+      end
+
+      it 'outlines only the team plots for the plot overview' do
+        do_get
+
+        plots = JSON.parse(response.parsed_body.at_css('[data-plots]')['data-plots'])
+        expect(plots.map { |plot| plot['properties']['label'] }).to eq(['Meadow: 1 team tile', 'Woodland: 1 team tile'])
       end
     end
   end
@@ -47,7 +54,7 @@ RSpec.describe TeamsController do
     it 'shows the same map without a legend' do
       get :embed, params: { id: team.slug }
 
-      expect(response.body).to include('data-tiles=')
+      expect(response.body).to include('data-tiles=').and include('data-plots=')
       expect(response.body).not_to include('tile-legend')
     end
 

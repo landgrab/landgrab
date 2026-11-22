@@ -6,7 +6,7 @@ FactoryBot.define do
     subscriber { nil }
     project
 
-    sequence(:stripe_id) { |n| "sub_#{n}" }
+    sequence(:stripe_id) { |n| "sub_factory#{n}" }
     stripe_status { 'active' }
   end
 end

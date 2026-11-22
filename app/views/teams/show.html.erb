@@ -38,7 +38,7 @@
           <p class="lead">
             <%= @team.title %> has <%= pluralize(@team_tiles.size, 'tile') %> across <%= pluralize(@team_plots.size, 'plot') %>.
           </p>
-          <%= render 'teams/map', team: @team, tiles: @tiles %>
+          <%= render 'teams/map', team: @team, tiles: @tiles, plot_overview: @plot_overview %>
         <% end %>
       </div>
 
