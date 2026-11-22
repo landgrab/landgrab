@@ -2,6 +2,7 @@
 <%= render 'static_pages/w3w_map',
     tiles: @plot.tiles_for_map,
     plot: @plot,
-    hide_legend: true,
+    hide_legend: !embed_legend?,
+    legend_style: :banner,
     map_height: '100%' %>
 </html>

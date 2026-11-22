@@ -50,5 +50,17 @@ RSpec.describe TeamsController do
       expect(response.body).to include('data-tiles=')
       expect(response.body).not_to include('tile-legend')
     end
+
+    it 'shows the legend in a banner when asked for' do
+      get :embed, params: { id: team.slug, legend: '1' }
+
+      expect(response.parsed_body.at_css('.map-legend-banner .tile-legend')).to be_present
+    end
+
+    it 'hides the legend when legend=0' do
+      get :embed, params: { id: team.slug, legend: '0' }
+
+      expect(response.body).not_to include('tile-legend')
+    end
   end
 end

@@ -1,0 +1,33 @@
+<div class="map-legend-banner">
+  <%= render 'static_pages/map_legend', legend: %>
+</div>
+
+<style>
+.map-legend-banner {
+  flex: 0 0 auto;
+  padding: 4px 8px;
+  background: #f8f9fa;
+  border-top: 1px solid #dee2e6;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  font-size: 12px;
+}
+.map-legend-banner ul {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 2px 12px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.map-legend-banner li {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.map-legend-banner .tile-legend {
+  height: 16px;
+  width: 16px;
+  box-sizing: border-box;
+}
+</style>

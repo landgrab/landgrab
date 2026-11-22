@@ -6,6 +6,7 @@ focus_tiles ||= []
 focus_title ||= 'This tile'
 tile_action ||= nil
 hide_legend ||= false
+legend_style ||= :list # or :banner, to show the legend in a thin strip along the bottom of the map
 map_height ||= '500px'
 map_id = "map-#{SecureRandom.hex(4)}"
 highlighter ||= TileHighlightService.new(viewer: current_user, subject:)
@@ -20,10 +21,19 @@ tile_map = TileMap.new(tiles:, plot:, highlighter:, focus_tiles:, focus_title:)
 <% end %>
 
 <% tiles_geojson = "[#{tile_map.tiles.map { |tile| tile.tap { tile.map_action = tile_action }.to_geojson }.join(', ')}]" %>
-<div id="<%= map_id %>" style="width: 100%; height: <%= map_height %>" class="mb-3" data-tiles="<%= tiles_geojson %>"></div>
+<% map_data = { tiles: tiles_geojson } %>
+<% legend = hide_legend ? [] : tile_map.legend %>
+<% if legend_style == :banner && legend.any? %>
+  <%= tag.div style: "display: flex; flex-direction: column; height: #{map_height}" do %>
+    <%= tag.div id: map_id, style: 'width: 100%; flex: 1 1 0; min-height: 0', data: map_data %>
+    <%= render 'static_pages/map_legend_banner', legend: %>
+  <% end %>
+<% else %>
+  <%= tag.div id: map_id, style: "width: 100%; height: #{map_height}", class: 'mb-3', data: map_data %>
 
-<% unless hide_legend %>
-  <%= render 'static_pages/map_legend', legend: tile_map.legend %>
+  <% unless hide_legend %>
+    <%= render 'static_pages/map_legend', legend: %>
+  <% end %>
 <% end %>
 
 <script>
