@@ -122,8 +122,8 @@ class Plot < ApplicationRecord
   # Up to MAP_TILE_LIMIT tiles, sampling at most MAP_UNAVAILABLE_TILE_LIMIT unavailable
   # tiles and filling the rest with available ones
   def tiles_for_map
-    unavailable = tiles.includes(:latest_subscription).unavailable.sample(MAP_UNAVAILABLE_TILE_LIMIT)
-    available = tiles.includes(:latest_subscription).available.sample(MAP_TILE_LIMIT - unavailable.size)
+    unavailable = tiles.unavailable.random_sample(MAP_UNAVAILABLE_TILE_LIMIT).to_a
+    available = tiles.available.random_sample(MAP_TILE_LIMIT - unavailable.size).to_a
     unavailable + available
   end
 

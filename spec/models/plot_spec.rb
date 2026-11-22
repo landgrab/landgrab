@@ -40,6 +40,32 @@ RSpec.describe Plot do
     end
   end
 
+  describe '#tiles_for_map' do
+    subject(:tiles_for_map) { plot.tiles_for_map }
+
+    let(:plot) { create(:plot) }
+    let(:unavailable_tiles) { Array.new(3) { create(:subscription, tile: create(:tile, plot:)).tile } }
+    let(:available_tiles) { create_list(:tile, 3, plot:) }
+
+    before do
+      stub_const('Plot::MAP_TILE_LIMIT', 4)
+      stub_const('Plot::MAP_UNAVAILABLE_TILE_LIMIT', 2)
+      unavailable_tiles
+      available_tiles
+      create(:tile, plot: create(:plot, polygon: 'POLYGON ((0.01 51.5, 0.011 51.5, 0.011 51.501, 0.01 51.501, 0.01 51.5))'))
+    end
+
+    it 'samples up to the unavailable limit, filling the rest with available tiles' do
+      expect([(tiles_for_map & unavailable_tiles).size, (tiles_for_map & available_tiles).size]).to eq([2, 2])
+    end
+
+    it 'fills the rest with available tiles when there are fewer unavailable ones' do
+      unavailable_tiles.first(2).each { |tile| tile.update!(latest_subscription: nil) }
+
+      expect([tiles_for_map.size, tiles_for_map.count(&:available?)]).to eq([4, 3])
+    end
+  end
+
   describe '#hero_image_url_fallback' do
     it 'returns the hero image URL when set' do
       plot = build(:plot, hero_image_url: 'https://example.com/hero.jpg')
