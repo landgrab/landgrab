@@ -26,10 +26,6 @@
       "description": "A salt used to generate Hashids for obfuscating database IDs.",
       "generator": "secret"
     },
-    "HERE_MAPS_API_KEY": {
-      "description": "API key for HERE Maps (if provided, here maps layer is included in maps) - see https://platform.here.com/",
-      "required": false
-    },
     "POSTMARK_SERVER_API_TOKEN": {
       "description": "Postmark server API token for sending email. Defaults to Postmark's test token, which accepts sends without delivering them (e.g. for review apps).",
       "value": "POSTMARK_API_TEST"
@@ -50,7 +46,6 @@
       "env": {
         "DEVISE_SECRET_KEY": "devise-secret-key",
         "HASHID_SALT": "some-hashids-salt",
-        "HERE_MAPS_API_KEY": "some-here-maps-api-key",
         "RAILS_ENV": "test",
         "SITE_TITLE": "Landgrab Dummy Env",
         "STRIPE_DASHBOARD_URL": "https://dashboard.stripe.com/test",
