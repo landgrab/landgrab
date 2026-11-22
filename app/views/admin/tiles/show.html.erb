@@ -7,9 +7,7 @@
     <%= render 'posts', tile: @tile %>
   </div>
   <div class="col-md-6">
-    <%= render 'static_pages/w3w_map',
-        center: [@tile.midpoint.y, @tile.midpoint.x],
-        tiles: [@tile] %>
+    <%= render 'static_pages/w3w_map', tiles: [@tile], focus_tiles: [@tile] %>
 
     <p>
       <%= render 'layouts/copy_to_clipboard', copytext: "<iframe width=\"100%\" height=\"500px\" src=\"#{embed_tile_url(@tile)}\"></iframe>", copycta: 'Copy Embed Code', cta_width: '200px' %>

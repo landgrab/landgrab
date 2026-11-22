@@ -5,7 +5,7 @@ class Tile < ApplicationRecord
 
   after_initialize :sanitize_w3w
 
-  attr_accessor :map_action, :map_colour
+  attr_accessor :map_action, :map_colour, :map_border
 
   belongs_to :plot, optional: true
   has_many :subscriptions, dependent: :restrict_with_exception
@@ -34,16 +34,20 @@ class Tile < ApplicationRecord
 
   def to_geojson
     geojson = RGeo::GeoJSON.encode(bounding_box.to_geometry)
-
-    geojson['properties'] ||= {}
-    geojson['properties']['available'] = available?
-    geojson['properties']['w3w'] = w3w
-    geojson['properties']['popupContent'] = popup_content
-    geojson['properties']['action'] = map_action
-    geojson['properties']['colour'] = map_colour || 'pink'
-    geojson['properties']['link'] = Rails.application.routes.url_helpers.tile_path(self)
-
+    geojson['properties'] = (geojson['properties'] || {}).merge(map_properties)
     geojson.to_json
+  end
+
+  def map_properties
+    {
+      'available' => available?,
+      'w3w' => w3w,
+      'popupContent' => popup_content,
+      'action' => map_action,
+      'colour' => map_colour || 'pink',
+      'border' => map_border,
+      'link' => Rails.application.routes.url_helpers.tile_path(self)
+    }
   end
 
   def available?(allow_cancelled: false)
