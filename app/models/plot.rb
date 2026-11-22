@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 class Plot < ApplicationRecord
-  MAP_TILE_LIMIT = 250
-  MAP_UNAVAILABLE_TILE_LIMIT = 100
+  MAP_TILE_LIMIT = 200
+  MAP_UNAVAILABLE_TILE_LIMIT = 99 # leaves room for 101 available tiles, so maps can say "over 100"
 
   belongs_to :project, optional: true
   has_many :tiles, dependent: :nullify

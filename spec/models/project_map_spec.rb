@@ -49,10 +49,11 @@ RSpec.describe ProjectMap do
 
   context 'when a plot has more available tiles than its map sample is sure to include' do
     before do
-      stub_const('Plot::MAP_TILE_LIMIT', 3)
+      stub_const('Plot::MAP_TILE_LIMIT', 4)
       stub_const('Plot::MAP_UNAVAILABLE_TILE_LIMIT', 1)
-      stub_const('ProjectMap::EXACT_AVAILABLE_TILE_COUNT_LIMIT', 2)
-      create_list(:tile, 3, plot: meadow)
+      create(:subscription, tile: create(:tile, plot: meadow))
+      create_list(:tile, 4, plot: meadow)
+      create(:subscription, tile: create(:tile, plot: woodland))
       create_list(:tile, 2, plot: woodland)
     end
 
