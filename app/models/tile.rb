@@ -18,7 +18,9 @@ class Tile < ApplicationRecord
   default_scope { order(:id) }
 
   scope :available, -> { where.missing(:latest_subscription) }
-  scope :unavailable, -> { joins(:latest_subscription).distinct } # TODO: where latest_subscription is active?
+  scope :unavailable, -> { joins(:latest_subscription) } # TODO: where latest_subscription is active?
+  # Up to `limit` tiles picked at random by the database, with their latest subscriptions
+  scope :random_sample, ->(limit) { preload(:latest_subscription).reorder(Arel.sql('RANDOM()')).limit(limit) }
 
   validates :southwest, :northeast, presence: true
 

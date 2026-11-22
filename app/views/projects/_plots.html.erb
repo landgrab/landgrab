@@ -1,8 +1,13 @@
-<% if project.plots.any? %>
+<% plots = project.plots.to_a %>
+<% if plots.any? %>
+  <% tile_counts = PlotTileCounts.new(plots) %>
   <div class="row">
-    <% project.plots.each do |plot| %>
+    <% plots.each do |plot| %>
       <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3 mb-4">
-        <%= render 'plots/card', plot: plot %>
+        <%= render 'plots/card',
+                   plot:,
+                   tile_count: tile_counts.total(plot),
+                   available_tile_count: tile_counts.available(plot) %>
       </div>
     <% end %>
   </div>
