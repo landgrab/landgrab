@@ -1,0 +1,8 @@
+<% if team_map.empty? %>
+  <p>No tiles yet.</p>
+<% else %>
+  <p class="lead">
+    <%= team_map.team.title %> has <%= pluralize(team_map.team_tiles.size, 'tile') %> across <%= pluralize(team_map.team_plots.size, 'plot') %>.
+  </p>
+  <%= render 'teams/map', team_map: %>
+<% end %>

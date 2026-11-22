@@ -4,10 +4,10 @@ legend_style ||= :list
 map_height ||= '500px'
 %>
 <%= render 'static_pages/w3w_map',
-    tiles:,
-    highlighter: TeamTileHighlightService.new(viewer: current_user, team:),
+    tiles: team_map.tiles,
+    highlighter: TeamTileHighlightService.new(viewer: current_user, team: team_map.team),
     tile_action: :view_details,
-    plot_overview:,
+    plot_overview: team_map.plot_overview,
     hide_legend:,
     legend_style:,
     map_height: %>
