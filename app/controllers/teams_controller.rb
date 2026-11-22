@@ -28,5 +28,6 @@ class TeamsController < ApplicationController
     @team_tiles = @team.team_tiles.to_a
     @team_plots = @team.team_plots.to_a
     @tiles = @team_tiles + @team_plots.flat_map(&:tiles_for_map)
+    @plot_overview = PlotOverview.new(plots: @team_plots, tiles: @team_tiles, tile_name: 'team tile')
   end
 end

@@ -28,6 +28,15 @@ RSpec.describe Tile do
     end
   end
 
+  describe '#to_geojson' do
+    it 'includes the plot the tile belongs to, so maps can group tiles by plot' do
+      plot = create(:plot)
+      tile = create(:tile, plot:)
+
+      expect(JSON.parse(tile.to_geojson)['properties']).to include('plot_id' => plot.id)
+    end
+  end
+
   describe '#viewable_by?' do
     subject(:viewable) { tile.viewable_by?(user) }
 

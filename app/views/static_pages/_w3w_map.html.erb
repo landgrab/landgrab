@@ -5,6 +5,7 @@ subject ||= current_user
 focus_tiles ||= []
 focus_title ||= 'This tile'
 tile_action ||= nil
+plot_overview ||= nil
 hide_legend ||= false
 legend_style ||= :list # or :banner, to show the legend in a thin strip along the bottom of the map
 map_height ||= '500px'
@@ -21,7 +22,7 @@ tile_map = TileMap.new(tiles:, plot:, highlighter:, focus_tiles:, focus_title:)
 <% end %>
 
 <% tiles_geojson = "[#{tile_map.tiles.map { |tile| tile.tap { tile.map_action = tile_action }.to_geojson }.join(', ')}]" %>
-<% map_data = { tiles: tiles_geojson } %>
+<% map_data = { tiles: tiles_geojson, plots: plot_overview&.to_geojson } %>
 <% legend = hide_legend ? [] : tile_map.legend %>
 <% if legend_style == :banner %>
   <%# The map fills whatever height the banner (if any) leaves %>
@@ -66,16 +67,99 @@ tile_map = TileMap.new(tiles:, plot:, highlighter:, focus_tiles:, focus_title:)
     addFullscreenButton(map);
     addAllLayers(map);
 
-    var allTilesGeoJson = JSON.parse(document.getElementById('<%= map_id %>').dataset.tiles);
-    var tiles = L.geoJSON(allTilesGeoJson, { onEachFeature: onEachFeature, style: tileStyle }).addTo(map);
+    var mapElement = document.getElementById('<%= map_id %>');
+    var allTilesGeoJson = JSON.parse(mapElement.dataset.tiles);
+    var tiles = L.geoJSON(allTilesGeoJson, { onEachFeature: onEachFeature, style: tileStyle });
 
-    <% if plot.present? %>
+    <% if plot_overview %>
+      // Plot overview: open on plot outlines. Clicking a plot zooms to it and swaps its
+      // outline for its tiles; the other plots stay as clickable outlines.
+      var tilesByPlot = {};
+      allTilesGeoJson.forEach((tile) => {
+        const plotId = tile.properties.plot_id;
+        (tilesByPlot[plotId] = tilesByPlot[plotId] || []).push(tile);
+      });
+
+      var selectedOutline = null;
+      var selectedTiles = null;
+
+      var plotsGeoJson = JSON.parse(mapElement.dataset.plots);
+      var outlines = L.geoJSON(plotsGeoJson, {
+        style: function(feature) {
+          const colour = feature.properties.colour;
+          return { color: colour, weight: 3, opacity: 1, fill: true, fillColor: colour, fillOpacity: 0.5 };
+        },
+        onEachFeature: function(feature, layer) {
+          layer.bindTooltip(feature.properties.label, { permanent: true, direction: 'center' });
+          layer.on({ click: () => selectPlot(layer) });
+        }
+      }).addTo(map);
+
+      var overviewBounds = outlines.getBounds();
+      var plotZooms = outlines.getLayers().map((layer) => map.getBoundsZoom(layer.getBounds()));
+      // Zoom a selected plot opens at: deep enough that every plot fills the map, yet past
+      // the overview (unless there's one plot), and never beyond the map's maximum zoom.
+      // Zooming back out past it returns the selected plot to its outline.
+      var tilesZoom = Math.min(
+        plotZooms.length > 1 ? Math.max(Math.min(...plotZooms), map.getBoundsZoom(overviewBounds) + 1) : plotZooms[0],
+        map.getMaxZoom()
+      );
+
+      function deselectPlot() {
+        if (selectedOutline === null) { return; }
+
+        map.removeLayer(selectedTiles);
+        outlines.addLayer(selectedOutline);
+        selectedOutline = null;
+        selectedTiles = null;
+      }
+
+      function selectPlot(outline) {
+        deselectPlot();
+        selectedOutline = outline;
+        selectedTiles = L.geoJSON(tilesByPlot[outline.feature.properties.id] || [], { onEachFeature: onEachFeature, style: tileStyle });
+        outlines.removeLayer(outline);
+        selectedTiles.addTo(map);
+
+        const bounds = outline.getBounds();
+        map.setView(bounds.getCenter(), Math.max(map.getBoundsZoom(bounds), tilesZoom));
+      }
+
+      function showAllPlots() {
+        deselectPlot();
+        map.fitBounds(overviewBounds, { maxZoom: tilesZoom - 1 });
+      }
+
+      if (plotZooms.length > 1) {
+        var AllPlotsControl = L.Control.extend({
+          options: { position: 'topright' },
+          onAdd: function() {
+            const button = L.DomUtil.create('button', 'btn btn-light btn-sm border');
+            button.type = 'button';
+            button.textContent = 'All plots';
+            L.DomEvent.disableClickPropagation(button);
+            L.DomEvent.on(button, 'click', showAllPlots);
+            return button;
+          }
+        });
+        new AllPlotsControl().addTo(map);
+        showAllPlots();
+
+        map.on('zoomend', () => {
+          if (map.getZoom() < tilesZoom) { deselectPlot(); }
+        });
+      } else {
+        selectPlot(outlines.getLayers()[0]);
+      }
+    <% elsif plot.present? %>
+      tiles.addTo(map);
       // Fit map to plot bounds
       var latlngs = <%= plot.polygon.coordinates[0][0...-1].map(&:reverse) %>;
       var polygon = L.polygon(latlngs); // Note: not adding to map
       map.fitBounds(polygon.getBounds());
     <% else %>
       // Fit map to tile bounds
+      tiles.addTo(map);
       map.fitBounds(tiles.getBounds());
     <% end %>
 
