@@ -72,7 +72,17 @@ tile_map = TileMap.new(tiles:, plot:, highlighter:, focus_tiles:, focus_title:)
     var tiles = L.geoJSON(allTilesGeoJson, { onEachFeature: onEachFeature, style: tileStyle });
 
     <% if plot_overview %>
-      // Plot overview: open on plot outlines, which give way to the tiles once zoomed in
+      // Plot overview: open on plot outlines. Clicking a plot zooms to it and swaps its
+      // outline for its tiles; the other plots stay as clickable outlines.
+      var tilesByPlot = {};
+      allTilesGeoJson.forEach((tile) => {
+        const plotId = tile.properties.plot_id;
+        (tilesByPlot[plotId] = tilesByPlot[plotId] || []).push(tile);
+      });
+
+      var selectedOutline = null;
+      var selectedTiles = null;
+
       var plotsGeoJson = JSON.parse(mapElement.dataset.plots);
       var outlines = L.geoJSON(plotsGeoJson, {
         style: function(feature) {
@@ -81,37 +91,43 @@ tile_map = TileMap.new(tiles:, plot:, highlighter:, focus_tiles:, focus_title:)
         },
         onEachFeature: function(feature, layer) {
           layer.bindTooltip(feature.properties.label, { permanent: true, direction: 'center' });
-          layer.on({ click: () => zoomToPlot(layer.getBounds()) });
+          layer.on({ click: () => selectPlot(layer) });
         }
-      });
+      }).addTo(map);
 
       var overviewBounds = outlines.getBounds();
       var plotZooms = outlines.getLayers().map((layer) => map.getBoundsZoom(layer.getBounds()));
-      // Zoom at which tiles replace outlines: deep enough that every plot fills the map
-      // when zoomed to, yet past the overview so it opens on outlines (unless there's one plot),
-      // and never beyond the map's maximum zoom, so the tiles can always be reached.
+      // Zoom a selected plot opens at: deep enough that every plot fills the map, yet past
+      // the overview (unless there's one plot), and never beyond the map's maximum zoom.
+      // Zooming back out past it returns the selected plot to its outline.
       var tilesZoom = Math.min(
         plotZooms.length > 1 ? Math.max(Math.min(...plotZooms), map.getBoundsZoom(overviewBounds) + 1) : plotZooms[0],
         map.getMaxZoom()
       );
 
-      function showAllPlots() {
-        map.fitBounds(overviewBounds, { maxZoom: tilesZoom - 1 });
+      function deselectPlot() {
+        if (selectedOutline === null) { return; }
+
+        map.removeLayer(selectedTiles);
+        outlines.addLayer(selectedOutline);
+        selectedOutline = null;
+        selectedTiles = null;
       }
 
-      function zoomToPlot(bounds) {
+      function selectPlot(outline) {
+        deselectPlot();
+        selectedOutline = outline;
+        selectedTiles = L.geoJSON(tilesByPlot[outline.feature.properties.id] || [], { onEachFeature: onEachFeature, style: tileStyle });
+        outlines.removeLayer(outline);
+        selectedTiles.addTo(map);
+
+        const bounds = outline.getBounds();
         map.setView(bounds.getCenter(), Math.max(map.getBoundsZoom(bounds), tilesZoom));
       }
 
-      function showOutlinesOrTiles() {
-        const showTiles = map.getZoom() >= tilesZoom;
-        if (showTiles) {
-          map.removeLayer(outlines);
-          tiles.addTo(map);
-        } else {
-          map.removeLayer(tiles);
-          outlines.addTo(map);
-        }
+      function showAllPlots() {
+        deselectPlot();
+        map.fitBounds(overviewBounds, { maxZoom: tilesZoom - 1 });
       }
 
       if (plotZooms.length > 1) {
@@ -128,12 +144,13 @@ tile_map = TileMap.new(tiles:, plot:, highlighter:, focus_tiles:, focus_title:)
         });
         new AllPlotsControl().addTo(map);
         showAllPlots();
-      } else {
-        zoomToPlot(overviewBounds);
-      }
 
-      map.on('zoomend', showOutlinesOrTiles);
-      showOutlinesOrTiles();
+        map.on('zoomend', () => {
+          if (map.getZoom() < tilesZoom) { deselectPlot(); }
+        });
+      } else {
+        selectPlot(outlines.getLayers()[0]);
+      }
     <% elsif plot.present? %>
       tiles.addTo(map);
       // Fit map to plot bounds

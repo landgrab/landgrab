@@ -42,6 +42,7 @@ class Tile < ApplicationRecord
     {
       'available' => available?,
       'w3w' => w3w,
+      'plot_id' => plot_id,
       'popupContent' => popup_content,
       'action' => map_action,
       'colour' => map_colour || 'pink',

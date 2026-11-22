@@ -22,10 +22,10 @@ RSpec.describe PlotOverview do
   describe '#to_geojson' do
     let(:features) { JSON.parse(overview.to_geojson) }
 
-    it 'outlines each plot by title, in orange, with its label and tile count' do
+    it 'outlines each plot by title, in orange, with its id, label and tile count' do
       expect(features.pluck('properties')).to eq([
-                                                   { 'title' => 'Meadow', 'label' => 'Meadow: 1 team tile', 'tile_count' => 1, 'colour' => TileMap::ORANGE },
-                                                   { 'title' => 'Woodland', 'label' => 'Woodland: 2 team tiles', 'tile_count' => 2, 'colour' => TileMap::ORANGE }
+                                                   { 'id' => meadow.id, 'title' => 'Meadow', 'label' => 'Meadow: 1 team tile', 'tile_count' => 1, 'colour' => TileMap::ORANGE },
+                                                   { 'id' => woodland.id, 'title' => 'Woodland', 'label' => 'Woodland: 2 team tiles', 'tile_count' => 2, 'colour' => TileMap::ORANGE }
                                                  ])
     end
 

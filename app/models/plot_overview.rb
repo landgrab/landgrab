@@ -32,7 +32,7 @@ class PlotOverview
     {
       type: 'Feature',
       geometry: RGeo::GeoJSON.encode(plot.polygon),
-      properties: { title: plot.title, label: label(plot), tile_count: tile_count(plot), colour: TileMap::ORANGE }
+      properties: { id: plot.id, title: plot.title, label: label(plot), tile_count: tile_count(plot), colour: TileMap::ORANGE }
     }
   end
 end
