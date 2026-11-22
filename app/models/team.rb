@@ -20,9 +20,15 @@ class Team < ApplicationRecord
     logo_url.presence || PlaceholderImageService.url(width: 400, height: 400, text: 'Logo')
   end
 
-  def redeemed_tiles
+  # Tiles redeemed by members through a usable subscription
+  def team_tiles
     Tile.joins(:latest_subscription)
+        .merge(Subscription.usable)
         .where(subscriptions: { redeemer_id: users.select(:id) })
+  end
+
+  def team_plots
+    Plot.where(id: team_tiles.reorder(nil).select(:plot_id))
   end
 
   def relevant_posts

@@ -12,15 +12,16 @@ class TileMap
   EMERALD = '#00322f'
   WHITE = '#ffffff'
 
-  FILLS = { mine: ORANGE, redeemed: ORANGE, gifted: LIME, referred: BLUE, available: GREEN, unavailable: RED }.freeze
-  LEGEND_ORDER = %i[mine redeemed gifted referred focus available unavailable].freeze
+  FILLS = { mine: ORANGE, redeemed: ORANGE, team: ORANGE, gifted: LIME, referred: BLUE, available: GREEN, unavailable: RED }.freeze
+  LEGEND_ORDER = %i[mine redeemed team gifted referred focus available unavailable].freeze
 
   attr_reader :highlighter, :focus_title
 
   # tiles:       the tiles the page wants shown
   # plot:        when given, the viewer's and subject's highlighted tiles in it are always shown
   # focus_tiles: the tiles the page is about (e.g. "This tile"), drawn with a white border
-  # highlighter: a TileHighlightService for the viewer and subject
+  # highlighter: a TileHighlightService or TeamTileHighlightService, which classifies
+  #              highlighted tiles and names them in the legend
   def initialize(tiles:, highlighter:, plot: nil, focus_tiles: [], focus_title: 'This tile')
     @highlighter = highlighter
     @plot = plot
@@ -84,22 +85,10 @@ class TileMap
   end
 
   def label(key, count)
-    tiles_word = 'tile'.pluralize(count)
-
     case key
-    when :mine then "My #{tiles_word}"
-    when :redeemed then "#{subject_possessive} #{tiles_word}"
-    when :gifted, :referred then "#{owner_possessive} #{key} #{tiles_word}"
     when :focus then focus_title
-    else key.to_s.humanize
+    when :available, :unavailable then key.to_s.humanize
+    else highlighter.label(key, count)
     end
-  end
-
-  def owner_possessive
-    highlighter.subject_is_viewer? ? 'My' : subject_possessive
-  end
-
-  def subject_possessive
-    "#{highlighter.subject.first_name}'s"
   end
 end

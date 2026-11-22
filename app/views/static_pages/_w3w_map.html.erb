@@ -8,7 +8,7 @@ tile_action ||= nil
 hide_legend ||= false
 map_height ||= '500px'
 map_id = "map-#{SecureRandom.hex(4)}"
-highlighter = TileHighlightService.new(viewer: current_user, subject:)
+highlighter ||= TileHighlightService.new(viewer: current_user, subject:)
 tile_map = TileMap.new(tiles:, plot:, highlighter:, focus_tiles:, focus_title:)
 %>
 

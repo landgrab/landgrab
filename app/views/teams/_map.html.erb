@@ -1,0 +1,10 @@
+<%
+hide_legend ||= false
+map_height ||= '500px'
+%>
+<%= render 'static_pages/w3w_map',
+    tiles:,
+    highlighter: TeamTileHighlightService.new(viewer: current_user, team:),
+    tile_action: :view_details,
+    hide_legend:,
+    map_height: %>
