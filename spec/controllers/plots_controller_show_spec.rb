@@ -87,4 +87,27 @@ RSpec.describe PlotsController do
       end
     end
   end
+
+  describe 'GET plots#embed' do
+    before { tile }
+
+    it 'hides the legend by default' do
+      get :embed, params: { id: plot.hashid }
+
+      expect(response.body).to include('data-tiles=')
+      expect(response.body).not_to include('tile-legend')
+    end
+
+    it 'shows the legend in a banner with legend=1' do
+      get :embed, params: { id: plot.hashid, legend: '1' }
+
+      expect(response.parsed_body.at_css('.map-legend-banner .tile-legend')).to be_present
+    end
+
+    it 'hides the legend with legend=0' do
+      get :embed, params: { id: plot.hashid, legend: '0' }
+
+      expect(response.body).not_to include('tile-legend')
+    end
+  end
 end

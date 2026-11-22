@@ -9,6 +9,8 @@ class ApplicationController < ActionController::Base
 
   rescue_from ActiveRecord::RecordNotFound, with: :render_not_found
 
+  helper_method :embed_legend?
+
   protected
 
   def configure_permitted_parameters
@@ -75,6 +77,11 @@ class ApplicationController < ActionController::Base
     # https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy/frame-ancestors
     response.headers['Content-Security-Policy'] = "frame-ancestors #{ENV.fetch('EMBED_CSP_DOMAINS', 'http://example.com')}"
     render layout: false
+  end
+
+  # Embeds hide the map legend unless asked for it with `?legend=1`
+  def embed_legend?
+    ActiveModel::Type::Boolean.new.cast(params[:legend]) || false
   end
 
   def render_csv(filename_prefix)

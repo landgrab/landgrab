@@ -4,6 +4,7 @@
     plot: @tile.plot,
     focus_tiles: [@tile],
     tile_action: :view_details,
-    hide_legend: true,
+    hide_legend: !embed_legend?,
+    legend_style: :banner,
     map_height: '100%' %>
 </html>

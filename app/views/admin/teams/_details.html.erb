@@ -41,7 +41,7 @@
     <tr>
       <th>Embed Code</th>
       <td>
-        <%= render 'layouts/copy_to_clipboard', copytext: "<iframe width=\"100%\" height=\"500px\" src=\"#{embed_team_url(team)}\"></iframe>", copycta: 'Copy Embed Code', cta_width: '200px' %>
+        <%= render 'layouts/copy_to_clipboard', copytext: "<iframe width=\"100%\" height=\"500px\" src=\"#{embed_team_url(team, legend: 1)}\"></iframe>", copycta: 'Copy Embed Code', cta_width: '200px' %>
       </td>
     </tr>
   </tbody>
