@@ -2,6 +2,9 @@
 
 <%= render 'details', team: @team %>
 
+<h2>Team tiles</h2>
+<%= render 'teams/tiles_summary', team_map: @team_map %>
+
 <p>
   <%= link_to 'Edit team', edit_admin_team_path(@team) %>
 </p>

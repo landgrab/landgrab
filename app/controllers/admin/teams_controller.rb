@@ -17,7 +17,9 @@ module Admin
       end
     end
 
-    def show; end
+    def show
+      @team_map = TeamMap.new(@team)
+    end
 
     def new
       @team = Team.new
