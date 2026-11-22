@@ -107,6 +107,15 @@ RSpec.describe ProjectsController do
         expect(plots.map { |plot| plot['properties']['label'] }).to eq(['Meadow: 1 available tile'])
       end
 
+      it "shows each plot's available tiles out of its total" do
+        woodland = create(:plot, project:, title: 'Woodland', polygon: 'POLYGON ((0.01 51.5, 0.011 51.5, 0.011 51.501, 0.01 51.501, 0.01 51.5))')
+        create(:subscription, tile: create(:tile, plot: woodland))
+        do_get
+
+        expect(response.parsed_body.css('.card-text').map { |text| text.text.squish })
+          .to eq(['1 of 1 tiles available', 'There are no tiles available'])
+      end
+
       it 'links to the tile search' do
         do_get
 

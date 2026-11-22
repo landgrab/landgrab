@@ -1,4 +1,7 @@
 <% featured ||= false %>
+<%# tile_count and available_tile_count can be passed in when counted for many plots at once %>
+<% tile_count = local_assigns.fetch(:tile_count) { plot.tiles.size } %>
+<% available_tile_count = local_assigns.fetch(:available_tile_count) { plot.non_subscribed_tiles.size } %>
 
 <div class="card mb-3">
   <%= image_tag plot.hero_image_url_fallback, class: 'card-img-top img-fluid', alt: "Hero image for #{plot.title} plot" %>
@@ -11,13 +14,12 @@
     <h5 class="card-title"><%= plot.title %></h5>
     <p><%= plot.description %></p>
     <p class="card-text">
-      <% non_subscribed_tiles_count = plot.non_subscribed_tiles.size %>
-      <% if non_subscribed_tiles_count.zero? %>
+      <% if available_tile_count.zero? %>
         There are no tiles available
       <% else %>
-        <%= non_subscribed_tiles_count %>
+        <%= available_tile_count %>
         of
-        <%= plot.tiles.size %>
+        <%= tile_count %>
         tiles available
       <% end %>
     </p>
