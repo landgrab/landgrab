@@ -10,6 +10,7 @@ class ProjectsController < ApplicationController
   end
 
   def show
+    @project_map = ProjectMap.new(@project)
     log_event_mixpanel('Projects: Show', { authed: user_signed_in?, project: @project.hashid })
   end
 

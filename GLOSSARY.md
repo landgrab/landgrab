@@ -5,7 +5,7 @@ Landgrab lets people subscribe to individual What3Words squares of land ("tiles"
 ## Land
 
 **Project**:
-A conservation or rewilding initiative, managed independently of other projects (with its own stakeholders and landowners), that owns a set of plots and offers prices.
+A conservation or rewilding initiative, managed independently of other projects (with its own stakeholders and landowners), that owns a set of plots and offers prices, with its own project page showing its plots together on a map.
 _Avoid_: Campaign, site
 
 **Plot**:

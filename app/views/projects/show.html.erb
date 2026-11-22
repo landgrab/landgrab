@@ -34,18 +34,10 @@
       </p>
       <%= markdown(@project.subscriber_benefits) %>
     <% end %>
+    <%= render 'map', project_map: @project_map %>
     <%= render 'plots', project: @project %>
   </div>
   <div class="col-md-4">
-    <% if @project.plots.any? %>
-      <div class="row">
-        <% @project.plots.order(id: :desc).limit(2).each do |plot| %>
-          <div class="col-xs-12 col-sm-6 mb-4">
-            <%= render 'plots/card', plot: plot, featured: true %>
-          </div>
-        <% end %>
-      </div>
-    <% end %>
     <% if current_sub.present? %>
       <%= render 'tiles/already_subscribed_alert', subscribed_tile: current_sub.tile, plot: nil %>
     <% end %>

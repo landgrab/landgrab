@@ -17,6 +17,22 @@ RSpec.describe PlotOverview do
       expect([overview.label(woodland), overview.label(meadow)])
         .to eq(['Woodland: 2 team tiles', 'Meadow: 1 team tile'])
     end
+
+    it 'shows a count over the count limit as a lower bound' do
+      overview = described_class.new(plots: [woodland, meadow], tiles:, count_limit: 1)
+
+      expect([overview.label(woodland), overview.label(meadow)]).to eq(['Woodland: over 1 tiles', 'Meadow: 1 tile'])
+    end
+  end
+
+  describe '#total_text' do
+    it 'totals the tiles across every plot' do
+      expect(overview.total_text).to eq('3')
+    end
+
+    it 'gives a lower bound when any plot is over the count limit, counting it at the limit' do
+      expect(described_class.new(plots: [woodland, meadow], tiles:, count_limit: 1).total_text).to eq('over 2')
+    end
   end
 
   describe '#to_geojson' do
@@ -27,6 +43,12 @@ RSpec.describe PlotOverview do
                                                    { 'id' => meadow.id, 'title' => 'Meadow', 'label' => 'Meadow: 1 team tile', 'tile_count' => 1, 'colour' => TileMap::ORANGE },
                                                    { 'id' => woodland.id, 'title' => 'Woodland', 'label' => 'Woodland: 2 team tiles', 'tile_count' => 2, 'colour' => TileMap::ORANGE }
                                                  ])
+    end
+
+    it 'colours each outline by its tile count when given a colour' do
+      overview = described_class.new(plots: [woodland, meadow], tiles: tiles.first(2), colour: ->(count) { count.positive? ? 'green' : 'red' })
+
+      expect(JSON.parse(overview.to_geojson).map { |feature| feature['properties']['colour'] }).to eq(%w[red green])
     end
 
     it 'uses each plot polygon as the outline' do
