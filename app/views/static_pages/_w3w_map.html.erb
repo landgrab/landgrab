@@ -23,10 +23,13 @@ tile_map = TileMap.new(tiles:, plot:, highlighter:, focus_tiles:, focus_title:)
 <% tiles_geojson = "[#{tile_map.tiles.map { |tile| tile.tap { tile.map_action = tile_action }.to_geojson }.join(', ')}]" %>
 <% map_data = { tiles: tiles_geojson } %>
 <% legend = hide_legend ? [] : tile_map.legend %>
-<% if legend_style == :banner && legend.any? %>
+<% if legend_style == :banner %>
+  <%# The map fills whatever height the banner (if any) leaves %>
   <%= tag.div style: "display: flex; flex-direction: column; height: #{map_height}" do %>
     <%= tag.div id: map_id, style: 'width: 100%; flex: 1 1 0; min-height: 0', data: map_data %>
-    <%= render 'static_pages/map_legend_banner', legend: %>
+    <% if legend.any? %>
+      <%= render 'static_pages/map_legend_banner', legend: %>
+    <% end %>
   <% end %>
 <% else %>
   <%= tag.div id: map_id, style: "width: 100%; height: #{map_height}", class: 'mb-3', data: map_data %>
