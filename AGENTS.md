@@ -24,6 +24,7 @@ This file provides guidance to AI agents (Claude, Copilot etc) when working with
 - Define class methods inside `class << self; end` declarations.
 - Don't ever test private methods directly. Specs should test behavior, not implementation.
 - Do not write test-specific code in production code.
+- Styling: Use standard Bootstrap 5 classes and components (utilities, grid, cards, buttons etc.) wherever possible. Only write custom CSS when Bootstrap genuinely can't achieve the result, and keep it minimal.
 
 ## Architecture Guidelines
 
