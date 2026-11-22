@@ -1,0 +1,22 @@
+<% unless project_map.empty? %>
+  <div class="row text-center mb-3">
+    <% [['Plots', number_with_delimiter(project_map.plots.size)], ['Tiles', number_with_delimiter(project_map.tile_count)], ['Available tiles', project_map.plot_overview.total_text]].each do |label, count| %>
+      <div class="col">
+        <div class="border rounded py-2">
+          <div class="fs-3 fw-bold"><%= count %></div>
+          <div class="text-body-secondary"><%= label %></div>
+        </div>
+      </div>
+    <% end %>
+  </div>
+
+  <%= render 'static_pages/w3w_map',
+      tiles: project_map.tiles,
+      tile_action: :view_details,
+      plot_overview: project_map.plot_overview %>
+
+  <p>
+    Looking for a particular tile or keyword?
+    <%= link_to 'Search for a tile', find_tile_project_path(project_map.project) %>
+  </p>
+<% end %>

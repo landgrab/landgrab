@@ -1,6 +1,9 @@
 # frozen_string_literal: true
 
 class Plot < ApplicationRecord
+  MAP_TILE_LIMIT = 250
+  MAP_UNAVAILABLE_TILE_LIMIT = 100
+
   belongs_to :project, optional: true
   has_many :tiles, dependent: :nullify
   has_many :post_associations, as: :postable, inverse_of: :postable, dependent: :restrict_with_exception
@@ -116,10 +119,11 @@ class Plot < ApplicationRecord
     tiles.joins(latest_subscription: :subscriber).where(users: { id: user.id }).includes(:latest_subscription)
   end
 
-  # Up to 250 tiles, sampling unavailable and available tiles
+  # Up to MAP_TILE_LIMIT tiles, sampling at most MAP_UNAVAILABLE_TILE_LIMIT unavailable
+  # tiles and filling the rest with available ones
   def tiles_for_map
-    unavailable = tiles.includes(:latest_subscription).unavailable.sample(100)
-    available = tiles.includes(:latest_subscription).available.sample(250 - unavailable.size)
+    unavailable = tiles.includes(:latest_subscription).unavailable.sample(MAP_UNAVAILABLE_TILE_LIMIT)
+    available = tiles.includes(:latest_subscription).available.sample(MAP_TILE_LIMIT - unavailable.size)
     unavailable + available
   end
 

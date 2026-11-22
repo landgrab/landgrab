@@ -89,6 +89,47 @@ RSpec.describe ProjectsController do
       end
     end
 
+    context 'when the project has plots with tiles' do
+      before do
+        create(:tile, plot: create(:plot, project:, title: 'Meadow'))
+      end
+
+      it 'totals the plots and tiles' do
+        do_get
+
+        expect(response.parsed_body.css('.fs-3').map(&:text)).to eq(%w[1 1 1])
+      end
+
+      it 'outlines the plots for the plot overview, labelled with available tiles' do
+        do_get
+
+        plots = JSON.parse(response.parsed_body.at_css('[data-plots]')['data-plots'])
+        expect(plots.map { |plot| plot['properties']['label'] }).to eq(['Meadow: 1 available tile'])
+      end
+
+      it 'links to the tile search' do
+        do_get
+
+        expect(response.body).to include(find_tile_project_path(project))
+      end
+
+      it 'no longer features any plots' do
+        do_get
+
+        expect(response.body).not_to include('Featured Plot')
+      end
+    end
+
+    context 'when the project has no tiles' do
+      before { plot }
+
+      it 'shows no map' do
+        do_get
+
+        expect(response.parsed_body.at_css('[data-plots]')).to be_nil
+      end
+    end
+
     context 'when subscription is redeemed in current project' do
       before do
         create(:subscription, redeemer: user)
