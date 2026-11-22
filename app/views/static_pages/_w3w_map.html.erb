@@ -72,16 +72,16 @@ tile_map = TileMap.new(tiles:, plot:, highlighter:, focus_tiles:, focus_title:)
     var tiles = L.geoJSON(allTilesGeoJson, { onEachFeature: onEachFeature, style: tileStyle });
 
     <% if plot_overview %>
-      // Plot overview: open on plot outlines. Clicking a plot zooms to it and swaps its
-      // outline for its tiles; the other plots stay as clickable outlines.
+      // Plot overview: open on plot outlines. Zoomed in deep enough, each plot in view
+      // swaps its outline for its tiles, and back again on zooming out. Clicking a plot
+      // zooms to it.
       var tilesByPlot = {};
       allTilesGeoJson.forEach((tile) => {
         const plotId = tile.properties.plot_id;
         (tilesByPlot[plotId] = tilesByPlot[plotId] || []).push(tile);
       });
 
-      var selectedOutline = null;
-      var selectedTiles = null;
+      var plotTiles = {}; // Each plot's tiles layer, built the first time it's shown
 
       var plotsGeoJson = JSON.parse(mapElement.dataset.plots);
       var outlines = L.geoJSON(plotsGeoJson, {
@@ -91,65 +91,64 @@ tile_map = TileMap.new(tiles:, plot:, highlighter:, focus_tiles:, focus_title:)
         },
         onEachFeature: function(feature, layer) {
           layer.bindTooltip(feature.properties.label, { permanent: true, direction: 'center' });
-          layer.on({ click: () => selectPlot(layer) });
+          layer.on({ click: () => zoomToPlot(layer) });
         }
       }).addTo(map);
+      var allOutlines = outlines.getLayers();
 
       var overviewBounds = outlines.getBounds();
-      var plotZooms = outlines.getLayers().map((layer) => map.getBoundsZoom(layer.getBounds()));
-      // Zoom a selected plot opens at: deep enough that every plot fills the map, yet past
-      // the overview (unless there's one plot), and never beyond the map's maximum zoom.
-      // Zooming back out past it returns the selected plot to its outline.
+      var plotZooms = allOutlines.map((layer) => map.getBoundsZoom(layer.getBounds()));
+      // Zoom at which plots show their tiles: deep enough that every plot fills the map,
+      // yet past the overview (unless there's one plot), and never beyond the map's
+      // maximum zoom.
       var tilesZoom = Math.min(
         plotZooms.length > 1 ? Math.max(Math.min(...plotZooms), map.getBoundsZoom(overviewBounds) + 1) : plotZooms[0],
         map.getMaxZoom()
       );
 
-      function deselectPlot() {
-        if (selectedOutline === null) { return; }
-
-        map.removeLayer(selectedTiles);
-        outlines.addLayer(selectedOutline);
-        selectedOutline = null;
-        selectedTiles = null;
+      function tilesFor(outline) {
+        const plotId = outline.feature.properties.id;
+        return plotTiles[plotId] = plotTiles[plotId] ||
+          L.geoJSON(tilesByPlot[plotId] || [], { onEachFeature: onEachFeature, style: tileStyle });
       }
 
-      function selectPlot(outline) {
-        deselectPlot();
-        selectedOutline = outline;
-        selectedTiles = L.geoJSON(tilesByPlot[outline.feature.properties.id] || [], { onEachFeature: onEachFeature, style: tileStyle });
-        outlines.removeLayer(outline);
-        selectedTiles.addTo(map);
+      function showTiles(outline) {
+        if (!outlines.hasLayer(outline)) { return; }
 
+        outlines.removeLayer(outline);
+        tilesFor(outline).addTo(map);
+      }
+
+      function showOutline(outline) {
+        if (outlines.hasLayer(outline)) { return; }
+
+        map.removeLayer(tilesFor(outline));
+        outlines.addLayer(outline);
+      }
+
+      function showPlotsForView() {
+        const showingTiles = map.getZoom() >= tilesZoom;
+        const view = map.getBounds();
+        allOutlines.forEach((outline) => {
+          if (showingTiles && view.intersects(outline.getBounds())) {
+            showTiles(outline);
+          } else {
+            showOutline(outline);
+          }
+        });
+      }
+
+      function zoomToPlot(outline) {
         const bounds = outline.getBounds();
         map.setView(bounds.getCenter(), Math.max(map.getBoundsZoom(bounds), tilesZoom));
       }
 
-      function showAllPlots() {
-        deselectPlot();
-        map.fitBounds(overviewBounds, { maxZoom: tilesZoom - 1 });
-      }
-
       if (plotZooms.length > 1) {
-        var AllPlotsControl = L.Control.extend({
-          options: { position: 'topright' },
-          onAdd: function() {
-            const button = L.DomUtil.create('button', 'btn btn-light btn-sm border');
-            button.type = 'button';
-            button.textContent = 'All plots';
-            L.DomEvent.disableClickPropagation(button);
-            L.DomEvent.on(button, 'click', showAllPlots);
-            return button;
-          }
-        });
-        new AllPlotsControl().addTo(map);
-        showAllPlots();
-
-        map.on('zoomend', () => {
-          if (map.getZoom() < tilesZoom) { deselectPlot(); }
-        });
+        map.fitBounds(overviewBounds, { maxZoom: tilesZoom - 1 });
+        map.on('moveend', showPlotsForView);
       } else {
-        selectPlot(outlines.getLayers()[0]);
+        showTiles(allOutlines[0]);
+        zoomToPlot(allOutlines[0]);
       }
     <% elsif plot.present? %>
       tiles.addTo(map);
