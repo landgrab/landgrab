@@ -2,6 +2,7 @@
 
 class TeamsController < ApplicationController
   before_action :set_team, only: %i[show embed posts]
+  before_action :set_map_tiles, only: %i[show embed]
 
   skip_before_action :authenticate_user!, only: %i[show embed]
   skip_before_action :store_location, only: %i[embed]
@@ -11,8 +12,6 @@ class TeamsController < ApplicationController
   end
 
   def embed
-    @tiles = @team.redeemed_tiles
-
     render_embed
   end
 
@@ -22,5 +21,12 @@ class TeamsController < ApplicationController
 
   def set_team
     @team = Team.find_by!(slug: params.expect(:id)&.downcase)
+  end
+
+  # The team's tiles, plus a sample of each of their plots' other tiles for context
+  def set_map_tiles
+    @team_tiles = @team.team_tiles.to_a
+    @team_plots = @team.team_plots.to_a
+    @tiles = @team_tiles + @team_plots.flat_map(&:tiles_for_map)
   end
 end

@@ -30,6 +30,18 @@
         </p>
       </div>
 
+      <div class="col-xs-12">
+        <h2><%= "#{@team.title}'s tiles" %></h2>
+        <% if @team_tiles.empty? %>
+          <p>No tiles yet.</p>
+        <% else %>
+          <p class="lead">
+            <%= @team.title %> has <%= pluralize(@team_tiles.size, 'tile') %> across <%= pluralize(@team_plots.size, 'plot') %>.
+          </p>
+          <%= render 'teams/map', team: @team, tiles: @tiles %>
+        <% end %>
+      </div>
+
       <% if current_user&.team == @team %>
         <h2>Team Updates</h2>
         <%= render 'posts/list_group',

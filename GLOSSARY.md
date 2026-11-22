@@ -107,8 +107,12 @@ A user who manages projects, plots, tiles and posts.
 _Avoid_: Staff, moderator
 
 **Team**:
-An organisation that groups users, with its own team page; posts can be attached to it and its members' redeemed tiles are shown together.
+An organisation that groups users, with its own team page; posts can be attached to it and its team tiles are shown together on a map.
 _Avoid_: Organisation, group, company
+
+**Team tile**:
+A tile redeemed by a member of a team through a usable subscription.
+_Avoid_: Team land, group tile
 
 **Referrer**:
 The user who brought another user to Landgrab, either through their referral link or by gifting them a subscription they redeemed.

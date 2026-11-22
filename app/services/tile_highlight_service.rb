@@ -42,7 +42,25 @@ class TileHighlightService
       .or(scope.where(subscriptions: { subscriber_id: subject.referees.select(:id) }))
   end
 
+  def label(category, count)
+    tiles_word = 'tile'.pluralize(count)
+
+    case category
+    when :mine then "My #{tiles_word}"
+    when :redeemed then "#{subject_possessive} #{tiles_word}"
+    when :gifted, :referred then "#{owner_possessive} #{category} #{tiles_word}"
+    end
+  end
+
   private
+
+  def owner_possessive
+    subject_is_viewer? ? 'My' : subject_possessive
+  end
+
+  def subject_possessive
+    "#{subject.first_name}'s"
+  end
 
   def subject_category(subscription)
     return :redeemed if subscription.redeemer_id == subject.id

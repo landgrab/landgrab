@@ -78,5 +78,13 @@ RSpec.describe TileMap do
 
       expect(map.legend.pluck(:title)).to eq(['My gifted tile'])
     end
+
+    it 'names team tiles after the team' do
+      team = create(:team, title: 'Acme')
+      tiles = Array.new(2) { tile_subscribed(subscriber: stranger, redeemer: create(:user, team:)) }
+      map = described_class.new(tiles:, highlighter: TeamTileHighlightService.new(viewer:, team:))
+
+      expect(map.legend).to eq([{ key: :team, title: 'Acme tiles', fill: TileMap::ORANGE, border: nil }])
+    end
   end
 end
