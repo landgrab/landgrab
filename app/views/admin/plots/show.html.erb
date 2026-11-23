@@ -13,7 +13,7 @@
     <tr>
       <th>Hero Image</th>
       <td>
-        <%= image_tag @plot.hero_image_url_fallback, height: '150px' %>
+        <%= render 'admin/shared/image_preview', record: @plot, name: :hero_image %>
       </td>
     </tr>
     <tr>

@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class Team < ApplicationRecord
+  include StoredImage
+
   has_many :users, dependent: :nullify
   has_many :post_associations, as: :postable, inverse_of: :postable, dependent: :restrict_with_exception
   has_many :posts, through: :post_associations
@@ -8,16 +10,15 @@ class Team < ApplicationRecord
   validates :title, presence: true
   validates :slug, presence: true, uniqueness: true
 
+  stored_image :logo, url_attribute: :logo_url, variants: StoredImage::LOGO_VARIANTS,
+                      placeholder: -> { PlaceholderImageService.url(width: 400, height: 400, text: 'Logo') }
+
   before_validation :normalize_slug
 
   auto_strip_attributes :title, :slug, :logo_url, :website, :description, squish: true
 
   def normalize_slug
     self.slug = slug.present? ? slug&.parameterize : title&.parameterize
-  end
-
-  def logo_url_fallback
-    logo_url.presence || PlaceholderImageService.url(width: 400, height: 400, text: 'Logo')
   end
 
   # Tiles redeemed by members through a usable subscription

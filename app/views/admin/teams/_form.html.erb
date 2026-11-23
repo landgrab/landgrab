@@ -77,22 +77,12 @@
     </div>
   </div>
 
-  <div class="row mb-3 g-3 align-items-center">
-    <div class="col-sm-2">
-      <%= form.label :logo_url, 'Logo URL', class: 'col-form-label' %>
-    </div>
-    <div class="col-sm-5">
-      <%= form.text_field :logo_url,
-                          class: 'form-control',
-                          placeholder: 'https://www.example.com/logo.png',
-                          aria: { describedby: 'logoImageHelp' } %>
-    </div>
-    <div class="col-sm-5">
-      <span id="logoImageHelp" class="form-text">
-        URL of a small image / icon for the team (optional).
-      </span>
-    </div>
-  </div>
+  <%= render 'admin/shared/image_field',
+             form:,
+             name: :logo,
+             url_attribute: :logo_url,
+             label: 'Logo',
+             help: 'A small image / icon for the team (optional).' %>
 
   <%= form.submit class: 'btn btn-primary' %>
 <% end %>

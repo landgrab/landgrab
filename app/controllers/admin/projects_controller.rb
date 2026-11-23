@@ -10,7 +10,7 @@ module Admin
 
       respond_to do |format|
         format.html do
-          @projects = @projects.order(id: :desc).page(params[:page])
+          @projects = @projects.with_attached_logo.order(id: :desc).page(params[:page])
           render :index
         end
         format.csv { render_csv('projects') }
@@ -55,8 +55,12 @@ module Admin
           project: %i[title
                       description
                       website
+                      hero_image
                       hero_image_url
+                      remove_hero_image
+                      logo
                       logo_url
+                      remove_logo
                       welcome_text
                       subscriber_benefits
                       public]

@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class Plot < ApplicationRecord
+  include StoredImage
+
   MAP_TILE_LIMIT = 200
   MAP_UNAVAILABLE_TILE_LIMIT = 99 # leaves room for 101 available tiles, so maps can say "over 100"
 
@@ -13,7 +15,9 @@ class Plot < ApplicationRecord
 
   validates :title, presence: true
   validates :polygon, presence: true
-  validates :hero_image_url, url: true, allow_blank: true
+
+  stored_image :hero_image, url_attribute: :hero_image_url, variants: StoredImage::HERO_IMAGE_VARIANTS,
+                            placeholder: -> { PlaceholderImageService.url(width: 800, height: 400, text: title) }
 
   validate :validate_bounding_box_dimensions
   validate :validate_overlapping_polygons
@@ -125,10 +129,6 @@ class Plot < ApplicationRecord
     unavailable = tiles.unavailable.random_sample(MAP_UNAVAILABLE_TILE_LIMIT).to_a
     available = tiles.available.random_sample(MAP_TILE_LIMIT - unavailable.size).to_a
     unavailable + available
-  end
-
-  def hero_image_url_fallback
-    hero_image_url.presence || PlaceholderImageService.url(width: 800, height: 400, text: title)
   end
 
   def relevant_posts

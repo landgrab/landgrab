@@ -20,7 +20,7 @@
 </div>
 
 <% if project %>
-  <%= image_tag project.hero_image_url_fallback,
+  <%= image_tag project.hero_image_for_display(:web),
                 class: 'img-fluid rounded',
                 alt: project.title %>
 <% end %>

@@ -8,9 +8,9 @@
                       class: 'd-inline-block align-text-top rounded' %>
       </a>
     <% end %>
-    <% if current_user&.team.present? && current_user.team.logo_url.present? %>
+    <% if current_user&.team.present? && !current_user.team.logo_placeholder? %>
       <a class="navbar-brand" href="<%= team_path(current_user.team.slug) %>">
-        <%= image_tag current_user.team.logo_url,
+        <%= image_tag current_user.team.logo_for_display(:thumb),
                       alt: "#{current_user.team.title} logo",
                       height: 24,
                       class: 'd-inline-block align-text-top rounded' %>

@@ -23,6 +23,11 @@
     </tr>
 
     <tr>
+      <th>Logo</th>
+      <td><%= render 'admin/shared/image_preview', record: team, name: :logo, height: '100px' %></td>
+    </tr>
+
+    <tr>
       <th>Created</th>
       <td>
         <%= team.created_at.strftime('%e %b %Y %H:%M:%S') %>

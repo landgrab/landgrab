@@ -6,7 +6,7 @@ class ProjectsController < ApplicationController
 
   def index
     log_event_mixpanel('Projects: Index', { authed: user_signed_in? })
-    @projects = Project.where(public: true).order(id: :desc).page(params[:page])
+    @projects = Project.where(public: true).with_attached_hero_image.order(id: :desc).page(params[:page])
   end
 
   def show

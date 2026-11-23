@@ -96,6 +96,16 @@ _Avoid_: Target, tag
 A user's reply on a post, which may be public or private.
 _Avoid_: Reply, message
 
+## Images
+
+**Hero image**:
+The optional wide banner image shown for a project, plot or post; a placeholder is shown when there is none.
+_Avoid_: Banner, cover image, main image
+
+**Logo**:
+The optional small, square identifying image for a project or team.
+_Avoid_: Icon, avatar, badge
+
 ## People
 
 **User**:

@@ -33,12 +33,12 @@
 
     <tr>
       <th>Hero Image</th>
-      <td><%= image_tag project.hero_image_url_fallback, height: '150px' %></td>
+      <td><%= render 'admin/shared/image_preview', record: project, name: :hero_image %></td>
     </tr>
 
     <tr>
       <th>Logo</th>
-      <td><%= image_tag project.logo_url_fallback, height: '100px' %></td>
+      <td><%= render 'admin/shared/image_preview', record: project, name: :logo, height: '100px' %></td>
     </tr>
 
     <tr>
