@@ -135,7 +135,7 @@ GEM
       bigdecimal
       rexml
     crass (1.0.8)
-    csv (3.3.5)
+    csv (3.3.7)
     date (3.6.0)
     devise (5.0.4)
       bcrypt (~> 3.0)
