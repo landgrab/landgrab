@@ -4,10 +4,6 @@
 # coloured and labelled by how many available tiles each has, drilling into a
 # sample of each plot's tiles. Also totals the project's tiles.
 class ProjectMap
-  # A plot's map sample includes every one of its available tiles up to this many,
-  # so counting the sample is exact up to here and a lower bound beyond it.
-  EXACT_AVAILABLE_TILE_COUNT_LIMIT = Plot::MAP_TILE_LIMIT - Plot::MAP_UNAVAILABLE_TILE_LIMIT
-
   attr_reader :project, :plots
 
   def initialize(project)
@@ -26,12 +22,22 @@ class ProjectMap
       plots:,
       tiles: tiles.select(&:available?),
       tile_name: 'available tile',
-      count_limit: EXACT_AVAILABLE_TILE_COUNT_LIMIT,
+      count_limit: exact_available_tile_count_limit,
       colour: ->(count) { count.positive? ? TileMap::GREEN : TileMap::RED }
     )
   end
 
   def tile_count
     @tile_count ||= Tile.where(plot: plots).count
+  end
+
+  private
+
+  # A plot's map sample holds at least MAP_TILE_LIMIT - MAP_UNAVAILABLE_TILE_LIMIT of its
+  # available tiles (or all of them, if it has fewer). A sample holding exactly that many
+  # can't tell "that many" from "more", so counts are only exact up to one below it, and a
+  # count above that means there are more.
+  def exact_available_tile_count_limit
+    Plot::MAP_TILE_LIMIT - Plot::MAP_UNAVAILABLE_TILE_LIMIT - 1
   end
 end
