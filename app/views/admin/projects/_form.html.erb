@@ -55,39 +55,19 @@
     </div>
   </div>
 
-  <div class="row mb-3 g-3 align-items-center">
-    <div class="col-sm-2">
-      <%= form.label :hero_image_url, 'Hero Image URL', class: 'col-form-label' %>
-    </div>
-    <div class="col-sm-5">
-      <%= form.text_field :hero_image_url,
-                          class: 'form-control',
-                          placeholder: 'https://www.example.com/wide-image.jpg',
-                          aria: { describedby: 'heroImageHelp' } %>
-    </div>
-    <div class="col-sm-5">
-      <span id="heroImageHelp" class="form-text">
-        URL of a wide image to be used in the background of the project page
-      </span>
-    </div>
-  </div>
+  <%= render 'admin/shared/image_field',
+             form:,
+             name: :hero_image,
+             url_attribute: :hero_image_url,
+             label: 'Hero Image',
+             help: 'A wide image to be used in the background of the project page.' %>
 
-  <div class="row mb-3 g-3 align-items-center">
-    <div class="col-sm-2">
-      <%= form.label :logo_url, 'Logo URL', class: 'col-form-label' %>
-    </div>
-    <div class="col-sm-5">
-      <%= form.text_field :logo_url,
-                          class: 'form-control',
-                          placeholder: 'https://www.example.com/logo.png',
-                          aria: { describedby: 'logoImageHelp' } %>
-    </div>
-    <div class="col-sm-5">
-      <span id="logoImageHelp" class="form-text">
-        URL of a smaller image / icon for the project
-      </span>
-    </div>
-  </div>
+  <%= render 'admin/shared/image_field',
+             form:,
+             name: :logo,
+             url_attribute: :logo_url,
+             label: 'Logo',
+             help: 'A smaller image / icon for the project.' %>
 
   <div class="row mb-3 g-3 align-items-center">
     <div class="col-sm-2">

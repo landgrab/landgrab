@@ -1,4 +1,4 @@
-<% plots = project.plots.to_a %>
+<% plots = project.plots.with_attached_hero_image.to_a %>
 <% if plots.any? %>
   <% tile_counts = PlotTileCounts.new(plots) %>
   <div class="row">

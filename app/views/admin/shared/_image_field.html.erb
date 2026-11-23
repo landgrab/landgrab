@@ -1,0 +1,39 @@
+<%# locals: (form:, name:, url_attribute:, label:, help:, input_class: 'col-sm-5', help_class: 'col-sm-5') %>
+<% record = form.object %>
+<% help_id = "#{name.to_s.camelize(:lower)}Help" %>
+<div class="row mb-3 g-3">
+  <div class="col-sm-2">
+    <%= form.label url_attribute, label, class: 'col-form-label' %>
+  </div>
+  <div class="<%= input_class %>">
+    <div class="d-flex align-items-center gap-3 mb-2">
+      <%= render 'admin/shared/image_preview', record:, name:, height: '75px' %>
+      <% unless record.public_send(:"#{name}_placeholder?") %>
+        <div class="form-check">
+          <%= form.check_box :"remove_#{name}", class: 'form-check-input' %>
+          <%= form.label :"remove_#{name}", 'Remove', class: 'form-check-label' %>
+        </div>
+      <% end %>
+    </div>
+    <% if LandgrabService.attachments_enabled? %>
+      <%= form.file_field name,
+                          accept: ImageAttachmentValidator::CONTENT_TYPES.join(','),
+                          class: 'form-control mb-2',
+                          aria: { describedby: help_id } %>
+    <% end %>
+    <%= form.text_field url_attribute,
+                        class: 'form-control',
+                        placeholder: LandgrabService.attachments_enabled? ? '...or enter an image URL' : 'https://www.example.com/image.jpg',
+                        aria: { describedby: help_id } %>
+  </div>
+  <div class="<%= help_class %>">
+    <span id="<%= help_id %>" class="form-text">
+      <%= help %>
+      <% if LandgrabService.attachments_enabled? %>
+        Upload a PNG, JPEG, WebP or GIF (up to <%= number_to_human_size(ImageAttachmentValidator::MAX_SIZE) %>), or enter the URL of one to copy it into our storage.
+      <% else %>
+        Image uploads are not yet configured in this environment, so the image will be linked to from its URL.
+      <% end %>
+    </span>
+  </div>
+</div>

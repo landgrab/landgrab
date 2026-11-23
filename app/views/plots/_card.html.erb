@@ -4,7 +4,7 @@
 <% available_tile_count = local_assigns.fetch(:available_tile_count) { plot.non_subscribed_tiles.size } %>
 
 <div class="card mb-3">
-  <%= image_tag plot.hero_image_url_fallback, class: 'card-img-top img-fluid', alt: "Hero image for #{plot.title} plot" %>
+  <%= image_tag plot.hero_image_for_display(:web), class: 'card-img-top img-fluid', alt: "Hero image for #{plot.title} plot" %>
   <% if featured %>
     <div class="card-header">
       <span class="badge text-bg-warning">Featured Plot</span>

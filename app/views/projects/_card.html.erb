@@ -1,5 +1,5 @@
 <div class="card mb-3">
-  <%= image_tag project.hero_image_url_fallback, class: 'card-img-top img-fluid', alt: "Hero image for #{project.title} project" %>
+  <%= image_tag project.hero_image_for_display(:web), class: 'card-img-top img-fluid', alt: "Hero image for #{project.title} project" %>
   <div class="card-body">
     <h5 class="card-title"><%= project.title %></h5>
     <div class="card-text">

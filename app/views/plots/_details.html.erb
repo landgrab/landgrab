@@ -14,7 +14,7 @@ covers <%= @plot.area_formatted_acres %>
 (~ <%= @plot.area_formatted_unsquared %><sup>2</sup>).
 </p>
 
-<%= image_tag @plot.hero_image_url_fallback,
+<%= image_tag @plot.hero_image_for_display(:web),
               class: 'rounded mb-3 img-fluid',
               alt: "Hero image for #{@plot.title} plot" %>
 

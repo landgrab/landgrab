@@ -58,7 +58,7 @@ module Admin
     end
 
     def plot_params
-      params.expect(plot: %i[title description polygon project_id hero_image_url])
+      params.expect(plot: %i[title description polygon project_id hero_image hero_image_url remove_hero_image])
     end
   end
 end

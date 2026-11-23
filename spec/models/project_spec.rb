@@ -52,31 +52,31 @@ RSpec.describe Project do
     end
   end
 
-  describe '#hero_image_url_fallback' do
+  describe '#hero_image_for_display' do
     it 'returns the hero image URL when set' do
       project = build(:project, hero_image_url: 'https://example.com/hero.jpg')
 
-      expect(project.hero_image_url_fallback).to eq 'https://example.com/hero.jpg'
+      expect(project.hero_image_for_display).to eq 'https://example.com/hero.jpg'
     end
 
     it 'returns a wide placeholder with the title when blank' do
       project = build(:project, title: 'Big Wood', hero_image_url: nil)
 
-      expect(project.hero_image_url_fallback).to eq 'https://placehold.co/800x400?text=Big%20Wood'
+      expect(project.hero_image_for_display).to eq 'https://placehold.co/800x400?text=Big%20Wood'
     end
   end
 
-  describe '#logo_url_fallback' do
+  describe '#logo_for_display' do
     it 'returns the logo URL when set' do
       project = build(:project, logo_url: 'https://example.com/logo.png')
 
-      expect(project.logo_url_fallback).to eq 'https://example.com/logo.png'
+      expect(project.logo_for_display).to eq 'https://example.com/logo.png'
     end
 
     it 'returns a square logo placeholder when blank' do
       project = build(:project, logo_url: '')
 
-      expect(project.logo_url_fallback).to eq 'https://placehold.co/400x400?text=Logo'
+      expect(project.logo_for_display).to eq 'https://placehold.co/400x400?text=Logo'
     end
   end
 end

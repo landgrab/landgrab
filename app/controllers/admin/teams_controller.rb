@@ -55,7 +55,9 @@ module Admin
       params.expect(
         team: %i[title
                  slug
+                 logo
                  logo_url
+                 remove_logo
                  website
                  description]
       )

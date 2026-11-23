@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class Project < ApplicationRecord
+  include StoredImage
+
   has_many :plots, dependent: :restrict_with_exception
   has_many :post_associations, as: :postable, inverse_of: :postable, dependent: :restrict_with_exception
   has_many :posts, through: :post_associations
@@ -8,7 +10,12 @@ class Project < ApplicationRecord
   has_many :subscriptions, dependent: :restrict_with_exception
 
   validates :title, presence: true
-  validates :hero_image_url, :logo_url, :website, url: true, allow_blank: true
+  validates :website, url: true, allow_blank: true
+
+  stored_image :hero_image, url_attribute: :hero_image_url, variants: StoredImage::HERO_IMAGE_VARIANTS,
+                            placeholder: -> { PlaceholderImageService.url(width: 800, height: 400, text: title) }
+  stored_image :logo, url_attribute: :logo_url, variants: StoredImage::LOGO_VARIANTS,
+                      placeholder: -> { PlaceholderImageService.url(width: 400, height: 400, text: 'Logo') }
 
   auto_strip_attributes :title, :hero_image_url, :logo_url, :website, squish: true
   auto_strip_attributes :description, :welcome_text, :subscriber_benefits
@@ -21,14 +28,6 @@ class Project < ApplicationRecord
     Tile.joins(latest_subscription: :subscriber, plot: :project)
         .where(projects: { id: })
         .where(users: { id: user.id })
-  end
-
-  def hero_image_url_fallback
-    hero_image_url.presence || PlaceholderImageService.url(width: 800, height: 400, text: title)
-  end
-
-  def logo_url_fallback
-    logo_url.presence || PlaceholderImageService.url(width: 400, height: 400, text: 'Logo')
   end
 
   def relevant_posts

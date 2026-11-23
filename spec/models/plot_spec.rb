@@ -66,17 +66,17 @@ RSpec.describe Plot do
     end
   end
 
-  describe '#hero_image_url_fallback' do
+  describe '#hero_image_for_display' do
     it 'returns the hero image URL when set' do
       plot = build(:plot, hero_image_url: 'https://example.com/hero.jpg')
 
-      expect(plot.hero_image_url_fallback).to eq 'https://example.com/hero.jpg'
+      expect(plot.hero_image_for_display).to eq 'https://example.com/hero.jpg'
     end
 
     it 'returns a wide placeholder with the title when blank' do
       plot = build(:plot, title: 'North Field', hero_image_url: nil)
 
-      expect(plot.hero_image_url_fallback).to eq 'https://placehold.co/800x400?text=North%20Field'
+      expect(plot.hero_image_for_display).to eq 'https://placehold.co/800x400?text=North%20Field'
     end
   end
 end
