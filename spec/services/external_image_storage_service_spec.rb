@@ -19,11 +19,21 @@ RSpec.describe ExternalImageStorageService do
     end
   end
 
+  # Leave only the records each example creates with external images (CI's database is seeded)
+  def clear_existing_image_urls
+    # rubocop:disable Rails/SkipsModelValidations
+    Project.update_all(hero_image_url: nil, logo_url: nil)
+    Plot.update_all(hero_image_url: nil)
+    Team.update_all(logo_url: nil)
+    # rubocop:enable Rails/SkipsModelValidations
+  end
+
   def summary(result)
     { stored: result.stored, skipped: result.skipped, failures: result.failures.map(&:to_h) }
   end
 
   before do
+    clear_existing_image_urls
     allow(LandgrabService).to receive(:attachments_enabled?).and_return(true)
     stub_image_download
     stub_request(:get, dead_url).to_return(status: 404)

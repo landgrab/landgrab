@@ -17,6 +17,15 @@ RSpec.describe 'images:store_external_urls' do # rubocop:disable RSpec/DescribeC
     ENV.delete('DRY_RUN')
   end
 
+  # Leave only the records each example creates with external images (CI's database is seeded)
+  def clear_existing_image_urls
+    # rubocop:disable Rails/SkipsModelValidations
+    Project.update_all(hero_image_url: nil, logo_url: nil)
+    Plot.update_all(hero_image_url: nil)
+    Team.update_all(logo_url: nil)
+    # rubocop:enable Rails/SkipsModelValidations
+  end
+
   # A team saved before uploads were configured, so its logo URL was never downloaded
   def create_team_with_legacy_logo(url)
     allow(LandgrabService).to receive(:attachments_enabled?).and_return(false)
@@ -26,6 +35,7 @@ RSpec.describe 'images:store_external_urls' do # rubocop:disable RSpec/DescribeC
   end
 
   before do
+    clear_existing_image_urls
     allow(LandgrabService).to receive(:attachments_enabled?).and_return(attachments_enabled)
     stub_request(:get, logo_url).to_return(body: png.binread, headers: { 'Content-Type' => 'image/png' })
     stub_request(:get, dead_url).to_return(status: 404)
