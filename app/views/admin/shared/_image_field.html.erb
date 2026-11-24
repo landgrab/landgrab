@@ -8,7 +8,7 @@
   <div class="<%= input_class %>">
     <div class="d-flex align-items-center gap-3 mb-2">
       <%= render 'admin/shared/image_preview', record:, name:, height: '75px' %>
-      <% unless record.public_send(:"#{name}_placeholder?") %>
+      <% if LandgrabService.attachments_enabled? && record.public_send(name).attached? %>
         <div class="form-check">
           <%= form.check_box :"remove_#{name}", class: 'form-check-input' %>
           <%= form.label :"remove_#{name}", 'Remove', class: 'form-check-label' %>
@@ -32,7 +32,7 @@
       <% if LandgrabService.attachments_enabled? %>
         Upload a PNG, JPEG, WebP or GIF (up to <%= number_to_human_size(ImageAttachmentValidator::MAX_SIZE) %>), or enter the URL of one to copy it into our storage.
       <% else %>
-        Image uploads are not yet configured in this environment, so the image will be linked to from its URL.
+        Enter the URL of an image to link to it.
       <% end %>
     </span>
   </div>
