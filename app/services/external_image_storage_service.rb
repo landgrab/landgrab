@@ -11,6 +11,21 @@ class ExternalImageStorageService
 
   Failure = Data.define(:label, :error)
 
+  # One image of a record, which is linked to by the URL in the record's url_attribute
+  Image = Data.define(:record, :name, :url_attribute) do
+    def label
+      "#{record.class.name} #{record.id} (#{record.to_param}) #{name}"
+    end
+
+    def url
+      record[url_attribute]
+    end
+
+    def stored?
+      record.public_send(name).attached?
+    end
+  end
+
   # What was stored (or, in a dry run, would be stored), skipped and failed
   class Result
     attr_reader :stored, :failures
@@ -24,11 +39,12 @@ class ExternalImageStorageService
   end
 
   class << self
-    def store_all(dry_run: false)
+    # Yields each image's label and URL just before attempting to store it (not on a dry run)
+    def store_all(dry_run: false, &before_attempt)
       raise AttachmentsDisabledError, 'attachments are not enabled' unless LandgrabService.attachments_enabled?
 
       Result.new.tap do |result|
-        each_external_image { |record, name, url_attribute| store(record, name, url_attribute, result, dry_run:) }
+        each_external_image { |image| store(image, result, dry_run:, before_attempt:) }
       end
     end
 
@@ -47,34 +63,33 @@ class ExternalImageStorageService
       url_attributes.each do |model, images|
         images.each do |name, url_attribute|
           model.reorder(nil).where.not(url_attribute => [nil, '']).find_each do |record|
-            yield record, name, url_attribute
+            yield Image.new(record:, name:, url_attribute:)
           end
         end
       end
     end
 
-    def store(record, name, url_attribute, result, dry_run:)
-      label = "#{record.class.name} #{record.id} (#{record.to_param}) #{name}"
-
-      if record.public_send(name).attached?
+    def store(image, result, dry_run:, before_attempt:)
+      if image.stored?
         result.skipped += 1
       elsif dry_run
-        result.stored << label
+        result.stored << image.label
       else
-        save_with_image(record, url_attribute, label, result)
+        before_attempt&.call(image.label, image.url)
+        save_with_image(image, result)
       end
     end
 
-    def save_with_image(record, url_attribute, label, result)
-      record.public_send(:"#{url_attribute}_will_change!")
+    def save_with_image(image, result)
+      image.record.public_send(:"#{image.url_attribute}_will_change!")
 
-      if record.save
-        result.stored << label
+      if image.record.save
+        result.stored << image.label
       else
-        result.failures << Failure.new(label:, error: record.errors.full_messages.to_sentence)
+        result.failures << Failure.new(label: image.label, error: image.record.errors.full_messages.to_sentence)
       end
     rescue StandardError => e
-      result.failures << Failure.new(label:, error: "#{e.class}: #{e.message}")
+      result.failures << Failure.new(label: image.label, error: "#{e.class}: #{e.message}")
     end
   end
 end

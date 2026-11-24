@@ -28,6 +28,10 @@ RSpec.describe ExternalImageStorageService do
     # rubocop:enable Rails/SkipsModelValidations
   end
 
+  def requests_made_to(url)
+    WebMock::RequestRegistry.instance.times_executed(WebMock::RequestPattern.new(:get, url))
+  end
+
   def summary(result)
     { stored: result.stored, skipped: result.skipped, failures: result.failures.map(&:to_h) }
   end
@@ -71,6 +75,15 @@ RSpec.describe ExternalImageStorageService do
 
         expect(summary(described_class.store_all)).to eq(stored: [], skipped: 0, failures: [])
       end
+    end
+
+    it 'yields each image and its URL before downloading it' do
+      team = create_with_legacy_urls(:team, logo_url: dead_url)
+      attempts = []
+
+      described_class.store_all { |label, url| attempts << [label, url, requests_made_to(url)] }
+
+      expect(attempts).to eq [["Team #{team.id} (#{team.slug}) logo", dead_url, 0]]
     end
 
     it 'skips images which are already stored, without downloading them' do

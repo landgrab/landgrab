@@ -9,7 +9,8 @@ namespace :images do
     end
 
     dry_run = ENV['DRY_RUN'].present?
-    result = ExternalImageStorageService.store_all(dry_run:)
+    $stdout.sync = true
+    result = ExternalImageStorageService.store_all(dry_run:) { |label, url| puts "Storing #{label}: #{url}" }
 
     if dry_run
       puts "Dry run: would store #{result.stored.size} image(s), skipping #{result.skipped} already stored."
