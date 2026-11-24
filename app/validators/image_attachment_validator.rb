@@ -2,7 +2,7 @@
 
 class ImageAttachmentValidator < ActiveModel::EachValidator
   CONTENT_TYPES = %w[image/png image/jpeg image/webp image/gif].freeze
-  MAX_SIZE = 5.megabytes
+  MAX_SIZE = 20.megabytes
 
   def validate_each(record, attribute, value)
     return unless value.attached?
