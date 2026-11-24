@@ -45,10 +45,18 @@ RSpec.describe 'images:store_external_urls' do # rubocop:disable RSpec/DescribeC
     let(:attachments_enabled) { true }
     let!(:team) { create_team_with_legacy_logo(logo_url) }
 
+    it 'logs each URL before storing it' do
+      dead_team = create_team_with_legacy_logo(dead_url)
+
+      expect { run_task }.to output(
+        /Storing Team #{team.id} .* logo: #{logo_url}\nStoring Team #{dead_team.id} .* logo: #{dead_url}\n/
+      ).to_stdout
+    end
+
     it 'stores the images and reports the counts and each failure' do
       dead_team = create_team_with_legacy_logo(dead_url)
 
-      expect { run_task }.to output(<<~OUTPUT).to_stdout
+      expect { run_task }.to output(a_string_ending_with(<<~OUTPUT)).to_stdout
         Stored 1 image(s), skipped 0 already stored, 1 failed.
           Team #{dead_team.id} (#{dead_team.slug}) logo: Logo url could not be downloaded (HTTP 404)
       OUTPUT

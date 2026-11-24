@@ -24,11 +24,14 @@ class ExternalImageStorageService
   end
 
   class << self
-    def store_all(dry_run: false)
+    # Yields each image's label and URL just before attempting to store it (not on a dry run)
+    def store_all(dry_run: false, &before_attempt)
       raise AttachmentsDisabledError, 'attachments are not enabled' unless LandgrabService.attachments_enabled?
 
       Result.new.tap do |result|
-        each_external_image { |record, name, url_attribute| store(record, name, url_attribute, result, dry_run:) }
+        each_external_image do |record, name, url_attribute|
+          store(record, name, url_attribute, result, dry_run:, before_attempt:)
+        end
       end
     end
 
@@ -53,7 +56,7 @@ class ExternalImageStorageService
       end
     end
 
-    def store(record, name, url_attribute, result, dry_run:)
+    def store(record, name, url_attribute, result, dry_run:, before_attempt:)
       label = "#{record.class.name} #{record.id} (#{record.to_param}) #{name}"
 
       if record.public_send(name).attached?
@@ -61,6 +64,7 @@ class ExternalImageStorageService
       elsif dry_run
         result.stored << label
       else
+        before_attempt&.call(label, record[url_attribute])
         save_with_image(record, url_attribute, label, result)
       end
     end
