@@ -32,7 +32,7 @@
       <% if LandgrabService.attachments_enabled? %>
         Upload a PNG, JPEG, WebP or GIF (up to <%= number_to_human_size(ImageAttachmentValidator::MAX_SIZE) %>), or enter the URL of one to copy it into our storage.
       <% else %>
-        Enter the URL of an image to link to it. Clear the URL to remove the image.
+        Enter the URL of an image to link to it.
       <% end %>
     </span>
   </div>
