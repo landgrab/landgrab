@@ -31,16 +31,14 @@
     </div>
   </div>
 
-  <div class="row mb-3 g-3 align-items-center">
+  <div class="row mb-3 g-3">
     <div class="col-sm-2">
       <%= form.label :body, class: 'col-form-label' %>
     </div>
-    <div class="col-sm-5">
+    <div class="col-sm-10">
       <%= form.text_area :body, required: true, class: 'form-control', rows: 10, aria: { describedby: 'bodyHelp' } %>
-    </div>
-    <div class="col-sm-5">
       <span id="bodyHelp" class="form-text">
-        The main content of the post.
+        The main content of the post, written in Markdown (switch to WYSIWYG at the bottom of the editor if you prefer).
         Mention the What3Words for a tile (in format <code class="text-nowrap">///one.two.three</code>)
         to automatically associate (and link to) that tile.
       </span>
@@ -66,53 +64,7 @@
       </div>
     </div>
 
-    <div class="row mb-3 g-3 align-items-center">
-      <div class="col-sm-2">
-        <%= form.label :images, 'Other Images', class: 'col-form-label' %>
-      </div>
-      <div class="col-sm-5">
-        <%= form.file_field :images, class: 'form-control', aria: { describedby: 'otherImagesHelp' }, multiple: true %>
-      </div>
-      <div class="col-sm-5">
-        <span id="otherImagesHelp" class="form-text">
-          Attach additional images to be inserted into the post.
-        </span>
-      </div>
-    </div>
-    <% if post.images.any? %>
-      <div class="row mb-3 g-3 align-items-center">
-        <div class="col-sm-2">
-          Existing images
-        </div>
-        <div class="col-sm-5">
-          <div class="row row-cols-6 g-2">
-            <% post.images.each do |image| %>
-              <div class="col">
-                <div class="card click-to-remove-container">
-                  <%= image_tag image.variant(:thumb),
-                            class: 'rounded-top click-to-remove-trigger',
-                            style: 'cursor: not-allowed;',
-                            title: 'Click to remove' %>
-                  <%= form.hidden_field :images, multiple: true, value: image.signed_id %>
-                  <div class="card-body">
-                    <%= link_to 'thumb', image.variant(:thumb) %>
-                    <br>
-                    <%= link_to 'web', image.variant(:web) %>
-                    <br>
-                    <%= link_to 'full', image %>
-                  </div>
-                </div>
-              </div>
-            <% end %>
-          </div>
-        </div>
-        <div class="col-sm-5">
-          <span class="form-text">
-            Select images to remove them from the post.
-          </span>
-        </div>
-      </div>
-    <% end %>
+    <%= render 'admin/shared/media_library', record: post, fields: ['post_body'] %>
   <% else %>
     <p>Image uploads (hero or other images) are not available in this environment.</p>
   <% end %>
@@ -164,16 +116,3 @@
     <%= form.submit 'Create Post', class: 'btn btn-primary' %>
   <% end %>
 <% end %>
-
-<script>
-  document.addEventListener('DOMContentLoaded', function() {
-    const removeTriggers = document.querySelectorAll('.click-to-remove-trigger');
-    removeTriggers.forEach(trigger => {
-      trigger.addEventListener('click', function(event) {
-        event.preventDefault();
-        const container = event.target.closest('.click-to-remove-container');
-        container.remove();
-      });
-    });
-  });
-</script>

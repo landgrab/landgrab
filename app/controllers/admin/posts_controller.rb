@@ -38,7 +38,6 @@ module Admin
       @post.author = current_user
 
       if @post.save
-        inject_image_tags
         associate_mentioned_tiles
         @post.update!(published_at: @post.created_at) if @post.publish_immediately == 'true'
         redirect_to admin_post_path(@post), notice: 'Post was successfully created.'
@@ -49,7 +48,6 @@ module Admin
 
     def update
       if @post.update(post_params_for_update)
-        inject_image_tags
         associate_mentioned_tiles if @post.saved_change_to_attribute?(:body)
         redirect_to admin_post_path(@post), notice: 'Post was successfully updated.'
       else
@@ -83,17 +81,6 @@ module Admin
 
     def set_post
       @post = Post.find_by_hashid!(params[:id])
-    end
-
-    def inject_image_tags
-      return unless LandgrabService.attachments_enabled?
-
-      @post.images.each do |image|
-        image_url = Rails.application.routes.url_helpers.url_for(image.variant(:web))
-
-        @post.body = "![#{image.filename}](#{image_url})\n\n#{@post.body}" if @post.body.exclude?(image_url)
-      end
-      @post.save!
     end
 
     def associate_mentioned_tiles
