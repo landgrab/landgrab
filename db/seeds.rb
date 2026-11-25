@@ -3,7 +3,7 @@
 # This file should contain all the record creation needed to seed the database with its default values.
 # The data can then be loaded with the rails db:seed command (or created alongside the database with db:setup).
 
-project = Project.create_with(logo_url: 'https://placehold.co/300x300', welcome_text: 'Welcome text for First Project').find_or_create_by(title: 'First Project')
+project = Project.create_with(logo_url: 'https://placehold.co/300x300.png', welcome_text: 'Welcome text for First Project').find_or_create_by(title: 'First Project')
 plot_polygon = 'POLYGON ((-0.002001 51.477865, -0.001886 51.477912, -0.001918 51.477805, -0.002001 51.477865))'
 plot = project.plots.create_with(tile_population_status: 'succeeded', description: 'Description for First Plot', polygon: plot_polygon).find_or_create_by(title: 'First Plot')
 

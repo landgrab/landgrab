@@ -1,0 +1,262 @@
+<%# Markdown editor and media library for a record's text fields.
+    Locals: record (has a media library), fields (ids of the textareas to turn into editors) %>
+<link rel="stylesheet" href="https://uicdn.toast.com/editor/3.2.2/toastui-editor.min.css">
+<script src="https://uicdn.toast.com/editor/3.2.2/toastui-editor-all.min.js"></script>
+
+<%= hidden_field_tag "#{record.model_name.param_key}[images][]", '', id: nil %>
+
+<div class="row mb-3 g-3"
+     data-media-library
+     data-fields="<%= fields.to_json %>"
+     data-upload-url="<%= admin_media_images_path %>"
+     data-update-url="<%= admin_media_image_path('IMAGE_ID') %>"
+     data-param-name="<%= record.model_name.param_key %>[images][]"
+     data-images="<%= media_library_json(record) %>">
+  <div class="col-sm-2">
+    <label class="col-form-label" for="media-library-files">Image library</label>
+  </div>
+  <div class="col-sm-10">
+    <input type="file" id="media-library-files" class="form-control mb-2" multiple
+           accept="image/png,image/jpeg,image/webp,image/gif" aria-describedby="mediaLibraryHelp">
+    <div id="mediaLibraryHelp" class="form-text mb-2">
+      Images upload straight away. Drag one into the text, or use its Insert button, to add it at the cursor.
+      Pasting or dropping an image file into the text adds it too.
+    </div>
+    <div class="alert alert-danger d-none" role="alert" data-media-library-error></div>
+    <div class="row row-cols-2 row-cols-md-4 g-2" data-media-library-tiles></div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const root = document.querySelector('[data-media-library]');
+    if (!root) return;
+
+    const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content;
+    const tilesEl = root.querySelector('[data-media-library-tiles]');
+    const errorEl = root.querySelector('[data-media-library-error]');
+    const fileInput = root.querySelector('input[type="file"]');
+    const textareas = JSON.parse(root.dataset.fields).map(id => document.getElementById(id));
+    const form = root.closest('form');
+    const editors = [];
+    let activeEditor = null;
+
+    // --- Library ----------------------------------------------------------------------------
+
+    function showError(message) {
+      errorEl.textContent = message;
+      errorEl.classList.toggle('d-none', !message);
+    }
+
+    async function request(url, options) {
+      const response = await fetch(url, {
+        ...options,
+        headers: { 'X-CSRF-Token': csrfToken, 'Accept': 'application/json', ...(options.headers || {}) }
+      });
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok) throw new Error(data.error || 'Something went wrong; please try again.');
+      return data;
+    }
+
+    async function upload(file) {
+      const body = new FormData();
+      body.append('file', file);
+      const image = await request(root.dataset.uploadUrl, { method: 'POST', body });
+      addTile(image);
+      return image;
+    }
+
+    function allText() {
+      return textareas.map(textarea => textarea.value).join('\n');
+    }
+
+    function markdownFor(image, altText, linked) {
+      const alt = altText.replace(/[\[\]]/g, '');
+      const markdown = `![${alt}](${image.web_url})`;
+      return linked ? `[${markdown}](${image.full_url})` : markdown;
+    }
+
+    function addTile(image) {
+      const col = document.createElement('div');
+      col.className = 'col';
+      col.innerHTML = `
+        <div class="card h-100" draggable="true" title="Drag into the text">
+          <img class="card-img-top" alt="">
+          <div class="card-body p-2 d-grid gap-2">
+            <input type="text" class="form-control form-control-sm" aria-label="Alt text">
+            <div class="form-check small">
+              <input type="checkbox" class="form-check-input">
+              <label class="form-check-label">Link to full size</label>
+            </div>
+            <div class="d-flex gap-1">
+              <button type="button" class="btn btn-sm btn-primary flex-grow-1" data-insert>Insert</button>
+              <button type="button" class="btn btn-sm btn-outline-danger" data-remove aria-label="Remove image">&times;</button>
+            </div>
+          </div>
+          <input type="hidden">
+        </div>`;
+
+      const card = col.querySelector('.card');
+      const thumb = col.querySelector('img');
+      const altInput = col.querySelector('input[type="text"]');
+      const linkCheckbox = col.querySelector('input[type="checkbox"]');
+      const checkboxId = `link-full-${image.id.slice(-12)}`;
+      linkCheckbox.id = checkboxId;
+      col.querySelector('label').htmlFor = checkboxId;
+      thumb.src = image.thumb_url;
+      thumb.alt = image.alt;
+      altInput.value = image.alt;
+      altInput.placeholder = 'Alt text (describe the image)';
+      const hidden = col.querySelector('input[type="hidden"]');
+      hidden.name = root.dataset.paramName;
+      hidden.value = image.id;
+
+      altInput.addEventListener('change', async () => {
+        try {
+          const updated = await request(root.dataset.updateUrl.replace('IMAGE_ID', image.id), {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ alt: altInput.value })
+          });
+          altInput.value = updated.alt;
+          thumb.alt = updated.alt;
+          showError('');
+        } catch (error) {
+          showError(error.message);
+        }
+      });
+      // Keep Enter in the alt text field from submitting the whole form
+      altInput.addEventListener('keydown', event => {
+        if (event.key === 'Enter') { event.preventDefault(); altInput.blur(); }
+      });
+
+      col.querySelector('[data-insert]').addEventListener('click', () => {
+        insert(markdownFor(image, altInput.value, linkCheckbox.checked), image, altInput.value, linkCheckbox.checked);
+      });
+
+      col.querySelector('[data-remove]').addEventListener('click', () => {
+        const used = allText().includes(image.id);
+        const warning = 'This image is used in the text. Removing it will leave a broken image there. Remove anyway?';
+        if (used && !confirm(warning)) return;
+        col.remove();
+      });
+
+      card.addEventListener('dragstart', event => {
+        const markdown = markdownFor(image, altInput.value, linkCheckbox.checked);
+        event.dataTransfer.effectAllowed = 'copy';
+        event.dataTransfer.setData('application/x-media-image', JSON.stringify({
+          id: image.id, alt: altInput.value, linked: linkCheckbox.checked
+        }));
+        event.dataTransfer.setData('text/plain', markdown);
+      });
+
+      card.dataset.imageId = image.id;
+      card._image = image;
+      tilesEl.appendChild(col);
+    }
+
+    function findImage(id) {
+      return tilesEl.querySelector(`[data-image-id="${CSS.escape(id)}"]`)?._image;
+    }
+
+    JSON.parse(root.dataset.images).forEach(addTile);
+
+    fileInput.addEventListener('change', async () => {
+      showError('');
+      for (const file of fileInput.files) {
+        try {
+          await upload(file);
+        } catch (error) {
+          showError(`${file.name}: ${error.message}`);
+        }
+      }
+      fileInput.value = '';
+    });
+
+    // --- Editors ----------------------------------------------------------------------------
+
+    function insert(markdown, image, altText, linked) {
+      const editor = activeEditor || editors[0];
+      if (!editor) {
+        const textarea = textareas[0];
+        textarea.setRangeText(markdown, textarea.selectionStart, textarea.selectionEnd, 'end');
+        textarea.focus();
+        return;
+      }
+
+      if (editor.isMarkdownMode()) {
+        editor.insertText(markdown);
+      } else {
+        // insertText would add the Markdown as literal text in WYSIWYG mode, so insert real nodes
+        const { view, schema } = editor.getCurrentModeEditor();
+        let node = schema.nodes.image.create({ imageUrl: image.web_url, altText: altText.replace(/[\[\]]/g, '') });
+        if (linked) node = node.mark([schema.marks.link.create({ linkUrl: image.full_url })]);
+        // false: don't let the cursor's own marks replace the link we just added
+        view.dispatch(view.state.tr.replaceSelectionWith(node, false));
+      }
+      editor.focus();
+    }
+
+    function moveCursorTo(editor, event) {
+      const { view } = editor.getCurrentModeEditor();
+      const position = view.posAtCoords({ left: event.clientX, top: event.clientY });
+      if (!position) return;
+      const selection = view.state.selection.constructor.near(view.state.doc.resolve(position.pos));
+      view.dispatch(view.state.tr.setSelection(selection));
+    }
+
+    textareas.forEach(textarea => {
+      if (typeof toastui === 'undefined') return; // CDN unavailable; keep the plain textarea
+
+      const container = document.createElement('div');
+      textarea.insertAdjacentElement('afterend', container);
+
+      const editor = new toastui.Editor({
+        el: container,
+        height: '500px',
+        initialEditType: 'markdown',
+        previewStyle: 'vertical',
+        initialValue: textarea.value,
+        usageStatistics: false,
+        hooks: {
+          addImageBlobHook: async (blob, callback) => {
+            try {
+              const image = await upload(blob);
+              callback(image.web_url, image.alt);
+            } catch (error) {
+              showError(error.message);
+            }
+          }
+        },
+        events: {
+          change: () => { textarea.value = editor.getMarkdown(); },
+          focus: () => { activeEditor = editor; }
+        }
+      });
+
+      // Dropping a library tile inserts the image where it is dropped
+      container.addEventListener('dragover', event => {
+        if (event.dataTransfer.types.includes('application/x-media-image')) event.preventDefault();
+      }, true);
+      container.addEventListener('drop', event => {
+        if (!event.dataTransfer.types.includes('application/x-media-image')) return;
+        event.preventDefault();
+        event.stopPropagation();
+        const dropped = JSON.parse(event.dataTransfer.getData('application/x-media-image'));
+        const image = findImage(dropped.id);
+        if (!image) return;
+        activeEditor = editor;
+        moveCursorTo(editor, event);
+        insert(markdownFor(image, dropped.alt, dropped.linked), image, dropped.alt, dropped.linked);
+      }, true);
+
+      textarea.hidden = true;
+      textarea.required = false; // a hidden required field would block submitting the form
+      editors.push(editor);
+    });
+
+    form.addEventListener('submit', () => {
+      editors.forEach((editor, index) => { textareas[index].value = editor.getMarkdown(); });
+    });
+  });
+</script>

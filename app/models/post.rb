@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class Post < ApplicationRecord
+  include MediaLibrary
+
   attr_accessor :publish_immediately
 
   belongs_to :author, class_name: 'User', inverse_of: :posts_authored
@@ -13,11 +15,9 @@ class Post < ApplicationRecord
     has_one_attached :hero_image do |attachable|
       attachable.variant :thumb, resize_to_fill: [100, 100]
     end
-    has_many_attached :images, dependent: :detach do |attachable|
-      attachable.variant :thumb, resize_to_fill: [100, 100]
-      attachable.variant :web, resize_to_limit: [822, 822]
-    end
   end
+
+  media_library
 
   validates :title, presence: true
   validates :body, presence: true
