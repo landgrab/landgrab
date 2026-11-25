@@ -1,4 +1,6 @@
-<h1><%= admin_title(Plot) %></h1>
+<%= admin_page_header(admin_title(Plot)) do %>
+  <%= admin_new_button(Plot) %>
+<% end %>
 
 <p>
   Plots are collections of tiles covering an area.
@@ -7,7 +9,6 @@
 <%= render 'filters' %>
 
 <p>
-  <%= link_to 'New Plot', new_admin_plot_path %>
   <%= page_entries_info @plots %>
   <% if @project.present? %>
     from the <%= link_to @project.title, admin_project_path(@project) %> project

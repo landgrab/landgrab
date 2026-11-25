@@ -40,7 +40,5 @@
   </table>
 <% end %>
 <% if project.present? %>
-<p>
-  <%= link_to 'Create New Plot for the Project', new_admin_plot_path(project_id: project.hashid) %>
-</p>
+<%= admin_new_button(Plot, label: 'Create New Plot for the Project', params: { project_id: project.hashid }) %>
 <% end %>

@@ -1,4 +1,6 @@
-<h1><%= admin_title @tile %></h1>
+<%= admin_page_header(admin_title(@tile)) do %>
+  <%= render 'admin/posts/new_post_link', postable: @tile, class: 'btn btn-primary' %>
+<% end %>
 
 <div class="row">
   <div class="col-md-6">

@@ -1,7 +1,5 @@
-<h1><%= admin_title @price %></h1>
+<%= admin_page_header(admin_title(@price)) do %>
+  <%= admin_edit_button(@price) %>
+<% end %>
 
 <%= render 'details', price: @price %>
-
-<p>
-  <%= link_to 'Edit price', edit_admin_price_path(@price) %>
-</p>

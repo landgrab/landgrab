@@ -29,7 +29,7 @@
         <td><%= promo_code.created_at.strftime('%e %b %Y %H:%M:%S') %></td>
         <td>
           <%= link_to 'View', admin_promo_code_path(promo_code) %> |
-          <%= link_to 'Edit', edit_admin_promo_code_path(promo_code) %>
+          <%= admin_edit_button(promo_code, small: true) %>
         </td>
       </tr>
     <% end %>

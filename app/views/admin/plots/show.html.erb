@@ -1,4 +1,7 @@
-<h1><%= admin_title @plot %></h1>
+<%= admin_page_header(admin_title(@plot)) do %>
+  <%= admin_edit_button(@plot) %>
+  <%= render 'admin/posts/new_post_link', postable: @plot, class: 'btn btn-primary' %>
+<% end %>
 
 <table class="table">
   <tbody>
@@ -93,12 +96,6 @@
     </tr>
   </tbody>
 </table>
-
-<p>
-  <%= link_to 'Edit plot', edit_admin_plot_path(@plot) %>
-  |
-  <%= render 'admin/posts/new_post_link', postable: @plot %>
-</p>
 
 <%= render 'admin/plots/map', plot: @plot %>
 

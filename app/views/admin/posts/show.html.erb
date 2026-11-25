@@ -1,10 +1,8 @@
-<h1><%= admin_title @post %></h1>
+<%= admin_page_header(admin_title(@post)) do %>
+  <%= admin_edit_button(@post) %>
+<% end %>
 
 <%= render 'details', post: @post %>
-
-<p>
-  <%= link_to 'Edit post', edit_admin_post_path(@post), class: 'btn btn-secondary' %>
-</p>
 
 <h2 class="mt-3">
   Post Associations

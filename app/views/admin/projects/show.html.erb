@@ -1,12 +1,9 @@
-<h1><%= admin_title @project %></h1>
+<%= admin_page_header(admin_title(@project)) do %>
+  <%= admin_edit_button(@project) %>
+  <%= render 'admin/posts/new_post_link', postable: @project, class: 'btn btn-primary' %>
+<% end %>
 
 <%= render 'details', project: @project %>
-
-<p>
-  <%= link_to 'Edit project', edit_admin_project_path(@project) %>
-  |
-  <%= render 'admin/posts/new_post_link', postable: @project %>
-</p>
 
 <h2>Plots in this Project</h2>
 <%= render 'admin/plots/table', project: @project, plots: @project.plots %>

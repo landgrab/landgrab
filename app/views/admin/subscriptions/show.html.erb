@@ -1,4 +1,6 @@
-<h1><%= admin_title @subscription %></h1>
+<%= admin_page_header(admin_title(@subscription)) do %>
+  <%= admin_edit_button(@subscription) %>
+<% end %>
 
 <table class="table">
   <tbody>
@@ -84,8 +86,6 @@
     </tr>
   </tbody>
 </table>
-
-<%= link_to "Edit this subscription", edit_admin_subscription_path(@subscription) %>
 
 <h3>Redemption Invites</h3>
 <p>

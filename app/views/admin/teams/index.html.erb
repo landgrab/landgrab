@@ -1,11 +1,12 @@
-<h1><%= admin_title(Team) %></h1>
+<%= admin_page_header(admin_title(Team)) do %>
+  <%= admin_new_button(Team) %>
+<% end %>
 
 <p>
   Teams are groups of users (such as colleagues in a company) who can view each other activity.
 </p>
 
 <p>
-  <%= link_to 'New Team', new_admin_team_path %>
   <%= page_entries_info @teams %>
 </p>
 

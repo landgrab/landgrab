@@ -1,12 +1,12 @@
-<h1><%= admin_title(Project) %></h1>
+<%= admin_page_header(admin_title(Project)) do %>
+  <%= admin_new_button(Project) %>
+<% end %>
 
 <p>
   Projects summarise the details and goals behind groups of one or more
   <%= link_to 'plots', admin_plots_path %>
   covering sections of a wider area.
 </p>
-
-<%= link_to 'New Project', new_admin_project_path %>
 
 <%= page_entries_info @projects %>
 -

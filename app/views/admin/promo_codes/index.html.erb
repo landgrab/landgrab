@@ -1,10 +1,10 @@
-<h1><%= admin_title(PromoCode) %></h1>
+<%= admin_page_header(admin_title(PromoCode)) do %>
+  <%= admin_new_button(PromoCode) %>
+<% end %>
 
 <p>
   Promo codes provide discounts when applied during purchase of a subscription.
 </p>
-
-<%= link_to 'New Promo Code', new_admin_promo_code_path %>
 
 <%= page_entries_info @promo_codes %>
 

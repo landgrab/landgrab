@@ -1,12 +1,9 @@
-<h1><%= title @team.title %></h1>
+<%= admin_page_header(title(@team.title)) do %>
+  <%= admin_edit_button(@team) %>
+  <%= render 'admin/posts/new_post_link', postable: @team, class: 'btn btn-primary' %>
+<% end %>
 
 <%= render 'details', team: @team %>
 
 <h2>Team tiles</h2>
 <%= render 'teams/tiles_summary', team_map: @team_map %>
-
-<p>
-  <%= link_to 'Edit team', edit_admin_team_path(@team) %>
-  |
-  <%= render 'admin/posts/new_post_link', postable: @team %>
-</p>

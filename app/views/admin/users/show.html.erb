@@ -1,7 +1,5 @@
-<h1><%= admin_title @user %></h1>
+<%= admin_page_header(admin_title(@user)) do %>
+  <%= admin_edit_button(@user) %>
+<% end %>
 
 <%= render 'details', user: @user %>
-
-<p>
-  <%= link_to 'Edit user', edit_admin_user_path(@user) %>
-</p>
