@@ -11,6 +11,7 @@
   </div>
   <div class="col-xs-12 col-lg-2">
     <%= form_with url: bulk_association_update_admin_post_path do |form| %>
+      <%= hidden_field_tag :plot, params[:plot] %>
       <%= form.submit 'Save Associations', class: 'btn btn-primary' %>
       <%= form.label :w3w_list, class: 'form-label mt-3' do %>
         Selected Tiles

@@ -3,7 +3,7 @@
 class Post < ApplicationRecord
   include MediaLibrary
 
-  attr_accessor :publish_immediately
+  attr_accessor :publish_immediately, :tile_w3w_list
 
   belongs_to :author, class_name: 'User', inverse_of: :posts_authored
 
@@ -25,6 +25,7 @@ class Post < ApplicationRecord
 
   validates :title, presence: true
   validates :body, presence: true
+  validate :tile_w3w_list_addresses_known
 
   scope :published, ->(value = true) { value ? where('published_at IS NOT NULL AND published_at <= ?', Time.zone.now) : where('published_at IS NULL OR published_at > ?', Time.zone.now) }
   scope :title, ->(value) { where('posts.title ILIKE ?', "%#{value}%") }
@@ -86,5 +87,12 @@ class Post < ApplicationRecord
 
     post_associations.where(postable_type: 'Team', postable_id: user.team_id)
                      .any?
+  end
+
+  def tile_w3w_list_addresses_known
+    unknown = PostAssociationSyncService.unknown_w3w_addresses(tile_w3w_list)
+    return if unknown.empty?
+
+    errors.add(:base, PostAssociationSyncService.unknown_w3w_message(unknown))
   end
 end

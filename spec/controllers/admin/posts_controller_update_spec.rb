@@ -143,4 +143,19 @@ RSpec.describe Admin::PostsController do
       expect(link['onclick']).to include('Unsaved changes')
     end
   end
+
+  describe 'PATCH update with unknown tile addresses' do
+    render_views
+
+    let(:post_record) { create(:post, title: 'Original Title') }
+
+    before { sign_in(admin, scope: :user) }
+
+    it 'rejects the update and names the unknown addresses' do
+      patch :update, params: { id: post_record.hashid, post: { title: 'Changed', tile_w3w_list: 'no.such.place, nor.this.one' } }
+
+      expect(response.body).to include('Unknown What3Words addresses in tiles: no.such.place, nor.this.one')
+      expect(post_record.reload.title).to eq('Original Title')
+    end
+  end
 end

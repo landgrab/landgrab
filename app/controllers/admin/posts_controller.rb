@@ -60,7 +60,14 @@ module Admin
     end
 
     def bulk_association_update
-      PostAssociationSyncService.call(@post, tile_w3w_list: params.expect(:w3w_list))
+      w3w_list = params.expect(:w3w_list)
+      unknown = PostAssociationSyncService.unknown_w3w_addresses(w3w_list)
+      if unknown.any?
+        return redirect_to bulk_association_edit_admin_post_path(@post, plot: params[:plot].presence),
+                           flash: { error: PostAssociationSyncService.unknown_w3w_message(unknown) }
+      end
+
+      PostAssociationSyncService.call(@post, tile_w3w_list: w3w_list)
 
       redirect_to admin_post_path(@post), flash: { success: 'Associations updated.' }
     end
@@ -90,11 +97,11 @@ module Admin
     end
 
     def post_params_for_create
-      params.expect(post: [:title, :preview, :body, :hero_image, :publish_immediately, { images: [] }])
+      params.expect(post: [:title, :preview, :body, :hero_image, :publish_immediately, :tile_w3w_list, { images: [] }])
     end
 
     def post_params_for_update
-      params.expect(post: [:title, :preview, :body, :hero_image, :published_at, { images: [] }])
+      params.expect(post: [:title, :preview, :body, :hero_image, :published_at, :tile_w3w_list, { images: [] }])
     end
   end
 end
