@@ -218,6 +218,14 @@
         previewStyle: 'vertical',
         initialValue: textarea.value,
         usageStatistics: false,
+        // Default toolbar minus the code and code block buttons
+        toolbarItems: [
+          ['heading', 'bold', 'italic', 'strike'],
+          ['hr', 'quote'],
+          ['ul', 'ol', 'task', 'indent', 'outdent'],
+          ['table', 'image', 'link'],
+          ['scrollSync']
+        ],
         hooks: {
           addImageBlobHook: async (blob, callback) => {
             try {
