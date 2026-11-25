@@ -58,7 +58,13 @@ RSpec.describe Admin::MediaImagesController do
         expect(response.parsed_body['error']).to include('must be smaller than')
       end
 
-      it 'requires a file' do
+      it 'uses the alt text given with the upload instead of the file name' do
+        post :create, params: { file: image_upload, alt: '  A path   through the woods ' }
+
+        expect(response.parsed_body['alt']).to eq 'A path through the woods'
+      end
+
+      it 'requires a file or URL' do
         post :create
 
         expect(response).to have_http_status(:unprocessable_content)
@@ -83,6 +89,54 @@ RSpec.describe Admin::MediaImagesController do
         expect { post :create, params: { file: image_upload } }.not_to change(ActiveStorage::Blob, :count)
         expect(response).to have_http_status(:not_found)
       end
+    end
+  end
+
+  describe 'POST create with an image URL' do
+    before do
+      sign_in(admin, scope: :user)
+      stub_request(:get, url).to_return(body: file_fixture('images/pixel.png').binread, headers: { 'Content-Type' => 'image/png' })
+    end
+
+    let(:url) { 'https://images.example.com/path/woodland-edge.png' }
+
+    it 'copies the image into storage' do
+      expect { post :create, params: { url: } }.to change(ActiveStorage::Blob, :count).by(1)
+    end
+
+    it 'describes the stored image with alt text from the file name' do
+      post :create, params: { url: }
+
+      expect(response).to have_http_status(:created)
+      expect(response.parsed_body).to include('filename' => 'woodland-edge.png', 'alt' => 'woodland edge')
+    end
+
+    it 'uses the alt text given with the URL' do
+      post :create, params: { url:, alt: 'A woodland edge' }
+
+      expect(response.parsed_body['alt']).to eq 'A woodland edge'
+    end
+
+    it 'rejects URLs which cannot be downloaded, storing nothing' do
+      stub_request(:get, url).to_return(status: 404)
+
+      expect { post :create, params: { url: } }.not_to change(ActiveStorage::Blob, :count)
+      expect(response).to have_http_status(:unprocessable_content)
+      expect(response.parsed_body['error']).to include('could not be downloaded')
+    end
+
+    it 'rejects URLs which are not images, storing nothing' do
+      stub_request(:get, url).to_return(body: 'just text', headers: { 'Content-Type' => 'text/plain' })
+
+      expect { post :create, params: { url: } }.not_to change(ActiveStorage::Blob, :count)
+      expect(response.parsed_body['error']).to include('must be a PNG, JPEG, WebP or GIF image')
+    end
+
+    it 'rejects images over the size limit' do
+      stub_const('ImageAttachmentValidator::MAX_SIZE', 10.bytes)
+
+      expect { post :create, params: { url: } }.not_to change(ActiveStorage::Blob, :count)
+      expect(response.parsed_body['error']).to include('must be smaller than')
     end
   end
 
