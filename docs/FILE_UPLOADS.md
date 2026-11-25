@@ -28,7 +28,8 @@ Admins write post text in a Markdown editor ([Toast UI Editor](https://github.co
 
 Beside the editor is the post's image library:
 
-- Images upload immediately (`Admin::MediaImagesController`), before the post is saved, and stay unattached until the post is saved with their signed ids. `PurgeUnattachedBlobsJob` removes uploads that never got attached, or that were removed from a post, after two days.
+- Images are added immediately (`Admin::MediaImagesController`), before the post is saved, and stay unattached until the post is saved with their signed ids. An image is either an uploaded file or an external URL, which the server downloads into storage (`ImageDownloadService`) rather than linking to it.
+- Every way of adding an image (the library's file input and URL field, the editor's image button, and pasting or dropping a file) goes through one client-side function, then inserts the image at the cursor. The image button's "Description" becomes the image's alt text. `PurgeUnattachedBlobsJob` removes uploads that never got attached, or that were removed from a post, after two days.
 - Each image's alt text lives in its blob's `custom_metadata` and defaults to a cleaned-up version of the file name. Editing it in the library saves it straight away.
 - Dragging an image into the text, or using its Insert button, adds Markdown for the `web` variant (`![alt](url)`). Ticking "Link to full size" wraps that in a link to the original image.
 - Removing an image whose URL is still in the text asks for confirmation first.

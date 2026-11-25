@@ -18,9 +18,16 @@
   <div class="col-sm-10">
     <input type="file" id="media-library-files" class="form-control mb-2" multiple
            accept="image/png,image/jpeg,image/webp,image/gif" aria-describedby="mediaLibraryHelp">
+    <div class="input-group mb-2">
+      <input type="text" inputmode="url" id="media-library-url" class="form-control"
+             placeholder="...or enter an image URL" aria-label="Image URL" aria-describedby="mediaLibraryHelp"
+             data-media-library-url>
+      <button type="button" class="btn btn-outline-secondary" data-media-library-add-url>Add image</button>
+    </div>
     <div id="mediaLibraryHelp" class="form-text mb-2">
-      Images upload straight away. Drag one into the text, or use its Insert button, to add it at the cursor.
-      Pasting or dropping an image file into the text adds it too.
+      Upload images, or enter the URL of one to copy it into our storage. Either way, the image is added to the library
+      and inserted at the cursor. Drag a library image into the text, or use its Insert button, to add it again.
+      Pasting or dropping an image file into the text, or using the editor's image button, does the same.
     </div>
     <div class="alert alert-danger d-none" role="alert" data-media-library-error></div>
     <div class="row row-cols-2 row-cols-md-4 g-2" data-media-library-tiles></div>
@@ -36,6 +43,8 @@
     const tilesEl = root.querySelector('[data-media-library-tiles]');
     const errorEl = root.querySelector('[data-media-library-error]');
     const fileInput = root.querySelector('input[type="file"]');
+    const urlInput = root.querySelector('[data-media-library-url]');
+    const urlButton = root.querySelector('[data-media-library-add-url]');
     const textareas = JSON.parse(root.dataset.fields).map(id => document.getElementById(id));
     const form = root.closest('form');
     const editors = [];
@@ -58,9 +67,12 @@
       return data;
     }
 
-    async function upload(file) {
+    // The one way an image gets into the library: from a file or an external URL, with optional alt text
+    async function addImage({ file, url, alt }) {
       const body = new FormData();
-      body.append('file', file);
+      if (file) body.append('file', file);
+      if (url) body.append('url', url);
+      if (alt) body.append('alt', alt);
       const image = await request(root.dataset.uploadUrl, { method: 'POST', body });
       addTile(image);
       return image;
@@ -131,7 +143,7 @@
       });
 
       col.querySelector('[data-insert]').addEventListener('click', () => {
-        insert(markdownFor(image, altInput.value, linkCheckbox.checked), image, altInput.value, linkCheckbox.checked);
+        insert(image, altInput.value, linkCheckbox.checked);
       });
 
       col.querySelector('[data-remove]').addEventListener('click', () => {
@@ -159,38 +171,81 @@
       return tilesEl.querySelector(`[data-image-id="${CSS.escape(id)}"]`)?._image;
     }
 
+    function findImageByWebUrl(url) {
+      return [...tilesEl.querySelectorAll('[data-image-id]')].map(card => card._image).find(image => image.web_url === url);
+    }
+
+    function isLibraryImageUrl(url) {
+      return !!findImageByWebUrl(url);
+    }
+
+    // What was typed in the image button's "Description" box, which becomes the image's alt text
+    function popupDescription() {
+      return document.getElementById('toastuiAltTextInput')?.value.trim() || '';
+    }
+
     JSON.parse(root.dataset.images).forEach(addTile);
+
+    // Adds the image to the library and inserts it at the cursor, each on a new line after the first
+    async function addAndInsert(source, label, newline) {
+      try {
+        const image = await addImage(source);
+        insert(image, image.alt, false, newline);
+        return true;
+      } catch (error) {
+        showError(`${label}: ${error.message}`);
+        return false;
+      }
+    }
 
     fileInput.addEventListener('change', async () => {
       showError('');
+      let inserted = 0;
       for (const file of fileInput.files) {
-        try {
-          await upload(file);
-        } catch (error) {
-          showError(`${file.name}: ${error.message}`);
-        }
+        if (await addAndInsert({ file }, file.name, inserted > 0)) inserted += 1;
       }
       fileInput.value = '';
     });
 
+    async function addFromUrlField() {
+      const url = urlInput.value.trim();
+      if (!url) return;
+      showError('');
+      urlButton.disabled = true;
+      try {
+        if (await addAndInsert({ url }, url, false)) urlInput.value = '';
+      } finally {
+        urlButton.disabled = false;
+      }
+    }
+
+    urlButton.addEventListener('click', addFromUrlField);
+    // Keep Enter in the URL field from submitting the whole form
+    urlInput.addEventListener('keydown', event => {
+      if (event.key === 'Enter') { event.preventDefault(); addFromUrlField(); }
+    });
+
     // --- Editors ----------------------------------------------------------------------------
 
-    function insert(markdown, image, altText, linked) {
+    // Inserts a library image at the cursor; newline starts it on a new line
+    function insert(image, altText, linked, newline = false) {
       const editor = activeEditor || editors[0];
+      const markdown = markdownFor(image, altText, linked);
       if (!editor) {
         const textarea = textareas[0];
-        textarea.setRangeText(markdown, textarea.selectionStart, textarea.selectionEnd, 'end');
+        textarea.setRangeText(newline ? `\n${markdown}` : markdown, textarea.selectionStart, textarea.selectionEnd, 'end');
         textarea.focus();
         return;
       }
 
       if (editor.isMarkdownMode()) {
-        editor.insertText(markdown);
+        editor.insertText(newline ? `\n${markdown}` : markdown);
       } else {
         // insertText would add the Markdown as literal text in WYSIWYG mode, so insert real nodes
         const { view, schema } = editor.getCurrentModeEditor();
         let node = schema.nodes.image.create({ imageUrl: image.web_url, altText: altText.replace(/[\[\]]/g, '') });
         if (linked) node = node.mark([schema.marks.link.create({ linkUrl: image.full_url })]);
+        if (newline) view.dispatch(view.state.tr.split(view.state.selection.from));
         // false: don't let the cursor's own marks replace the link we just added
         view.dispatch(view.state.tr.replaceSelectionWith(node, false));
       }
@@ -227,9 +282,11 @@
           ['scrollSync']
         ],
         hooks: {
-          addImageBlobHook: async (blob, callback) => {
+          // Files from the editor's image button, paste and drop are stored in the library
+          addImageBlobHook: async (blob, callback, source) => {
             try {
-              const image = await upload(blob);
+              const alt = source === 'ui' ? popupDescription() : '';
+              const image = await addImage({ file: blob, alt });
               callback(image.web_url, image.alt);
             } catch (error) {
               showError(error.message);
@@ -241,6 +298,21 @@
           focus: () => { activeEditor = editor; }
         }
       });
+
+      // Everything the editor inserts as an image goes through its addImage command: library images are
+      // inserted as they are, and an image URL from the image button is first copied into the library
+      const addImageCommand = ({ imageUrl, altText }) => {
+        activeEditor = editor;
+        const image = isLibraryImageUrl(imageUrl) ? findImageByWebUrl(imageUrl) : null;
+        if (image) {
+          insert(image, altText || image.alt, false);
+        } else {
+          showError('');
+          addAndInsert({ url: imageUrl, alt: altText === 'image' ? '' : altText }, imageUrl, false);
+        }
+      };
+      editor.addCommand('markdown', 'addImage', addImageCommand);
+      editor.addCommand('wysiwyg', 'addImage', addImageCommand);
 
       // Dropping a library tile inserts the image where it is dropped
       container.addEventListener('dragover', event => {
@@ -255,7 +327,7 @@
         if (!image) return;
         activeEditor = editor;
         moveCursorTo(editor, event);
-        insert(markdownFor(image, dropped.alt, dropped.linked), image, dropped.alt, dropped.linked);
+        insert(image, dropped.alt, dropped.linked);
       }, true);
 
       textarea.hidden = true;

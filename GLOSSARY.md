@@ -111,11 +111,11 @@ The optional small, square identifying image for a project or team.
 _Avoid_: Icon, avatar, badge
 
 **Media library**:
-The set of images an admin has uploaded to a post, project, plot or team, available to insert into any of that record's text fields.
+The set of images an admin has added to a post, project, plot or team, by uploading a file or giving an image's URL, available to insert into any of that record's text fields. Adding an image also inserts it at the cursor.
 _Avoid_: Gallery, attachments, other images
 
 **Alt text**:
-The short description of an image for people who can't see it, stored once per image and reused wherever the image is inserted; it starts as a cleaned-up version of the image's file name.
+The short description of an image for people who can't see it, stored once per image and reused wherever the image is inserted; it is what the admin typed when adding the image, or otherwise starts as a cleaned-up version of the image's file name.
 _Avoid_: Caption, title, description
 
 ## People
