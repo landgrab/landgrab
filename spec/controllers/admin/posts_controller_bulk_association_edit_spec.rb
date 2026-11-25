@@ -44,4 +44,18 @@ RSpec.describe Admin::PostsController do
       expect(response.body).to include('tile.properties.focussed = w3wList.has(tile.properties.w3w)')
     end
   end
+
+  describe 'POST bulk_association_update' do
+    it 'makes the post associated with exactly the listed tiles' do
+      post :bulk_association_update, params: { id: post_record.hashid, w3w_list: "#{unassociated_tile.w3w},\n#{tile_in_other_plot.w3w}" }
+
+      expect(post_record.reload.associated_tiles).to contain_exactly(unassociated_tile, tile_in_other_plot)
+    end
+
+    it 'redirects to the post' do
+      post :bulk_association_update, params: { id: post_record.hashid, w3w_list: associated_tile.w3w }
+
+      expect(response).to redirect_to(admin_post_path(post_record))
+    end
+  end
 end

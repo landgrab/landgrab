@@ -8,6 +8,10 @@ class Post < ApplicationRecord
   belongs_to :author, class_name: 'User', inverse_of: :posts_authored
 
   has_many :post_associations, dependent: :destroy
+  has_many :associated_teams, through: :post_associations, source: :postable, source_type: 'Team'
+  has_many :associated_projects, through: :post_associations, source: :postable, source_type: 'Project'
+  has_many :associated_plots, through: :post_associations, source: :postable, source_type: 'Plot'
+  has_many :associated_tiles, through: :post_associations, source: :postable, source_type: 'Tile'
   has_many :post_views, dependent: :destroy
   has_many :comments, dependent: :restrict_with_exception
 
@@ -32,28 +36,19 @@ class Post < ApplicationRecord
 
   W3W_REGEX = %r{/{3}([a-z]+\.[a-z]+\.[a-z]+)}
 
-  def associated_teams
-    post_associations.where(postable_type: 'Team').includes(:postable).map(&:postable)
-  end
-
-  def associated_tiles
-    post_associations.where(postable_type: 'Tile').includes(:postable).map(&:postable)
-  end
-
-  def associated_plots
-    post_associations.where(postable_type: 'Plot').includes(:postable).map(&:postable)
-  end
-
-  def associated_projects
-    post_associations.where(postable_type: 'Project').includes(:postable).map(&:postable)
-  end
-
   def mentioned_w3w
     body.scan(W3W_REGEX).uniq.map(&:first)
   end
 
   def mentioned_tiles
     Tile.where(w3w: mentioned_w3w)
+  end
+
+  # Associates any tiles mentioned in the body that are not already associated
+  def associate_mentioned_tiles
+    (mentioned_tiles - associated_tiles).each do |tile|
+      post_associations.create(postable: tile)
+    end
   end
 
   def viewed_by_users

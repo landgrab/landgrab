@@ -37,7 +37,7 @@ module Admin
 
       if @post.save
         sync_associations
-        associate_mentioned_tiles
+        @post.associate_mentioned_tiles
         @post.update!(published_at: @post.created_at) if @post.publish_immediately == 'true'
         redirect_to admin_post_path(@post), notice: 'Post was successfully created.'
       else
@@ -48,7 +48,7 @@ module Admin
     def update
       if @post.update(post_params_for_update)
         sync_associations
-        associate_mentioned_tiles if @post.saved_change_to_attribute?(:body)
+        @post.associate_mentioned_tiles if @post.saved_change_to_attribute?(:body)
         redirect_to admin_post_path(@post), notice: 'Post was successfully updated.'
       else
         render :edit
@@ -60,21 +60,9 @@ module Admin
     end
 
     def bulk_association_update
-      w3w_list = params.expect(:w3w_list).split(',').map(&:squish)
-      # TODO: Is there a Rails way to update (add/remove) these in a neater/performant way?
-      required_tiles = Tile.where(w3w: w3w_list)
-      existing_tiles = @post.associated_tiles
+      PostAssociationSyncService.call(@post, tile_w3w_list: params.expect(:w3w_list))
 
-      tiles_to_remove = existing_tiles - required_tiles
-      @post.post_associations.where(postable_type: 'Tile', postable_id: tiles_to_remove.map(&:id)).destroy_all
-
-      tiles_to_add = required_tiles - existing_tiles
-      tiles_to_add.each do |tile|
-        @post.post_associations.create(postable: tile)
-      end
-
-      redirect_to admin_post_path(@post),
-                  flash: { success: "Associations updated; added #{view_context.pluralize(tiles_to_add.size, 'tile')}, removed #{tiles_to_remove.size}." }
+      redirect_to admin_post_path(@post), flash: { success: 'Associations updated.' }
     end
 
     helper_method :selected_associations
@@ -99,20 +87,6 @@ module Admin
 
     def set_post
       @post = Post.find_by_hashid!(params[:id])
-    end
-
-    def associate_mentioned_tiles
-      # Get tiles mentioned in the body
-      mentioned_tiles = @post.mentioned_tiles
-      return if mentioned_tiles.empty?
-
-      # Find new tiles to add (avoiding existing tiles)
-      tiles_to_add = mentioned_tiles - @post.associated_tiles
-
-      # Associate new tiles with the post
-      tiles_to_add.each do |tile|
-        @post.post_associations.create(postable: tile)
-      end
     end
 
     def post_params_for_create
