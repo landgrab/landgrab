@@ -44,7 +44,5 @@
 <% end %>
 
 <% if project.present? %>
-<p>
-  <%= link_to 'Create New Price for the Project', new_admin_price_path(project_id: project.hashid) %>
-</p>
+<%= admin_new_button(Price, label: 'Create New Price for the Project', params: { project_id: project.hashid }) %>
 <% end %>

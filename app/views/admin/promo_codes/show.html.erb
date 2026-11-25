@@ -1,7 +1,5 @@
-<h1><%= admin_title @promo_code %></h1>
+<%= admin_page_header(admin_title(@promo_code)) do %>
+  <%= admin_edit_button(@promo_code) %>
+<% end %>
 
 <%= render 'details', promo_code: @promo_code %>
-
-<p>
-  <%= link_to 'Edit promo code', edit_admin_promo_code_path(@promo_code) %>
-</p>

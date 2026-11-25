@@ -1,4 +1,6 @@
-<h1><%= admin_title(Post) %></h1>
+<%= admin_page_header(admin_title(Post)) do %>
+  <%= admin_new_button(Post) %>
+<% end %>
 
 <p>
   Posts provide subscribers with updates or news about their projects, plots or tiles.
@@ -7,7 +9,6 @@
 <%= render 'filters' %>
 
 <p>
-  <%= link_to 'New Post', new_admin_post_path %>
   <%= page_entries_info @posts %>
   <% if filtered? %>
     matching selected filters

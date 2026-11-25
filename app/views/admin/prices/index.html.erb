@@ -1,10 +1,10 @@
-<h1><%= admin_title(Price) %></h1>
+<%= admin_page_header(admin_title(Price)) do %>
+  <%= admin_new_button(Price) %>
+<% end %>
 
 <p>
   Prices define the options for subscribing to tiles in a given project.
 </p>
-
-<%= link_to 'New Price', new_admin_price_path %>
 
 <%= page_entries_info @prices %>
 
