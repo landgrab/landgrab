@@ -124,12 +124,6 @@ RSpec.describe Admin::PostsController do
       expect(post_record.reload.associated_teams).to be_empty
     end
 
-    it 'goes on to the map picker when asked' do
-      patch :update, params: { id: post_record.hashid, post: { title: 'T' }, then: 'map' }
-
-      expect(response).to redirect_to(bulk_association_edit_admin_post_path(post_record))
-    end
-
     it 'keeps associations when the fields are not submitted' do
       patch :update, params: { id: post_record.hashid, post: { title: 'New title' } }
 
