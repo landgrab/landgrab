@@ -12,6 +12,19 @@ class PostAssociationSyncService
       sync(post, Tile, tiles_for(tile_w3w_list)) unless tile_w3w_list.nil?
     end
 
+    def w3w_addresses(w3w_list)
+      w3w_list.to_s.split(',').map(&:squish).compact_blank.map { |w3w| w3w.delete_prefix('///') }.uniq
+    end
+
+    def unknown_w3w_addresses(w3w_list)
+      addresses = w3w_addresses(w3w_list)
+      addresses - Tile.where(w3w: addresses).pluck(:w3w)
+    end
+
+    def unknown_w3w_message(unknown)
+      "Unknown What3Words #{'address'.pluralize(unknown.size)} in tiles: #{unknown.join(', ')}"
+    end
+
     private
 
     def find_by_hashids(klass, hashids)
@@ -19,7 +32,7 @@ class PostAssociationSyncService
     end
 
     def tiles_for(w3w_list)
-      Tile.where(w3w: w3w_list.split(',').map(&:squish).compact_blank.map { |w3w| w3w.delete_prefix('///') })
+      Tile.where(w3w: w3w_addresses(w3w_list))
     end
 
     def sync(post, klass, postables)

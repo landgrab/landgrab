@@ -52,6 +52,34 @@ RSpec.describe Admin::PostsController do
     end
   end
 
+  describe 'POST create with unknown tile addresses' do
+    render_views
+
+    let(:known_tile) { create(:tile, w3w: 'apple.banana.cherry') }
+
+    before { sign_in(admin, scope: :user) }
+
+    def create_with_tiles(list)
+      post :create, params: { post: { title: 'T', body: 'B', tile_w3w_list: list } }
+    end
+
+    it 'does not create the post' do
+      expect { create_with_tiles("#{known_tile.w3w}, no.such.place") }.not_to change(Post, :count)
+    end
+
+    it 'names every unknown address in the error' do
+      create_with_tiles("#{known_tile.w3w}, no.such.place, ///also.not.here")
+
+      expect(response.body).to include('Unknown What3Words addresses in tiles: no.such.place, also.not.here')
+    end
+
+    it 'keeps the submitted tiles in the field' do
+      create_with_tiles('no.such.place')
+
+      expect(response.body).to include('no.such.place</textarea>')
+    end
+  end
+
   describe 'GET new with a preset postable' do
     render_views
 

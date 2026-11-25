@@ -57,5 +57,20 @@ RSpec.describe Admin::PostsController do
 
       expect(response).to redirect_to(admin_post_path(post_record))
     end
+
+    context 'with an unknown address' do
+      let(:params) { { id: post_record.hashid, plot: 'abc', w3w_list: "#{unassociated_tile.w3w},\nno.such.place" } }
+
+      it 'leaves the associations unchanged' do
+        expect { post :bulk_association_update, params: params }.not_to(change { post_record.reload.associated_tiles.to_a })
+      end
+
+      it 'redirects back to the map with an error naming the address' do
+        post :bulk_association_update, params: params
+
+        expect(response).to redirect_to(bulk_association_edit_admin_post_path(post_record, plot: 'abc'))
+        expect(flash[:error]).to include('no.such.place')
+      end
+    end
   end
 end
