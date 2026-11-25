@@ -39,7 +39,7 @@ module Admin
         sync_associations
         associate_mentioned_tiles
         @post.update!(published_at: @post.created_at) if @post.publish_immediately == 'true'
-        redirect_to admin_post_path(@post), notice: 'Post was successfully created.'
+        redirect_to after_save_path, notice: 'Post was successfully created.'
       else
         render :new
       end
@@ -49,7 +49,7 @@ module Admin
       if @post.update(post_params_for_update)
         sync_associations
         associate_mentioned_tiles if @post.saved_change_to_attribute?(:body)
-        redirect_to admin_post_path(@post), notice: 'Post was successfully updated.'
+        redirect_to after_save_path, notice: 'Post was successfully updated.'
       else
         render :edit
       end
@@ -80,6 +80,10 @@ module Admin
     helper_method :selected_associations
 
     private
+
+    def after_save_path
+      params[:then] == 'map' ? bulk_association_edit_admin_post_path(@post) : admin_post_path(@post)
+    end
 
     def selected_associations
       @selected_associations ||= SelectedPostAssociationsService.call(

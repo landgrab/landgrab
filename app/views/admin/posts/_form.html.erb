@@ -108,9 +108,11 @@
 
   <% if post.persisted? %>
     <%= form.submit 'Update Post', class: 'btn btn-primary' %>
+    <%= form.submit 'Update Post and choose tiles from a map', name: 'then', class: 'btn btn-secondary' %>
     or
     <%= link_to 'return to post details', admin_post_path(post), class: 'btn btn-secondary' %>
   <% else %>
     <%= form.submit 'Create Post', class: 'btn btn-primary' %>
+    <%= form.submit 'Create Post and choose tiles from a map', name: 'then', class: 'btn btn-secondary' %>
   <% end %>
 <% end %>

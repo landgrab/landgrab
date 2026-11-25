@@ -50,11 +50,7 @@
   <div class="col-sm-5">
     <span id="tilesHelp" class="form-text">
       Comma-separated What3Words addresses, e.g. <code>one.two.three, four.five.six</code>.
-      <% if post.new_record? %>
-        You can choose tiles from a map after you've created the post.
-      <% else %>
-        Or <%= link_to 'choose tiles from a map', bulk_association_edit_admin_post_path(post) %>.
-      <% end %>
+      Or save the post and choose tiles from a map using the button below.
     </span>
   </div>
 </div>

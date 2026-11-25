@@ -47,6 +47,12 @@ RSpec.describe Admin::PostsController do
       expect(Post.last.post_associations.map(&:postable)).to contain_exactly(team, project, tile)
     end
 
+    it 'goes on to the map picker when asked' do
+      post :create, params: { post: { title: 'T', body: 'B' }, then: 'map' }
+
+      expect(response).to redirect_to(bulk_association_edit_admin_post_path(Post.last))
+    end
+
     it 'creates the post without associations' do
       expect { post :create, params: { post: { title: 'T', body: 'B' } } }.to change(Post, :count).by(1)
     end
