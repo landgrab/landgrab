@@ -10,6 +10,7 @@
         <th>Slug</th>
         <th>Website</th>
         <th>Created</th>
+        <th></th>
       </tr>
     </thead>
 
@@ -20,6 +21,7 @@
           <td><%= team.slug %></td>
           <td><%= team.website %></td>
           <td><%= team.created_at.to_formatted_s(:short) %></td>
+          <td><%= render 'admin/posts/new_post_link', postable: team %></td>
         </tr>
       <% end %>
     </tbody>

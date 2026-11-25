@@ -101,4 +101,46 @@ RSpec.describe Admin::PostsController do
       end
     end
   end
+
+  describe 'PATCH update with associations' do
+    let(:post_record) { create(:post) }
+    let(:team) { create(:team) }
+    let(:other_team) { create(:team) }
+
+    before do
+      sign_in(admin, scope: :user)
+      create(:post_association, post: post_record, postable: team)
+    end
+
+    it 'replaces the associations of a submitted type' do
+      patch :update, params: { id: post_record.hashid, post: { title: 'T', team_ids: ['', other_team.hashid] } }
+
+      expect(post_record.reload.associated_teams).to contain_exactly(other_team)
+    end
+
+    it 'removes all of a type when nothing is selected' do
+      patch :update, params: { id: post_record.hashid, post: { title: 'T', team_ids: [''] } }
+
+      expect(post_record.reload.associated_teams).to be_empty
+    end
+
+    it 'keeps associations when the fields are not submitted' do
+      patch :update, params: { id: post_record.hashid, post: { title: 'New title' } }
+
+      expect(post_record.reload.associated_teams).to contain_exactly(team)
+    end
+  end
+
+  describe 'GET edit' do
+    render_views
+
+    it 'warns about unsaved changes before leaving for the map picker' do
+      sign_in(admin, scope: :user)
+      post_record = create(:post)
+      get :edit, params: { id: post_record.hashid }
+
+      link = response.parsed_body.xpath("//a[normalize-space()='choose tiles from a map']").first
+      expect(link['onclick']).to include('Unsaved changes')
+    end
+  end
 end

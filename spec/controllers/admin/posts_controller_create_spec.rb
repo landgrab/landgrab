@@ -32,4 +32,49 @@ RSpec.describe Admin::PostsController do
       expect(new_post.associated_tiles).to include(delta_tile, golf_tile)
     end
   end
+
+  describe 'POST create with associations' do
+    let(:team) { create(:team) }
+    let(:project) { create(:project) }
+    let(:tile) { create(:tile, w3w: 'apple.banana.cherry') }
+
+    before { sign_in(admin, scope: :user) }
+
+    it 'associates the chosen postables' do
+      post :create, params: { post: { title: 'T', body: 'B', team_ids: ['', team.hashid],
+                                      project_ids: [project.hashid], tile_w3w_list: tile.w3w } }
+
+      expect(Post.last.post_associations.map(&:postable)).to contain_exactly(team, project, tile)
+    end
+
+    it 'creates the post without associations' do
+      expect { post :create, params: { post: { title: 'T', body: 'B' } } }.to change(Post, :count).by(1)
+    end
+  end
+
+  describe 'GET new with a preset postable' do
+    render_views
+
+    before { sign_in(admin, scope: :user) }
+
+    it 'preselects the team' do
+      team = create(:team)
+      get :new, params: { postable_type: 'Team', postable_id: team.hashid }
+
+      expect(response.body).to match(/<option selected="selected" value="#{team.hashid}"/)
+    end
+
+    it 'prefills the tile address' do
+      tile = create(:tile, w3w: 'apple.banana.cherry')
+      get :new, params: { postable_type: 'Tile', postable_id: tile.hashid }
+
+      expect(response.body).to include('apple.banana.cherry</textarea>')
+    end
+
+    it 'ignores an unknown postable type' do
+      get :new, params: { postable_type: 'User', postable_id: admin.hashid }
+
+      expect(response).to be_successful
+    end
+  end
 end

@@ -7,6 +7,7 @@
       <th>Logo</th>
       <th>Created</th>
       <th>Plots</th>
+      <th></th>
     </tr>
   </thead>
 
@@ -19,6 +20,7 @@
         <td><%= image_tag project.logo_for_display(:thumb), height: '50' %></td>
         <td><%= project.created_at.to_formatted_s(:short) %></td>
         <td><%= project.plots.size %></td>
+        <td><%= render 'admin/posts/new_post_link', postable: project %></td>
       </tr>
     <% end %>
   </tbody>

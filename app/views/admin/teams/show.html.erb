@@ -7,4 +7,6 @@
 
 <p>
   <%= link_to 'Edit team', edit_admin_team_path(@team) %>
+  |
+  <%= render 'admin/posts/new_post_link', postable: @team %>
 </p>

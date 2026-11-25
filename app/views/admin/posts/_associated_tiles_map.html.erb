@@ -45,7 +45,9 @@
     el.value = Array.from(w3wList).join(',\n');
   };
 
-  // <% tiles.filter { |t| t.map_action == :w3w }.each do |tile| %>
+  // Seed the list with every tile already associated with the post (including any outside this plot),
+  // so saving never silently drops them.
+  // <% associated_tiles.each do |tile| %>
   w3wList.add('<%= tile.w3w %>');
   // <% end %>
   updateW3WList();
@@ -82,6 +84,9 @@
 
   var allTilesGeoJson;
   // <%= "\n allTilesGeoJson = [" %><%= tiles.map(&:to_geojson).join(', ').html_safe %>];
+
+  // Start with the already-associated tiles shown as selected on the map
+  allTilesGeoJson.forEach((tile) => { tile.properties.focussed = w3wList.has(tile.properties.w3w); });
 
   var tiles = L.geoJSON(allTilesGeoJson, { onEachFeature: onEachFeature, style: tileStyle }).addTo(map);
 

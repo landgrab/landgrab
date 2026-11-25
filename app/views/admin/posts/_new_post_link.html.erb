@@ -1,0 +1,4 @@
+<%# Link to a new post form with the given team, project, plot or tile pre-associated %>
+<%= link_to "Create a post about this #{postable.model_name.human.downcase}",
+            new_admin_post_path(postable_type: postable.class.name, postable_id: postable.hashid),
+            class: local_assigns[:class] %>
