@@ -1,7 +1,8 @@
 <h1><%= admin_title @post, suffix: '- Bulk Association' %></h1>
 
 <% if @plot.nil? %>
-  <p>First, pick a plot whose tiles we'll be bulk associating to this post...
+  <p>Bulk associating post <%= link_to @post.title, admin_post_path(@post) %> to tiles.
+  First, pick a plot whose tiles we'll be bulk associating to this post...
   <%= form_with(url: bulk_association_edit_admin_post_path(@post), method: :get) do |form| %>
     <div class="col-sm-4 mb-3">
       <%= label_tag :plot, 'Plot', class: 'visually-hidden' %>
@@ -16,7 +17,7 @@
   <% end %>
 <% else %>
   <p>
-    Bulk associating to tiles in plot:
+    Bulk associating post <%= link_to @post.title, admin_post_path(@post) %> to selected tiles in plot:
     <%= link_to @plot.title, admin_plot_path(@plot) %>
   </p>
   <%= render 'associated_tiles_map', tiles: @plot.tiles.includes(:latest_subscription), associated_tiles: Tile.joins(:posts).where(posts: { id: @post.id }) %>
