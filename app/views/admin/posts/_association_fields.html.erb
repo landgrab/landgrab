@@ -1,0 +1,60 @@
+<% selected = selected_associations %>
+
+<h3>Associations</h3>
+
+<p>
+  The post is visible only to users connected to the teams, projects, plots or tiles chosen here.
+  Leave them all empty to save a post that nobody can see yet.
+</p>
+
+<div class="row mb-3 g-3">
+  <div class="col-sm-2">
+    <%= label_tag 'post_team_ids', 'Teams', class: 'col-form-label' %>
+  </div>
+  <div class="col-sm-5">
+    <%= select_tag 'post[team_ids][]',
+                   options_from_collection_for_select(Team.order(:title), :hashid, :title, selected[:team_ids]),
+                   multiple: true, id: 'post_team_ids', class: 'form-select' %>
+  </div>
+</div>
+
+<div class="row mb-3 g-3">
+  <div class="col-sm-2">
+    <%= label_tag 'post_project_ids', 'Projects', class: 'col-form-label' %>
+  </div>
+  <div class="col-sm-5">
+    <%= select_tag 'post[project_ids][]',
+                   options_from_collection_for_select(Project.order(:title), :hashid, :title, selected[:project_ids]),
+                   multiple: true, id: 'post_project_ids', class: 'form-select' %>
+  </div>
+</div>
+
+<div class="row mb-3 g-3">
+  <div class="col-sm-2">
+    <%= label_tag 'post_plot_ids', 'Plots', class: 'col-form-label' %>
+  </div>
+  <div class="col-sm-5">
+    <%= select_tag 'post[plot_ids][]',
+                   option_groups_from_collection_for_select(Project.includes(:plots).order(:title), :plots, :title, :hashid, :title, selected[:plot_ids]),
+                   multiple: true, id: 'post_plot_ids', class: 'form-select' %>
+  </div>
+</div>
+
+<div class="row mb-3 g-3">
+  <div class="col-sm-2">
+    <%= label_tag 'post_tile_w3w_list', 'Tiles', class: 'col-form-label' %>
+  </div>
+  <div class="col-sm-5">
+    <%= text_area_tag 'post[tile_w3w_list]', selected[:tile_w3w_list], id: 'post_tile_w3w_list', rows: 2, class: 'form-control', aria: { describedby: 'tilesHelp' } %>
+  </div>
+  <div class="col-sm-5">
+    <span id="tilesHelp" class="form-text">
+      Comma-separated What3Words addresses, e.g. <code>one.two.three, four.five.six</code>.
+      <% if post.new_record? %>
+        You can choose tiles from a map after you've created the post.
+      <% else %>
+        Or <%= link_to 'choose tiles from a map', bulk_association_edit_admin_post_path(post) %>.
+      <% end %>
+    </span>
+  </div>
+</div>

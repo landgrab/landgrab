@@ -32,6 +32,10 @@ class Post < ApplicationRecord
 
   W3W_REGEX = %r{/{3}([a-z]+\.[a-z]+\.[a-z]+)}
 
+  def associated_teams
+    post_associations.where(postable_type: 'Team').includes(:postable).map(&:postable)
+  end
+
   def associated_tiles
     post_associations.where(postable_type: 'Tile').includes(:postable).map(&:postable)
   end

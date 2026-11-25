@@ -87,10 +87,6 @@
       </div>
     </div>
 
-    <p>
-      Note: The post will not be visible to subscribers until it is associated (manually)
-      with one or more of their subscribed projects, plots or tiles.
-    </p>
   <% else %>
     <div class="row mb-3 g-3 align-items-center">
       <div class="col-sm-2">
@@ -107,6 +103,8 @@
       </div>
     </div>
   <% end %>
+
+  <%= render 'admin/posts/association_fields', post: post %>
 
   <% if post.persisted? %>
     <%= form.submit 'Update Post', class: 'btn btn-primary' %>

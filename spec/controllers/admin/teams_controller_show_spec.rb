@@ -17,6 +17,13 @@ RSpec.describe Admin::TeamsController do
       expect(response.body).to include('No tiles yet.')
     end
 
+    it 'links to a new post about the team' do
+      do_get
+
+      link = response.parsed_body.xpath("//a[normalize-space()='Create a post about this team']").first
+      expect(link['href']).to eq new_admin_post_path(postable_type: 'Team', postable_id: team.hashid)
+    end
+
     context 'when a member redeems a tile' do
       before do
         member = create(:user, team:)

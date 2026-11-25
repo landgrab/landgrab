@@ -96,6 +96,8 @@
 
 <p>
   <%= link_to 'Edit plot', edit_admin_plot_path(@plot) %>
+  |
+  <%= render 'admin/posts/new_post_link', postable: @plot %>
 </p>
 
 <%= render 'admin/plots/map', plot: @plot %>

@@ -1,15 +1,3 @@
 <h1><%= admin_title 'Editing Post' %></h1>
 
 <%= render 'form', post: @post %>
-
-<h3>Associations</h3>
-
-<%= render 'admin/posts/associations',
-           post_associations: @post.post_associations,
-           show_unassociate: true %>
-
-<%= render 'layouts/form_errors', errors: @post_association.errors %>
-<%= render 'admin/post_associations/team_association_form', post_association: @post_association %>
-<%= render 'admin/post_associations/project_association_form', post_association: @post_association %>
-<%= render 'admin/post_associations/plot_association_form', post_association: @post_association %>
-<%= render 'admin/post_associations/tile_association_form', post_association: @post_association %>

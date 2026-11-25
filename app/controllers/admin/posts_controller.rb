@@ -29,15 +29,14 @@ module Admin
       @post = Post.new
     end
 
-    def edit
-      @post_association = @post.post_associations.new
-    end
+    def edit; end
 
     def create
       @post = Post.new(post_params_for_create)
       @post.author = current_user
 
       if @post.save
+        sync_associations
         associate_mentioned_tiles
         @post.update!(published_at: @post.created_at) if @post.publish_immediately == 'true'
         redirect_to admin_post_path(@post), notice: 'Post was successfully created.'
@@ -48,6 +47,7 @@ module Admin
 
     def update
       if @post.update(post_params_for_update)
+        sync_associations
         associate_mentioned_tiles if @post.saved_change_to_attribute?(:body)
         redirect_to admin_post_path(@post), notice: 'Post was successfully updated.'
       else
@@ -77,7 +77,25 @@ module Admin
                   flash: { success: "Associations updated; added #{view_context.pluralize(tiles_to_add.size, 'tile')}, removed #{tiles_to_remove.size}." }
     end
 
+    helper_method :selected_associations
+
     private
+
+    def selected_associations
+      @selected_associations ||= SelectedPostAssociationsService.call(
+        post: @post,
+        submitted: params[:post],
+        preset_type: params[:postable_type],
+        preset_id: params[:postable_id]
+      )
+    end
+
+    def sync_associations
+      PostAssociationSyncService.call(
+        @post,
+        **params.fetch(:post, {}).permit(:tile_w3w_list, team_ids: [], project_ids: [], plot_ids: []).to_h.symbolize_keys
+      )
+    end
 
     def set_post
       @post = Post.find_by_hashid!(params[:id])

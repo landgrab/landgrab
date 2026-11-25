@@ -9,7 +9,7 @@
         <th>Plot</th>
       <% end %>
       <th>Subscriber</th>
-      <th colspan="2"></th>
+      <th></th>
     </tr>
   </thead>
 
@@ -32,6 +32,7 @@
           </td>
         <% end %>
         <td><%= tile.latest_subscription&.subscriber&.email || '-' %></td>
+        <td><%= render 'admin/posts/new_post_link', postable: tile %></td>
       </tr>
     <% end %>
   </tbody>
