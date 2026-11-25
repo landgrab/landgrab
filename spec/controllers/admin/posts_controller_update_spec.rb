@@ -130,4 +130,17 @@ RSpec.describe Admin::PostsController do
       expect(post_record.reload.associated_teams).to contain_exactly(team)
     end
   end
+
+  describe 'GET edit' do
+    render_views
+
+    it 'warns about unsaved changes before leaving for the map picker' do
+      sign_in(admin, scope: :user)
+      post_record = create(:post)
+      get :edit, params: { id: post_record.hashid }
+
+      link = response.parsed_body.xpath("//a[normalize-space()='choose tiles from a map']").first
+      expect(link['onclick']).to include('Unsaved changes')
+    end
+  end
 end

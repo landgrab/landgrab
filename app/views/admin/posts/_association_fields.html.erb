@@ -53,7 +53,8 @@
       <% if post.new_record? %>
         You can choose tiles from a map after you've created the post.
       <% else %>
-        Or <%= link_to 'choose tiles from a map', bulk_association_edit_admin_post_path(post) %>.
+        Or <%= link_to 'choose tiles from a map', bulk_association_edit_admin_post_path(post),
+                       onclick: "return confirm('Unsaved changes on this page will be lost. Save the post first if you need to keep them. Continue to the map?')" %>.
       <% end %>
     </span>
   </div>
