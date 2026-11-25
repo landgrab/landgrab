@@ -1,5 +1,3 @@
-<% show_unassociate ||= false %>
-
 <% if post_associations.none?(&:persisted?) %>
   <p>There aren't any associations yet.</p>
 <% else %>
@@ -18,14 +16,6 @@
           <%= link_to "Team: #{pa.postable.title}", admin_team_path(pa.postable) %>
         <% else %>
           <% raise "Unhandled post association type: #{pa.postable_type}" %>
-        <% end %>
-        <% if show_unassociate %>
-          -
-          <%= button_to 'Unassociate',
-                        admin_post_association_path(pa),
-                        method: :delete,
-                        form_class: 'd-inline',
-                        class: 'btn btn-danger btn-sm' %>
         <% end %>
       </li>
     <% end %>
