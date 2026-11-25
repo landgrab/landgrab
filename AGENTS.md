@@ -52,6 +52,7 @@ This file provides guidance to AI agents (Claude, Copilot etc) when working with
 
 4. **PR Management**:
    - Pay attention to linting results before pushing to avoid CI failures
+   - For any PR that changes something visible in the UI, include before-and-after screenshots in the PR description (e.g. a "Before" / "After" table). Skip this only when the change has no visual impact (backend, specs, tooling etc.) The `gh pr edit --attach` command can attach images to the PR description.
 
 ## PR Review Best Practices
 1. **Always provide your honest opinion about the PR** - be candid about both strengths and concerns

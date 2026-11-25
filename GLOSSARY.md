@@ -92,6 +92,10 @@ _Avoid_: Article, news item, update
 A tile, plot, project or team that a post is attached to; a post is viewable by users connected to any of its postables.
 _Avoid_: Target, tag
 
+**Post association**:
+The link attaching a post to one postable; a What3Words address mentioned in a post's body creates one for that tile automatically.
+_Avoid_: Tag, target, link
+
 **Comment**:
 A user's reply on a post, which may be public or private.
 _Avoid_: Reply, message
