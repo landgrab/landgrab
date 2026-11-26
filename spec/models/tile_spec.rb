@@ -57,6 +57,27 @@ RSpec.describe Tile do
       expect(viewable).to be false
     end
 
+    it 'returns true for the redeemer of a gifted tile' do
+      subscription.update!(subscriber: create(:user), redeemer: user)
+      tile.reload
+
+      expect(viewable).to be true
+    end
+
+    it 'returns false if the subscription is cancelled' do
+      subscription.update!(stripe_status: 'canceled')
+      tile.reload
+
+      expect(viewable).to be false
+    end
+
+    it 'returns true if the subscription is past due' do
+      subscription.update!(stripe_status: 'past_due')
+      tile.reload
+
+      expect(viewable).to be true
+    end
+
     it 'returns false if tile subscribed by another user' do
       subscription.update!(subscriber: create(:user))
       tile.reload

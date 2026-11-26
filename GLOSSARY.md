@@ -79,7 +79,7 @@ A card-free introductory period granted by a promo code, after which an unpaid s
 _Avoid_: Trial period
 
 **Usable subscription**:
-A subscription that currently entitles its redeemer to a tile, meaning it is active or in a free trial.
+A subscription that currently entitles its redeemer to a tile, meaning it is active, in a free trial, or past due (a grace period while a failed payment is retried).
 _Avoid_: Valid subscription, live subscription
 
 ## Updates
@@ -96,6 +96,10 @@ _Avoid_: Target, tag
 The link attaching a post to one postable; a What3Words address mentioned in a post's body creates one for that tile automatically.
 _Avoid_: Tag, target, link
 
+**Viewer**:
+A user who may view a post: the subscriber or redeemer of a usable subscription on a tile the post is attached to, or on a tile within a plot or project it is attached to, or a member of a team it is attached to.
+_Avoid_: Reader, audience member
+
 **Comment**:
 A user's reply on a post, which may be public or private.
 _Avoid_: Reply, message
@@ -105,7 +109,7 @@ An email an admin composes to tell users about one or more posts, made of an opt
 _Avoid_: Campaign, newsletter, mailing, broadcast
 
 **Audience**:
-The users who receive a bulletin: those who can view every post in it, which is the same set for each post.
+The users who receive a bulletin: the viewers of every post in it, which is the same set for each post.
 _Avoid_: Recipients, mailing list, subscribers
 
 **Bulletin delivery**:

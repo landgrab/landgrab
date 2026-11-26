@@ -58,6 +58,17 @@ RSpec.describe SubscriptionsController do
       end
     end
 
+    context 'when the payment fails after resuming' do
+      let(:refreshed_status) { 'past_due' }
+
+      it 'asks for a payment method rather than reporting success' do
+        do_post
+
+        expect(flash[:danger]).to include('add a valid payment method')
+        expect(flash[:success]).to be_nil
+      end
+    end
+
     context 'when Stripe rejects the resume' do
       before do
         stub_stripe_api(:post, 400, 'subscriptions/sub_123/resume', { error: { type: 'invalid_request_error', message: 'No payment method' } })

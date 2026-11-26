@@ -21,13 +21,13 @@ class Project < ApplicationRecord
   auto_strip_attributes :description, :welcome_text, :subscriber_benefits
 
   def viewable_by?(user)
-    tiles_subscribed_by(user).any?
+    tiles_viewable_by(user).any?
   end
 
-  def tiles_subscribed_by(user)
-    Tile.joins(latest_subscription: :subscriber, plot: :project)
-        .where(projects: { id: })
-        .where(users: { id: user.id })
+  def tiles_viewable_by(user)
+    Tile.joins(:latest_subscription, :plot)
+        .where(plots: { project_id: id })
+        .merge(Subscription.viewable_by(user))
   end
 
   def relevant_posts

@@ -87,7 +87,8 @@ class SubscriptionsController < ApplicationController
     Stripe::Subscription.resume(@subscription.stripe_id, billing_cycle_anchor: 'now')
     @subscription = StripeSubscriptionCreateOrRefreshJob.perform_now(@subscription.stripe_id)
 
-    if @subscription.usable_stripe_status?
+    # past_due is usable, but here it means the charge for the new billing period failed
+    if @subscription.stripe_status_active? || @subscription.stripe_status_trialing?
       redirect_to @subscription, flash: { success: 'Your subscription has been resumed!' }
     else
       redirect_to @subscription, flash: { danger: RESUME_FAILED_MESSAGE }
