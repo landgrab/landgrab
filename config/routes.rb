@@ -12,6 +12,12 @@ Rails.application.routes.draw do
     get '/refer/:referral_token', to: 'registrations#referral', as: :referral
   end
 
+  get '/settings/notifications', to: 'notification_settings#edit', as: :edit_notification_settings
+  patch '/settings/notifications', to: 'notification_settings#update', as: :notification_settings
+
+  get '/unsubscribe/bulletins/:token', to: 'bulletin_unsubscribes#show', as: :bulletin_unsubscribe
+  post '/unsubscribe/bulletins/:token', to: 'bulletin_unsubscribes#create'
+
   root to: 'static_pages#homepage'
 
   get '/users/me', to: 'users#me', as: :my_profile

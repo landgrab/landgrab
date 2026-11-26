@@ -1,0 +1,7 @@
+<h2><%= title 'Unsubscribe from project update emails' %></h2>
+
+<p>
+  Stop sending project update emails to <strong><%= @user.email %></strong>?
+</p>
+
+<%= button_to 'Unsubscribe', bulletin_unsubscribe_path(params[:token]), method: :post, class: 'btn btn-primary' %>

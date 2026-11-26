@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_11_21_120000) do
+ActiveRecord::Schema[8.1].define(version: 2026_11_26_100000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "postgis"
@@ -322,6 +322,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_21_120000) do
     t.string "username"
     t.string "website_title"
     t.string "website_url"
+    t.boolean "bulletin_emails", default: true, null: false
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["referral_token"], name: "index_users_on_referral_token", unique: true
     t.index ["referrer_id"], name: "index_users_on_referrer_id"
