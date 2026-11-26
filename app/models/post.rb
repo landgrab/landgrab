@@ -14,6 +14,8 @@ class Post < ApplicationRecord
   has_many :associated_tiles, through: :post_associations, source: :postable, source_type: 'Tile'
   has_many :post_views, dependent: :destroy
   has_many :comments, dependent: :restrict_with_exception
+  has_many :bulletin_posts, dependent: :restrict_with_exception
+  has_many :bulletins, through: :bulletin_posts
 
   if LandgrabService.attachments_enabled?
     has_one_attached :hero_image do |attachable|
@@ -50,6 +52,11 @@ class Post < ApplicationRecord
     (mentioned_tiles - associated_tiles).each do |tile|
       post_associations.create(postable: tile)
     end
+  end
+
+  # The users who can view this post, as a User relation
+  def viewers
+    PostViewersService.call(self)
   end
 
   def viewed_by_users
