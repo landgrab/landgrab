@@ -63,7 +63,8 @@ RSpec.describe PostViewersService do
     end
 
     it 'excludes subscribers in other projects' do
-      other_tile = create(:tile, plot: create(:plot, project: create(:project)))
+      far_polygon = 'POLYGON ((-1.02018 52.51576, -1.02002 52.51591, -1.01981 52.51558, -1.02018 52.51576))'
+      other_tile = create(:tile, plot: create(:plot, project: create(:project), polygon: far_polygon))
       create(:subscription, tile: other_tile, subscriber: create(:user))
 
       expect(viewers).to contain_exactly(subscriber)
