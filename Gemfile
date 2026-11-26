@@ -91,6 +91,9 @@ gem 'pg'
 # Postmarkapp.com email sending
 gem 'postmark-rails'
 
+# Inlines CSS into HTML emails and generates their plain-text part
+gem 'premailer-rails'
+
 # Puma app server
 gem 'puma'
 

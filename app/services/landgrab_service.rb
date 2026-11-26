@@ -14,4 +14,13 @@ class LandgrabService
   def self.email_from_address
     ENV.fetch('EMAIL_FROM_ADDRESS', 'landgrab@example.com')
   end
+
+  # Who the sender is, shown in the footer of bulletin emails (UK PECR requires the sender's identity)
+  def self.email_organisation_name
+    ENV.fetch('EMAIL_ORGANISATION_NAME') { ENV.fetch('SITE_TITLE', 'Landgrab') }
+  end
+
+  def self.email_postal_address
+    ENV.fetch('EMAIL_POSTAL_ADDRESS', '1 Example Street, London, EX1 1AA')
+  end
 end

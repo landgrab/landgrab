@@ -26,6 +26,14 @@
       "description": "A salt used to generate Hashids for obfuscating database IDs.",
       "generator": "secret"
     },
+    "EMAIL_ORGANISATION_NAME": {
+      "description": "Name of the organisation sending bulletin emails, shown in their footer. Defaults to SITE_TITLE.",
+      "required": false
+    },
+    "EMAIL_POSTAL_ADDRESS": {
+      "description": "Postal address of the organisation sending bulletin emails, shown in their footer (required by UK PECR). Defaults to a placeholder address, so set it in production.",
+      "required": false
+    },
     "POSTMARK_SERVER_API_TOKEN": {
       "description": "Postmark server API token for sending email. Defaults to Postmark's test token, which accepts sends without delivering them (e.g. for review apps).",
       "value": "POSTMARK_API_TEST"

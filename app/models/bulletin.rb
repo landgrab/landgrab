@@ -19,7 +19,22 @@ class Bulletin < ApplicationRecord
     first_post ? first_post.viewers : User.none
   end
 
+  # Anything in the intro or post previews that is too complex for an email, in plain English,
+  # for an admin to simplify. A bulletin can't be sent while there are any.
+  def content_problems
+    problems = describe_unsupported(intro).map { |element| "The intro contains #{element}." }
+    posts.each do |post|
+      describe_unsupported(post.preview).each { |element| problems << "Post '#{post.title}': the preview contains #{element}." }
+    end
+
+    problems
+  end
+
   private
+
+  def describe_unsupported(markdown)
+    EmailMarkdownService.unsupported_elements(markdown)
+  end
 
   def posts_share_audience
     return if posts.empty?
