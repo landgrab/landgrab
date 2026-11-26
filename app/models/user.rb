@@ -16,6 +16,9 @@ class User < ApplicationRecord
   has_many :post_views, class_name: 'PostView', inverse_of: :user, dependent: :destroy
   has_many :comments_authored, class_name: 'Comment', inverse_of: :author, dependent: :restrict_with_exception
 
+  # Signed token for the one-click bulletin unsubscribe link, valid without logging in
+  generates_token_for :bulletin_unsubscribe
+
   validates :first_name, :last_name, length: { maximum: 255 }
   validates :stripe_customer_id, allow_blank: true,
                                  format: { with: /\Acus_[0-9a-zA-Z]+\z/, message: 'must start with cus_' },

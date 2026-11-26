@@ -1,0 +1,10 @@
+<h2><%= title 'You have been unsubscribed' %></h2>
+
+<p>
+  You will no longer receive project update emails at <strong><%= @user.email %></strong>.
+</p>
+
+<p>
+  Changed your mind? You can turn them back on any time in your
+  <%= link_to 'notification settings', edit_notification_settings_path %>.
+</p>

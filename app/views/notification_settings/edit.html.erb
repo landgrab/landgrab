@@ -1,0 +1,22 @@
+<%= form_for(current_user, as: :user, url: notification_settings_path, method: :patch) do |f| %>
+  <%= render 'devise/shared/error_messages', resource: current_user %>
+
+  <%= render 'layouts/settings_nav', current_page: :notifications %>
+
+  <h2><%= title 'Notifications' %></h2>
+
+  <p>
+    Choose which emails you would like to receive from
+    <%= ENV.fetch('SITE_TITLE', 'LandGrab') %>.
+  </p>
+
+  <div class="form-check form-switch mb-3">
+    <%= f.check_box :bulletin_emails, class: 'form-check-input', role: 'switch', aria: { describedby: 'bulletinEmailsHelp' } %>
+    <%= f.label :bulletin_emails, 'Project update emails', class: 'form-check-label' %>
+    <div id="bulletinEmailsHelp" class="form-text">
+      Occasional emails telling you about news from the land you support.
+    </div>
+  </div>
+
+  <%= f.submit 'Save', class: 'btn btn-primary' %>
+<% end %>
