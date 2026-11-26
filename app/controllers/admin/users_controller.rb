@@ -67,6 +67,7 @@ module Admin
       users = filter_by_stripe_id(users)
       users = filter_by_team(users)
       users = filter_by_referrer(users)
+      users = filter_by_post_viewer(users)
       filter_by_redeemed_subscription_to_plot(users)
     end
 
@@ -94,6 +95,12 @@ module Admin
     def filter_by_referrer(users)
       users = users.where(referrer_id: User.decode_id(params[:referrer])) if params[:referrer].present?
       users
+    end
+
+    def filter_by_post_viewer(users)
+      return users if params[:can_view_post].blank?
+
+      users.where(id: Post.find_by_hashid!(params[:can_view_post]).viewers.select(:id))
     end
 
     def filter_by_redeemed_subscription_to_plot(users)

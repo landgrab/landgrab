@@ -18,5 +18,13 @@
 
   <%= render_filter_text(:referrer, 'Referrer User ID', col: 2) %>
 
+  <% if params[:can_view_post].present? %>
+    <div class="col-12">
+      <%= hidden_field_tag :can_view_post, params[:can_view_post] %>
+      <span class="badge text-bg-secondary">Can view post: <%= Post.find_by_hashid!(params[:can_view_post]).title %></span>
+      <%= link_to 'Clear', admin_users_path(request.query_parameters.except('can_view_post')), class: 'small ms-1' %>
+    </div>
+  <% end %>
+
   <%= render_filter_submit %>
 <% end %>

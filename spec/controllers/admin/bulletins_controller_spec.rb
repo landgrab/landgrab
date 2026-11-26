@@ -91,7 +91,15 @@ RSpec.describe Admin::BulletinsController do
 
       get(:show, params: { id: bulletin.hashid })
 
-      expect(response.body).to include('1 user can view these posts')
+      expect(response.body).to include('1 user</a> can view these posts')
+    end
+
+    it 'links the audience size to the users who can view the posts' do
+      bulletin = create(:bulletin, posts: [post_record])
+
+      get(:show, params: { id: bulletin.hashid })
+
+      expect(response.body).to include(admin_users_path(can_view_post: post_record.to_param))
     end
 
     it 'shows the deliveries for a confirmed bulletin' do
