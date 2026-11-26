@@ -7,7 +7,7 @@ class PostsController < ApplicationController
   def show
     @viewable = user_signed_in? && @post.viewable_by?(current_user)
 
-    @latest_post_view = latest_post_view if user_signed_in?
+    @latest_post_view = latest_post_view if @viewable
 
     log_event_mixpanel('Posts: Show', { authed: user_signed_in?, viewable: @viewable })
   end

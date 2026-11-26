@@ -67,6 +67,10 @@ RSpec.describe PostsController do
         expect(response.body).to include(post.preview)
       end
 
+      it 'does not record a post view' do
+        expect { do_get }.not_to change(PostView, :count)
+      end
+
       it 'mentions the tile' do
         do_get
 
