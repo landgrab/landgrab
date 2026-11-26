@@ -5,7 +5,6 @@ RSpec.describe Admin::PlotsController do
 
   before do
     sign_in(create(:user, admin: true), scope: :user)
-    # db:setup seeds plots, so start from none (rolled back with the example's transaction)
     Tile.delete_all
     Plot.delete_all
   end

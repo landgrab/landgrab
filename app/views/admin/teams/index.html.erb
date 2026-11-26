@@ -10,7 +10,6 @@
   <%= page_entries_info @teams %>
 </p>
 
-<%# page_entries_info already says when there are none %>
 <%= render 'table', teams: @teams if @teams.any? %>
 
 <%= paginate @teams, theme: 'bootstrap-5' %>

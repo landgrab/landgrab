@@ -17,7 +17,6 @@
   <%= link_to 'download csv', admin_posts_path(format: :csv, params: request.query_parameters) %>
 </p>
 
-<%# page_entries_info already says when there are none %>
 <%= render 'table', posts: @posts if @posts.any? %>
 
 <%= paginate @posts, theme: 'bootstrap-5' %>

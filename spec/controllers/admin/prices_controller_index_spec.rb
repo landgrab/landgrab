@@ -5,7 +5,6 @@ RSpec.describe Admin::PricesController do
 
   before do
     sign_in(create(:user, admin: true), scope: :user)
-    # db:setup seeds prices, so start from none (rolled back with the example's transaction)
     Price.delete_all
   end
 
