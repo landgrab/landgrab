@@ -12,14 +12,15 @@ module Webhook
       case @event.type
       when 'checkout.session.completed'
         checkout_session_completed
-      when /customer\.subscription\.*/
+      when /\Acustomer\.subscription\./
         refresh_subscription
       when 'invoice.paid'
         # TODO: invoice_paid
       when 'invoice.payment_failed'
         # TODO: invoice_payment_failed
       else
-        raise "Unhandled event type: #{@event.type}"
+        # Acknowledge events we don't act on: erroring makes Stripe retry and eventually disable the endpoint
+        Rails.logger.info("Ignoring unhandled Stripe event type: #{@event.type}")
       end
 
       head :ok

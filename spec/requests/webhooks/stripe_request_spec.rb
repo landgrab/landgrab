@@ -29,5 +29,33 @@ RSpec.describe 'StripeWebhook' do
     it 'refreshes the stripe subscription' do
       expect { run_hook }.to enqueue_job(StripeSubscriptionCreateOrRefreshJob)
     end
+
+    context 'with a subscription deleted (cancelled) event' do
+      let(:webhook_params) do
+        { id: 'evt_cancel', object: 'event', type: 'customer.subscription.deleted',
+          data: { object: { id: 'sub_abc123', object: 'subscription', status: 'canceled' } } }
+      end
+
+      it 'refreshes that stripe subscription' do
+        expect { run_hook }.to have_enqueued_job(StripeSubscriptionCreateOrRefreshJob).with('sub_abc123')
+      end
+    end
+
+    context 'with an event type we do not handle' do
+      let(:webhook_params) do
+        { id: 'evt_other', object: 'event', type: 'customer.updated',
+          data: { object: { id: 'cus_abc123', object: 'customer' } } }
+      end
+
+      it 'acknowledges it with a 200 so Stripe does not retry or disable the endpoint' do
+        run_hook
+
+        expect(response).to have_http_status(:ok)
+      end
+
+      it 'does not enqueue a refresh' do
+        expect { run_hook }.not_to enqueue_job(StripeSubscriptionCreateOrRefreshJob)
+      end
+    end
   end
 end
