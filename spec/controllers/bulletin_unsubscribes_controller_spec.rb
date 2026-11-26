@@ -31,15 +31,6 @@ RSpec.describe BulletinUnsubscribesController do
       expect(user.reload.bulletin_emails).to be false
     end
 
-    it 'does not need a CSRF token, so a mail client can post the one-click request' do
-      ActionController::Base.allow_forgery_protection = true
-      post :create, params: { token:, 'List-Unsubscribe': 'One-Click' }
-
-      expect(user.reload.bulletin_emails).to be false
-    ensure
-      ActionController::Base.allow_forgery_protection = false
-    end
-
     it 'leaves everyone alone when the token is invalid' do
       post :create, params: { token: 'nonsense' }
 

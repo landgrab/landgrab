@@ -17,6 +17,7 @@ Rails.application.routes.draw do
 
   get '/unsubscribe/bulletins/:token', to: 'bulletin_unsubscribes#show', as: :bulletin_unsubscribe
   post '/unsubscribe/bulletins/:token', to: 'bulletin_unsubscribes#create'
+  post '/unsubscribe/bulletins/:token/one_click', to: 'bulletin_one_click_unsubscribes#create', as: :bulletin_one_click_unsubscribe
 
   root to: 'static_pages#homepage'
 
