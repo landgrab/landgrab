@@ -15,6 +15,7 @@ class User < ApplicationRecord
   has_many :posts_authored, class_name: 'Post', foreign_key: 'author_id', inverse_of: :author, dependent: :restrict_with_exception
   has_many :post_views, class_name: 'PostView', inverse_of: :user, dependent: :destroy
   has_many :bulletins_authored, class_name: 'Bulletin', foreign_key: 'author_id', inverse_of: :author, dependent: :restrict_with_exception
+  has_many :bulletin_deliveries, dependent: :nullify
   has_many :comments_authored, class_name: 'Comment', inverse_of: :author, dependent: :restrict_with_exception
 
   # Signed token for the one-click bulletin unsubscribe link, valid without logging in
