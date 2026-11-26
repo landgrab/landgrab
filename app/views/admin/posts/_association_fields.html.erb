@@ -12,6 +12,7 @@
     <%= label_tag 'post_team_ids', 'Teams', class: 'col-form-label' %>
   </div>
   <div class="col-sm-5">
+    <%= hidden_field_tag 'post[team_ids][]', '', id: nil %>
     <%= select_tag 'post[team_ids][]',
                    options_from_collection_for_select(Team.order(:title), :hashid, :title, selected[:team_ids]),
                    multiple: true, id: 'post_team_ids', class: 'form-select' %>
@@ -23,6 +24,7 @@
     <%= label_tag 'post_project_ids', 'Projects', class: 'col-form-label' %>
   </div>
   <div class="col-sm-5">
+    <%= hidden_field_tag 'post[project_ids][]', '', id: nil %>
     <%= select_tag 'post[project_ids][]',
                    options_from_collection_for_select(Project.order(:title), :hashid, :title, selected[:project_ids]),
                    multiple: true, id: 'post_project_ids', class: 'form-select' %>
@@ -34,6 +36,7 @@
     <%= label_tag 'post_plot_ids', 'Plots', class: 'col-form-label' %>
   </div>
   <div class="col-sm-5">
+    <%= hidden_field_tag 'post[plot_ids][]', '', id: nil %>
     <%= select_tag 'post[plot_ids][]',
                    option_groups_from_collection_for_select(Project.includes(:plots).order(:title), :plots, :title, :hashid, :title, selected[:plot_ids]),
                    multiple: true, id: 'post_plot_ids', class: 'form-select' %>

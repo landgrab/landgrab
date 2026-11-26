@@ -142,6 +142,14 @@ RSpec.describe Admin::PostsController do
       link = response.parsed_body.xpath("//a[normalize-space()='choose tiles from a map']").first
       expect(link['onclick']).to include('Unsaved changes')
     end
+
+    it 'submits an empty value for each association select so deselecting everything clears it' do
+      sign_in(admin, scope: :user)
+      get :edit, params: { id: create(:post).hashid }
+
+      names = response.parsed_body.xpath("//input[@type='hidden'][@value='']/@name").map(&:value)
+      expect(names).to include('post[team_ids][]', 'post[project_ids][]', 'post[plot_ids][]')
+    end
   end
 
   describe 'PATCH update with unknown tile addresses' do
