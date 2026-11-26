@@ -4,7 +4,7 @@ namespace :subscription do
   desc 'Refresh Stripe statuses'
   task refresh_stripe_statuses: :environment do
     Subscription.find_each do |s|
-      next if s.stripe_id.nil? || s.stripe_id.start_with?('sub_fake')
+      next if s.stripe_id.nil? || s.stripe_id.start_with?('sub_fake', Subscription::EXTERNALLY_PAID_PREFIX)
 
       StripeSubscriptionCreateOrRefreshJob.perform_later(s.stripe_id)
     end
