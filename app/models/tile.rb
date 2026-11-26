@@ -125,7 +125,7 @@ class Tile < ApplicationRecord
   end
 
   def viewable_by?(user)
-    subscribed_by?(user) || redeemed_by?(user)
+    latest_subscription.present? && latest_subscription.viewable_by?(user)
   end
 
   def subscribed_by?(user)

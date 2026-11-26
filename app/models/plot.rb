@@ -116,11 +116,11 @@ class Plot < ApplicationRecord
   end
 
   def viewable_by?(user)
-    tiles_subscribed_by(user).any?
+    tiles_viewable_by(user).any?
   end
 
-  def tiles_subscribed_by(user)
-    tiles.joins(latest_subscription: :subscriber).where(users: { id: user.id }).includes(:latest_subscription)
+  def tiles_viewable_by(user)
+    tiles.joins(:latest_subscription).merge(Subscription.viewable_by(user))
   end
 
   # Up to MAP_TILE_LIMIT tiles, sampling at most MAP_UNAVAILABLE_TILE_LIMIT unavailable

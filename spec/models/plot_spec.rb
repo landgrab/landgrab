@@ -14,8 +14,31 @@ RSpec.describe Plot do
     expect(plot.polygon.methods).to include :centroid
   end
 
-  describe '#tiles_subscribed_by' do
-    subject(:tiles_subscribed) { plot.tiles_subscribed_by(user) }
+  describe '#viewable_by?' do
+    let(:user) { create(:user) }
+    let(:tile) { create(:tile, plot:) }
+
+    it 'is true for the redeemer of a gifted tile' do
+      create(:subscription, subscriber: create(:user), redeemer: user, tile:)
+
+      expect(plot).to be_viewable_by(user)
+    end
+
+    it 'is false once the subscription is cancelled' do
+      create(:subscription, subscriber: user, tile:, stripe_status: 'canceled')
+
+      expect(plot).not_to be_viewable_by(user)
+    end
+
+    it 'is true while the subscription is past due' do
+      create(:subscription, subscriber: user, tile:, stripe_status: 'past_due')
+
+      expect(plot).to be_viewable_by(user)
+    end
+  end
+
+  describe '#tiles_viewable_by' do
+    subject(:tiles_subscribed) { plot.tiles_viewable_by(user) }
 
     let(:user) { create(:user) }
     let(:tile) { create(:tile, plot:) }

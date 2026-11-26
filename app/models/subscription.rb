@@ -20,8 +20,12 @@ class Subscription < ApplicationRecord
 
   enum :recurring_interval, { month: 0, year: 1 }, prefix: :recurring_interval
 
-  # Entitles the holder to a tile (see #usable_stripe_status?)
-  scope :usable, -> { where(stripe_status: %i[active trialing]) }
+  # Entitles the holder to a tile (see #usable_stripe_status?). past_due is included as a grace period
+  # while Stripe retries a failed payment.
+  scope :usable, -> { where(stripe_status: %i[active trialing past_due]) }
+
+  # Usable subscriptions that the user pays for or redeems: the single rule for who may view posts
+  scope :viewable_by, ->(user) { usable.where(subscriber_id: user.id).or(usable.where(redeemer_id: user.id)) }
 
   # TODO: Migrate to prices table (subscription.price.amount_display)
   monetize :price_pence, as: :price, numericality: { greater_than: 0 }, allow_nil: true
@@ -62,6 +66,19 @@ class Subscription < ApplicationRecord
   end
 
   def usable_stripe_status?
-    stripe_status_active? || stripe_status_trialing?
+    stripe_status_active? || stripe_status_trialing? || stripe_status_past_due?
+  end
+
+  # Instance form of the .viewable_by scope
+  def viewable_by?(user)
+    usable_stripe_status? && (subscribed_by?(user) || redeemed_by?(user))
+  end
+
+  class << self
+    # The users who can view posts through the subscriptions in this relation, as a User relation
+    def viewers
+      usable_subscriptions = usable
+      User.where(id: usable_subscriptions.select(:subscriber_id)).or(User.where(id: usable_subscriptions.select(:redeemer_id)))
+    end
   end
 end

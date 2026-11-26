@@ -37,6 +37,24 @@ RSpec.describe Project do
       expect(viewable).to be false
     end
 
+    it 'returns true for the redeemer of a gifted tile' do
+      subscription.update!(subscriber: create(:user), redeemer: user)
+
+      expect(viewable).to be true
+    end
+
+    it 'returns false if the subscription is cancelled' do
+      subscription.update!(stripe_status: 'canceled')
+
+      expect(viewable).to be false
+    end
+
+    it 'returns true if the subscription is past due' do
+      subscription.update!(stripe_status: 'past_due')
+
+      expect(viewable).to be true
+    end
+
     it 'returns false if tile assigned to different plot' do
       tile.plot.destroy # avoid new plot conflicting with old plot's polygon
       tile.update!(plot: create(:plot))

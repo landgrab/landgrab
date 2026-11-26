@@ -47,8 +47,8 @@ RSpec.describe PostViewersService do
       associate(plot)
     end
 
-    it 'includes the subscriber but not the redeemer of its tiles' do
-      expect(viewers).to contain_exactly(subscriber)
+    it 'includes the subscriber and the redeemer of its tiles' do
+      expect(viewers).to contain_exactly(subscriber, redeemer)
     end
   end
 
@@ -58,8 +58,8 @@ RSpec.describe PostViewersService do
       associate(project)
     end
 
-    it 'includes the subscriber but not the redeemer of tiles in its plots' do
-      expect(viewers).to contain_exactly(subscriber)
+    it 'includes the subscriber and the redeemer of tiles in its plots' do
+      expect(viewers).to contain_exactly(subscriber, redeemer)
     end
 
     it 'excludes subscribers in other projects' do
@@ -67,7 +67,27 @@ RSpec.describe PostViewersService do
       other_tile = create(:tile, plot: create(:plot, project: create(:project), polygon: far_polygon))
       create(:subscription, tile: other_tile, subscriber: create(:user))
 
-      expect(viewers).to contain_exactly(subscriber)
+      expect(viewers).to contain_exactly(subscriber, redeemer)
+    end
+  end
+
+  context 'when the latest subscription is not usable' do
+    before { associate(tile) }
+
+    %w[active trialing past_due].each do |status|
+      it "includes the subscriber and redeemer when #{status}" do
+        create(:subscription, tile:, subscriber:, redeemer:, stripe_status: status)
+
+        expect(viewers).to contain_exactly(subscriber, redeemer)
+      end
+    end
+
+    %w[unpaid canceled incomplete incomplete_expired paused].each do |status|
+      it "excludes everyone when #{status}" do
+        create(:subscription, tile:, subscriber:, redeemer:, stripe_status: status)
+
+        expect(viewers).to be_empty
+      end
     end
   end
 
@@ -109,7 +129,9 @@ RSpec.describe PostViewersService do
       create(:user, team:)
       create(:user)
       create(:subscription, tile: create(:tile, plot:), subscriber:, redeemer:)
-      create(:subscription, tile: create(:tile), subscriber: create(:user), stripe_status: 'canceled')
+      create(:subscription, tile: create(:tile), subscriber: create(:user), redeemer: create(:user), stripe_status: 'canceled')
+      create(:subscription, tile: create(:tile, plot:), subscriber: create(:user), redeemer: create(:user), stripe_status: 'paused')
+      create(:subscription, tile: create(:tile, plot:), subscriber: create(:user), redeemer: create(:user), stripe_status: 'past_due')
       [plot, project, team, Tile.last].each { |postable| associate(postable) }
     end
 
