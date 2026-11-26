@@ -17,6 +17,6 @@
   <%= link_to 'download csv', admin_posts_path(format: :csv, params: request.query_parameters) %>
 </p>
 
-<%= render 'table', posts: @posts %>
+<%= render 'table', posts: @posts if @posts.any? %>
 
 <%= paginate @posts, theme: 'bootstrap-5' %>

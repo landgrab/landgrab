@@ -20,6 +20,6 @@
   <%= link_to 'download csv', admin_plots_path(format: :csv, params: request.query_parameters) %>
 </p>
 
-<%= render 'table', plots: @plots %>
+<%= render 'table', plots: @plots if @plots.any? %>
 
 <%= paginate @plots, theme: 'bootstrap-5' %>
