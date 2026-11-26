@@ -8,9 +8,7 @@
 
 <p><%= page_entries_info @bulletins %></p>
 
-<% if @bulletins.none? %>
-  <p>No bulletins found</p>
-<% else %>
+<% if @bulletins.any? %>
   <table class="table">
     <thead>
       <tr>
