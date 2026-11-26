@@ -1,0 +1,31 @@
+<p>Hi <%= @user.display_name %>,</p>
+
+<%= email_markdown(@bulletin.intro) %>
+
+<% @bulletin.posts.each do |post| %>
+  <div class="post">
+    <h2><%= link_to post.title, post_url(post) %></h2>
+
+    <% if LandgrabService.attachments_enabled? && post.hero_image.attached? %>
+      <p><%= image_tag rails_blob_url(post.hero_image), alt: post.title %></p>
+    <% end %>
+
+    <%= email_markdown(post.preview) %>
+
+    <p><%= link_to 'Read more', post_url(post) %></p>
+  </div>
+<% end %>
+
+<p><%= link_to 'View your tile(s)', my_tile_url %></p>
+
+<div class="footer">
+  <p>
+    You're receiving this because you support land with
+    <%= ENV.fetch('SITE_TITLE', 'LandGrab') %>.
+    <%= link_to 'Unsubscribe from project update emails', @unsubscribe_url %>
+  </p>
+  <p>
+    <%= LandgrabService.email_organisation_name %><br>
+    <%= LandgrabService.email_postal_address %>
+  </p>
+</div>

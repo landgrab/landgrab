@@ -103,6 +103,28 @@ RSpec.describe Bulletin do
     end
   end
 
+  describe '#content_problems' do
+    it 'is empty for simple content' do
+      bulletin.intro = 'Hello **there**'
+      bulletin.posts.first.update!(preview: 'A *simple* preview')
+
+      expect(bulletin.content_problems).to be_empty
+    end
+
+    it 'names the post and the unsupported element in a post preview' do
+      post = bulletin.posts.first
+      post.update!(title: 'Spring update', preview: "| a |\n|---|\n| 1 |")
+
+      expect(bulletin.content_problems).to eq ["Post 'Spring update': the preview contains a table."]
+    end
+
+    it 'reports unsupported elements in the intro' do
+      bulletin.intro = '## Big news'
+
+      expect(bulletin.content_problems).to eq ['The intro contains a heading.']
+    end
+  end
+
   describe '#audience' do
     it 'is the users who can view the posts' do
       alice = create(:user)
