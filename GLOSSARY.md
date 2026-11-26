@@ -100,6 +100,18 @@ _Avoid_: Tag, target, link
 A user's reply on a post, which may be public or private.
 _Avoid_: Reply, message
 
+**Bulletin**:
+An email an admin composes to tell users about one or more posts, made of an optional intro and a preview of each post with a link to read it. Every post in a bulletin must have exactly the same users able to view it, and those users are the bulletin's audience. It is a draft until an admin confirms it, which requires every post to be published, and cannot be changed once confirmed.
+_Avoid_: Campaign, newsletter, mailing, broadcast
+
+**Audience**:
+The users who receive a bulletin: those who can view every post in it, which is the same set for each post.
+_Avoid_: Recipients, mailing list, subscribers
+
+**Bulletin delivery**:
+The record of one bulletin's email to one user, noting the address it went to and whether it has been sent.
+_Avoid_: Recipient, send, email
+
 ## Images
 
 **Hero image**:
