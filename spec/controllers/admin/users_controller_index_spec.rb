@@ -27,6 +27,27 @@ RSpec.describe Admin::UsersController do
       expect(response).to have_http_status(:not_found)
     end
 
+    context 'with can_view_post filter' do
+      let(:post) { create(:post) }
+      let(:viewer) { create(:user) }
+
+      before do
+        tile = create(:tile)
+        create(:subscription, tile:, subscriber: viewer)
+        create(:post_association, post:, postable: tile)
+      end
+
+      it 'includes users who can view the post' do
+        get(:index, params: { can_view_post: post.to_param })
+        expect(response.body).to include(viewer.hashid)
+      end
+
+      it 'excludes users who cannot view the post' do
+        get(:index, params: { can_view_post: post.to_param })
+        expect(response.body).not_to include(user.hashid)
+      end
+    end
+
     context 'with first_name filter' do
       it 'includes user with matching first name' do
         get(:index, params: { first_name: user.first_name[0..2] })

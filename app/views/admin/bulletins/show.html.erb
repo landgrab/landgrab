@@ -99,7 +99,7 @@
     </div>
   <% else %>
     <p>
-      <%= pluralize(@bulletin.audience.count, 'user') %> can view these posts.
+      <%= link_to pluralize(@bulletin.audience.count, 'user'), admin_users_path(can_view_post: @bulletin.posts.first.to_param) %> can view these posts.
       Anyone who has unsubscribed from bulletin emails is left out when you confirm.
     </p>
   <% end %>
