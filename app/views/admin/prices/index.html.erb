@@ -8,6 +8,7 @@
 
 <%= page_entries_info @prices %>
 
-<%= render 'table', prices: @prices %>
+<%# page_entries_info already says when there are none %>
+<%= render 'table', prices: @prices if @prices.any? %>
 
 <%= paginate @prices, theme: 'bootstrap-5' %>
