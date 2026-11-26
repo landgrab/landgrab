@@ -1,0 +1,44 @@
+<%= admin_page_header(admin_title(Bulletin)) do %>
+  <%= admin_new_button(Bulletin) %>
+<% end %>
+
+<p>
+  Bulletins email subscribers about one or more posts. Everyone who can view the posts receives the email.
+</p>
+
+<p><%= page_entries_info @bulletins %></p>
+
+<% if @bulletins.none? %>
+  <p>No bulletins found</p>
+<% else %>
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Subject</th>
+        <th>Posts</th>
+        <th>Status</th>
+        <th>Sent</th>
+        <th>Failed</th>
+        <th>Author</th>
+        <th>Created</th>
+      </tr>
+    </thead>
+
+    <tbody style="font-variant-numeric: tabular-nums;">
+      <% @bulletins.each do |bulletin| %>
+        <% counts = @delivery_counts.fetch(bulletin.id, { sent: 0, failed: 0 }) %>
+        <tr>
+          <td><%= link_to bulletin.subject, admin_bulletin_path(bulletin) %></td>
+          <td><%= truncate(bulletin.posts.map(&:title).to_sentence, length: 75) %></td>
+          <td><%= render_bulletin_status(bulletin) %></td>
+          <td><%= bulletin.confirmed? ? counts[:sent] : '-' %></td>
+          <td><%= bulletin.confirmed? ? counts[:failed] : '-' %></td>
+          <td><%= bulletin.author.display_name %></td>
+          <td><%= bulletin.created_at.to_formatted_s(:short) %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+<% end %>
+
+<%= paginate @bulletins, theme: 'bootstrap-5' %>

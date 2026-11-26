@@ -1,0 +1,115 @@
+<%= admin_page_header(admin_title(@bulletin)) do %>
+  <% unless @bulletin.confirmed? %>
+    <%= admin_edit_button(@bulletin) %>
+  <% end %>
+<% end %>
+
+<table class="table">
+  <tbody>
+    <tr>
+      <th>Subject</th>
+      <td><%= @bulletin.subject %></td>
+    </tr>
+    <tr>
+      <th>Intro</th>
+      <td><%= markdown(@bulletin.intro) || 'None' %></td>
+    </tr>
+    <tr>
+      <th>Posts</th>
+      <td>
+        <ul class="list-unstyled mb-0">
+          <% @bulletin.posts.each do |post| %>
+            <li>
+              <%= link_to post.title, admin_post_path(post) %>
+              <%= render_post_published_state(post) %>
+            </li>
+          <% end %>
+        </ul>
+      </td>
+    </tr>
+    <tr>
+      <th>Author</th>
+      <td><%= link_to @bulletin.author.full_name, admin_user_path(@bulletin.author) %></td>
+    </tr>
+    <tr>
+      <th>Created</th>
+      <td><%= @bulletin.created_at.strftime('%e %b %Y %H:%M:%S') %></td>
+    </tr>
+    <tr>
+      <th>Status</th>
+      <td>
+        <%= render_bulletin_status(@bulletin) %>
+        <% if @bulletin.confirmed? %>
+          confirmed <%= @bulletin.confirmed_at.strftime('%e %b %Y %H:%M:%S') %>
+        <% end %>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<% if @bulletin.confirmed? %>
+  <h2 class="mt-3">Deliveries</h2>
+
+  <p>
+    <%= pluralize(@bulletin.deliveries.sent.count, 'email') %> sent,
+    <%= @bulletin.deliveries.failed.count %> failed,
+    <%= @bulletin.deliveries.pending.count %> pending.
+  </p>
+
+  <table class="table">
+    <thead>
+      <tr>
+        <th>User</th>
+        <th>Email</th>
+        <th>Status</th>
+        <th>When</th>
+        <th>Error</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @deliveries.each do |delivery| %>
+        <tr>
+          <td>
+            <% if delivery.user %>
+              <%= link_to delivery.user.full_name.presence || delivery.user.display_name, admin_user_path(delivery.user) %>
+            <% else %>
+              <em>Deleted user</em>
+            <% end %>
+          </td>
+          <td><%= delivery.email || '-' %></td>
+          <td><%= render_delivery_status(delivery) %></td>
+          <td><%= (delivery.sent_at || delivery.failed_at)&.to_formatted_s(:short) || '-' %></td>
+          <td><%= delivery.error %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+
+  <%= paginate @deliveries, theme: 'bootstrap-5' %>
+<% else %>
+  <h2 class="mt-3">Before sending</h2>
+
+  <% problems = @bulletin.valid? ? [] : @bulletin.errors.full_messages %>
+  <% problems += @bulletin.content_problems %>
+  <% if problems.any? %>
+    <div class="alert alert-danger" role="alert">
+      <% problems.each do |problem| %>
+        <%= problem %><br>
+      <% end %>
+    </div>
+  <% else %>
+    <p>
+      <%= pluralize(@bulletin.audience.count, 'user') %> can view these posts.
+      Anyone who has unsubscribed from bulletin emails is left out when you confirm.
+    </p>
+  <% end %>
+
+  <div class="d-flex flex-wrap gap-2">
+    <%= link_to 'Preview', preview_admin_bulletin_path(@bulletin), class: 'btn btn-outline-secondary', target: '_blank', rel: 'noopener' %>
+    <%= button_to 'Send test to me', send_test_admin_bulletin_path(@bulletin), class: 'btn btn-outline-secondary' %>
+    <%= button_to 'Confirm and send', confirm_admin_bulletin_path(@bulletin), class: 'btn btn-primary',
+                  form: { data: { turbo_confirm: 'Confirm this bulletin? The emails are queued straight away and this cannot be undone.' } } %>
+    <%= button_to 'Delete draft', admin_bulletin_path(@bulletin), method: :delete, class: 'btn btn-outline-danger',
+                  form: { data: { turbo_confirm: 'Delete this draft bulletin?' } } %>
+  </div>
+<% end %>

@@ -1,0 +1,51 @@
+<%= form_with(model: [:admin, bulletin], local: true) do |form| %>
+  <%= render 'layouts/form_errors', errors: bulletin.errors %>
+
+  <div class="row mb-3 g-3 align-items-center">
+    <div class="col-sm-2">
+      <%= form.label :subject, class: 'col-form-label' %>
+    </div>
+    <div class="col-sm-5">
+      <%= form.text_field :subject, required: true, class: 'form-control', aria: { describedby: 'subjectHelp' } %>
+    </div>
+    <div class="col-sm-5">
+      <span id="subjectHelp" class="form-text">The email's subject line.</span>
+    </div>
+  </div>
+
+  <div class="row mb-3 g-3">
+    <div class="col-sm-2">
+      <%= form.label :intro, class: 'col-form-label' %>
+    </div>
+    <div class="col-sm-5">
+      <%= form.text_area :intro, class: 'form-control', rows: 5, aria: { describedby: 'introHelp' } %>
+    </div>
+    <div class="col-sm-5">
+      <span id="introHelp" class="form-text">
+        Optional text shown above the posts, written in Markdown. Only paragraphs, bold, italic, links,
+        lists and images work in emails.
+      </span>
+    </div>
+  </div>
+
+  <div class="row mb-3 g-3">
+    <div class="col-sm-2">
+      <%= label_tag 'bulletin_post_ids', 'Posts', class: 'col-form-label' %>
+    </div>
+    <div class="col-sm-5">
+      <%= select_tag 'bulletin[post_ids][]',
+                     options_for_select(selectable_posts.map { |post| ["#{post.title}#{' (not published)' unless post.published_at&.past?}", post.hashid] },
+                                        bulletin.posts.map(&:hashid)),
+                     multiple: true, size: 10, id: 'bulletin_post_ids', class: 'form-select', aria: { describedby: 'postsHelp' } %>
+    </div>
+    <div class="col-sm-5">
+      <span id="postsHelp" class="form-text">
+        Hold Ctrl or Cmd to pick several. Every post must have exactly the same viewers, so the easiest way
+        is to give them all the same associations. Posts must be published before the bulletin is confirmed.
+      </span>
+    </div>
+  </div>
+
+  <%= form.submit class: 'btn btn-primary' %>
+  <%= link_to 'Cancel', bulletin.persisted? ? admin_bulletin_path(bulletin) : admin_bulletins_path, class: 'btn btn-link' %>
+<% end %>
