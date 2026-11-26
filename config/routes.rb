@@ -90,6 +90,11 @@ Rails.application.routes.draw do
       get :bulk_association_edit, on: :member
       post :bulk_association_update, on: :member
     end
+    resources :bulletins, only: %i[create index show new edit update destroy] do
+      get :preview, on: :member
+      post :send_test, on: :member
+      post :confirm, on: :member
+    end
     resources :media_images, only: %i[create update]
     resources :post_views, only: %i[index]
     resources :prices, only: %i[create index show new edit update]
