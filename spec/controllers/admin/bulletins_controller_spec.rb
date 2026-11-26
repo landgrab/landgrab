@@ -30,6 +30,14 @@ RSpec.describe Admin::BulletinsController do
     end
   end
 
+  describe 'GET index with no bulletins' do
+    it 'says so once' do
+      get(:index)
+
+      expect(response.body.scan('No bulletins found').size).to eq 1
+    end
+  end
+
   describe 'POST create' do
     it 'creates a draft with the chosen posts, authored by the admin' do
       post(:create, params: { bulletin: { subject: 'News', intro: 'Hi', post_ids: [post_record.hashid] } })
