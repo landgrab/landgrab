@@ -4,13 +4,30 @@ class Bulletin < ApplicationRecord
   belongs_to :author, class_name: 'User'
   has_many :bulletin_posts, dependent: :destroy
   has_many :posts, through: :bulletin_posts
+  has_many :deliveries, class_name: 'BulletinDelivery', dependent: :restrict_with_exception, inverse_of: :bulletin
 
   validates :subject, presence: true
   validates :posts, presence: true
   validate :posts_share_audience
+  validate :unchanged_once_confirmed, on: :update
+
+  # A confirmed bulletin is the record of what was sent, so it can't be removed
+  before_destroy :prevent_destroy_once_confirmed
 
   auto_strip_attributes :subject, squish: true
   auto_strip_attributes :intro
+
+  def confirmed?
+    confirmed_at.present?
+  end
+
+  # :draft until confirmed, then :sending until every delivery has been sent or has failed
+  def status
+    if !confirmed? then :draft
+    elsif deliveries.pending.exists? then :sending
+    else :sent
+    end
+  end
 
   # The users who can view every post in the bulletin; only meaningful while the bulletin is valid,
   # because then every post has exactly the same viewers.
@@ -31,6 +48,19 @@ class Bulletin < ApplicationRecord
   end
 
   private
+
+  def unchanged_once_confirmed
+    return if confirmed_at_was.blank?
+
+    errors.add(:base, 'A confirmed bulletin cannot be changed') if (changed - %w[updated_at]).any?
+  end
+
+  def prevent_destroy_once_confirmed
+    return unless confirmed?
+
+    errors.add(:base, 'A confirmed bulletin cannot be deleted')
+    throw :abort
+  end
 
   def describe_unsupported(markdown)
     EmailMarkdownService.unsupported_elements(markdown)

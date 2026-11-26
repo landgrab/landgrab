@@ -125,6 +125,61 @@ RSpec.describe Bulletin do
     end
   end
 
+  describe '#status' do
+    before { bulletin.save! }
+
+    it 'is draft until confirmed' do
+      expect(bulletin.status).to eq :draft
+    end
+
+    it 'is sending while any delivery is pending' do
+      bulletin.update!(confirmed_at: Time.zone.now)
+      create(:bulletin_delivery, bulletin:, sent_at: Time.zone.now)
+      create(:bulletin_delivery, bulletin:)
+
+      expect(bulletin.status).to eq :sending
+    end
+
+    it 'is sent once every delivery has been sent or has failed' do
+      bulletin.update!(confirmed_at: Time.zone.now)
+      create(:bulletin_delivery, bulletin:, sent_at: Time.zone.now)
+      create(:bulletin_delivery, bulletin:, failed_at: Time.zone.now)
+
+      expect(bulletin.status).to eq :sent
+    end
+  end
+
+  describe 'once confirmed' do
+    before do
+      bulletin.save!
+      bulletin.update!(confirmed_at: Time.zone.now)
+    end
+
+    it 'cannot be edited' do
+      expect(bulletin.update(subject: 'Changed')).to be false
+      expect(bulletin.errors.full_messages).to include('A confirmed bulletin cannot be changed')
+    end
+
+    it 'cannot be deleted' do
+      expect(bulletin.destroy).to be false
+      expect(described_class.exists?(bulletin.id)).to be true
+    end
+
+    it 'cannot gain or lose posts' do
+      expect(bulletin.bulletin_posts.build(post: create(:post)).save).to be false
+      expect(bulletin.bulletin_posts.first.destroy).to be false
+    end
+  end
+
+  describe 'while a draft' do
+    it 'can be edited and deleted' do
+      bulletin.save!
+
+      expect(bulletin.update(subject: 'Changed')).to be true
+      expect(bulletin.destroy).to be_truthy
+    end
+  end
+
   describe '#audience' do
     it 'is the users who can view the posts' do
       alice = create(:user)
