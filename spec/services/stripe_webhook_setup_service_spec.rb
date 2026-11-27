@@ -11,8 +11,11 @@ RSpec.describe StripeWebhookSetupService do
   end
 
   def stub_list(data)
-    stub_request(:get, %r{api.stripe.com/v1/webhook_endpoints})
-      .to_return(status: 200, body: { object: 'list', data:, has_more: false, url: '/v1/webhook_endpoints' }.to_json)
+    body = { object: 'list', data:, has_more: false, url: '/v1/webhook_endpoints' }.to_json
+
+    stub_request(:get, 'https://api.stripe.com/v1/webhook_endpoints')
+      .with(query: { limit: 100 })
+      .to_return(status: 200, body:)
   end
 
   it 'builds the endpoint url from the base url' do
